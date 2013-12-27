@@ -5,6 +5,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BioGenie.Stl2Abt.Gui", "Bio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BioGenie.Stl2Abt", "BioGenie.Stl2Abt\BioGenie.Stl2Abt.csproj", "{C35FA564-9248-42E3-8E04-454208545995}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BioGenie.Stl", "BioGenie.Stl\BioGenie.Stl.csproj", "{60517B92-C546-4D0D-8E6D-3CFD5F971B0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BioGenie.Stl.Tests", "BioGenie.Stl.Tests\BioGenie.Stl.Tests.csproj", "{63149FF5-9F1F-479E-B7D2-AF84DC64490D}"
+EndProject
 Global
 	GlobalSection(MercurialSourceControlSolutionProperties) = preSolution
 		SolutionIsControlled = True
@@ -23,6 +27,14 @@ Global
 		{C35FA564-9248-42E3-8E04-454208545995}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C35FA564-9248-42E3-8E04-454208545995}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C35FA564-9248-42E3-8E04-454208545995}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60517B92-C546-4D0D-8E6D-3CFD5F971B0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60517B92-C546-4D0D-8E6D-3CFD5F971B0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60517B92-C546-4D0D-8E6D-3CFD5F971B0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60517B92-C546-4D0D-8E6D-3CFD5F971B0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63149FF5-9F1F-479E-B7D2-AF84DC64490D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63149FF5-9F1F-479E-B7D2-AF84DC64490D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63149FF5-9F1F-479E-B7D2-AF84DC64490D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63149FF5-9F1F-479E-B7D2-AF84DC64490D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
