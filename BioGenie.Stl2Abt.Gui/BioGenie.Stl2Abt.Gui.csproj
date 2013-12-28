@@ -70,9 +70,6 @@
       <Name>BioGenie.Stl</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <Content Include="OpenTK\libEGL.dll">
