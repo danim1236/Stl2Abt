@@ -114,9 +114,17 @@ namespace BioGenie.Stl
             return "vertex {0} {1} {2}".FormatString(X, Y, Z);
         }
 
-        public Vector3 ToVector3()
+        public Vector3 ToVector3(AxisOrder axisOrder)
         {
-            return new Vector3(X, Y, Z);
+            switch (axisOrder)
+            {
+                case AxisOrder.X:
+                    return new Vector3(X, Y, Z);
+                case AxisOrder.Y:
+                    return new Vector3(Y, Z, X);
+                default:
+                    return new Vector3(Z, X, Y);
+            }
         }
     }
 }

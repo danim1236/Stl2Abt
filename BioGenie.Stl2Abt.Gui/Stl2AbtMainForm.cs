@@ -3,6 +3,8 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using BioGenie.Stl;
+
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace BioGenie.Stl2Abt.Gui
@@ -65,11 +67,16 @@ namespace BioGenie.Stl2Abt.Gui
 
         private void glControl1_Resize(object sender, EventArgs e)
         {
-            var min = Math.Min(glControl1.Width, glControl1.Height) - 5;
-            GL.Viewport(0, 0, min, min);
+            //var min = Math.Min(glControl1.Width, glControl1.Height) - 5;
+            GL.Viewport(0, 0, glControl1.Width, glControl1.Height);
 
-            GL.MatrixMode(MatrixMode.Projection);
+            GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();
+            SetOrtho();
+        }
+
+        private void SetOrtho()
+        {
             float xMin;
             float yMin;
             float zMin;
@@ -77,27 +84,69 @@ namespace BioGenie.Stl2Abt.Gui
             float yMax;
             float zMax;
             StlDocument.GetLimits(out xMin, out yMin, out zMin, out xMax, out yMax, out zMax);
-            GL.Ortho(xMin, xMax, yMin, yMax, zMin, zMax);
+            switch (GetAxisOrder())
+            {
+                case AxisOrder.X:
+                    GL.Ortho(xMin - 1, xMax + 1, yMin - 1, yMax + 1, zMin - 1, zMax + 1);
+                    break;
+                case AxisOrder.Y:
+                    GL.Ortho(yMax + 1, yMin - 1, zMin - 1, zMax + 1, xMin - 1, xMax + 1);
+                    break;
+                case AxisOrder.Z:
+                    GL.Ortho(zMin - 1, zMax + 1, xMin - 1, xMax + 1, yMin - 1, yMax + 1);
+                    break;
+            }
         }
 
         private void glControl1_Paint(object sender, PaintEventArgs e)
         {
-            GL.ClearColor(Color.MidnightBlue);
+            GL.PolygonMode(MaterialFace.FrontAndBack, radioButtonPoint.Checked ? PolygonMode.Point : PolygonMode.Line);
+            GL.Begin(PrimitiveType.Triangles);
             foreach (var facet in StlDocument.Facets)
             {
                 if (facet.Vertices.Count != 3)
                 {
                     throw new FormatException("There must be only triangles");
                 }
-                GL.Begin(PrimitiveType.Triangles);
-                GL.Normal3(facet.Normal.ToVector3());
+                GL.Normal3(facet.Normal.ToVector3(GetAxisOrder()));
                 foreach (var vertex in facet.Vertices)
                 {
-                    GL.Vertex3(vertex.ToVector3());
+                    GL.Vertex3(vertex.ToVector3(GetAxisOrder()));
                 }
-                GL.End();
             }
+            GL.End();
+
+            SetLight();
             glControl1.Context.SwapBuffers();
+        }
+
+        private AxisOrder GetAxisOrder()
+        {
+            return radioButtonX.Checked ? AxisOrder.X : (radioButtonY.Checked ? AxisOrder.Y : AxisOrder.Z);
+        }
+
+        private void SetLight()
+        {
+            float xMin;
+            float yMin;
+            float zMin;
+            float xMax;
+            float yMax;
+            float zMax;
+            StlDocument.GetLimits(out xMin, out yMin, out zMin, out xMax, out yMax, out zMax);
+            GL.Light(LightName.Light0, LightParameter.SpotDirection,
+                new Vector4(new Vector3((xMin + xMax)/2, (yMin + yMax)/2, zMax*2)));
+
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            glControl1.Invalidate();
+        }
+
+        private void radioButtonX_CheckedChanged(object sender, EventArgs e)
+        {
+            glControl1.Invalidate();
         }
     }
 }
