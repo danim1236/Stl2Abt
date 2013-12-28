@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
+using BioGenie.Stl;
 
 namespace BioGenie.Stl2Abt.Gui
 {
@@ -14,6 +9,8 @@ namespace BioGenie.Stl2Abt.Gui
     {
         public string StlFileName { get; set; }
         public string AbtFileName { get; set; }
+        
+        public StlDocument StlDocument { get; set; }
 
         public Stl2AbtMainForm(string stlFileName, string abtFileName)
         {
@@ -21,6 +18,34 @@ namespace BioGenie.Stl2Abt.Gui
             AbtFileName = abtFileName;
 
             InitializeComponent();
+            Stl2AbtMainForm_Resize(null, null);
+            labelStlFileName.Text = Path.GetFileName(stlFileName);
+
+            ReadStlFile();
+        }
+
+        private void ReadStlFile()
+        {
+            try
+            {
+                using (var reader = new StreamReader(StlFileName))
+                {
+                    StlDocument = StlDocument.Read(reader);
+                }
+            }
+            catch (FormatException)
+            {
+                using (var reader = new BinaryReader(File.Open(StlFileName, FileMode.Open)))
+                {
+                    StlDocument = StlDocument.Read(reader);
+                }
+            }
+            StlDocument.Name = Path.GetFileNameWithoutExtension(StlFileName);
+        }
+
+        private void Stl2AbtMainForm_Resize(object sender, EventArgs e)
+        {
+            panelStl.Width = (Width - 12)/2;
         }
     }
 }

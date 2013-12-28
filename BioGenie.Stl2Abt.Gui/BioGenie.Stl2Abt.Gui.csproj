@@ -54,6 +54,17 @@
     </Compile>
     <Compile Include="Stl2AbtStart.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Stl2AbtMainForm.resx">
+      <DependentUpon>Stl2AbtMainForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BioGenie.Stl\BioGenie.Stl.csproj">
+      <Project>{60517B92-C546-4D0D-8E6D-3CFD5F971B0E}</Project>
+      <Name>BioGenie.Stl</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
