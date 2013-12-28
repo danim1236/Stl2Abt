@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using BioGenie.Stl.Util;
+using OpenTK;
 
 namespace BioGenie.Stl
 {
@@ -12,7 +13,7 @@ namespace BioGenie.Stl
         {
         }
 
-        public Vertex(decimal x, decimal y, decimal z)
+        public Vertex(float x, float y, float z)
             : this()
         {
             X = x;
@@ -20,9 +21,9 @@ namespace BioGenie.Stl
             Z = z;
         }
 
-        public decimal X { get; set; }
-        public decimal Y { get; set; }
-        public decimal Z { get; set; }
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Z { get; set; }
 
         public bool Equals(Vertex other)
         {
@@ -35,7 +36,7 @@ namespace BioGenie.Stl
         {
             const string regex = @"\s*(facet normal|vertex)\s+(?<X>[^\s]+)\s+(?<Y>[^\s]+)\s+(?<Z>[^\s]+)";
 
-            decimal x, y, z;
+            float x, y, z;
             const NumberStyles numberStyle = (NumberStyles.AllowExponent | NumberStyles.AllowDecimalPoint |
                                               NumberStyles.AllowLeadingSign);
 
@@ -52,15 +53,15 @@ namespace BioGenie.Stl
             if (!match.Success)
                 return null;
 
-            if (!decimal.TryParse(match.Groups["X"].Value, numberStyle, CultureInfo.InvariantCulture, out x))
+            if (!float.TryParse(match.Groups["X"].Value, numberStyle, CultureInfo.InvariantCulture, out x))
                 throw new FormatException(
                     "Could not parse X coordinate \"{0}\" as a decimal.".FormatString(match.Groups["X"]));
 
-            if (!decimal.TryParse(match.Groups["Y"].Value, numberStyle, CultureInfo.InvariantCulture, out y))
+            if (!float.TryParse(match.Groups["Y"].Value, numberStyle, CultureInfo.InvariantCulture, out y))
                 throw new FormatException(
                     "Could not parse Y coordinate \"{0}\" as a decimal.".FormatString(match.Groups["Y"]));
 
-            if (!decimal.TryParse(match.Groups["Z"].Value, numberStyle, CultureInfo.InvariantCulture, out z))
+            if (!float.TryParse(match.Groups["Z"].Value, numberStyle, CultureInfo.InvariantCulture, out z))
                 throw new FormatException(
                     "Could not parse Z coordinate \"{0}\" as a decimal.".FormatString(match.Groups["Z"]));
 
@@ -90,9 +91,9 @@ namespace BioGenie.Stl
 
             return new Vertex
             {
-                X = (decimal) BitConverter.ToSingle(data, 0),
-                Y = (decimal) BitConverter.ToSingle(data, 4),
-                Z = (decimal) BitConverter.ToSingle(data, 8)
+                X = BitConverter.ToSingle(data, 0),
+                Y = BitConverter.ToSingle(data, 4),
+                Z = BitConverter.ToSingle(data, 8)
             };
         }
 
@@ -111,6 +112,11 @@ namespace BioGenie.Stl
         public override string ToString()
         {
             return "vertex {0} {1} {2}".FormatString(X, Y, Z);
+        }
+
+        public Vector3 ToVector3()
+        {
+            return new Vector3(X, Y, Z);
         }
     }
 }

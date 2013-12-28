@@ -9,7 +9,7 @@ namespace BioGenie.Stl
         {
         }
 
-        public Normal(decimal x, decimal y, decimal z)
+        public Normal(float x, float y, float z)
             : this()
         {
             X = x;

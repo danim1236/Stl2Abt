@@ -26,6 +26,16 @@ namespace BioGenie.Stl
         public string Name { get; set; }
         public List<Facet> Facets { get; set; }
 
+        public void GetLimits(out float xMin,out float yMin,out float zMin,out float xMax,out float yMax, out float zMax)
+        {
+            xMin = Facets.Min(_ => _.Vertices.Min(__ => __.X));
+            yMin = Facets.Min(_ => _.Vertices.Min(__ => __.Y));
+            zMin = Facets.Min(_ => _.Vertices.Min(__ => __.Z));
+            xMax = Facets.Max(_ => _.Vertices.Max(__ => __.X));
+            yMax = Facets.Max(_ => _.Vertices.Max(__ => __.Y));
+            zMax = Facets.Max(_ => _.Vertices.Max(__ => __.Z));
+        }
+
         public bool Equals(StlDocument other)
         {
             return (string.Equals(Name, other.Name)
