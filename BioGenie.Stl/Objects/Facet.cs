@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BioGenie.Stl.Util;
+using BioGenie.Stl.Tools;
 using OpenTK;
 
 namespace BioGenie.Stl.Objects

@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using BioGenie.Stl.Util;
+using BioGenie.Stl.Tools;
 
 namespace BioGenie.Stl.Objects
 {

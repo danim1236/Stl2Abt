@@ -1,4 +1,6 @@
-namespace BioGenie.Stl.Util
+using System.Collections;
+
+namespace BioGenie.Stl.Tools
 {
     public static class StringExtensions
     {

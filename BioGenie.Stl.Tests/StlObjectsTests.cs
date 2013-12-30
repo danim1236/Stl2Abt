@@ -58,9 +58,9 @@ namespace BioGenie.Stl.Tests
         {
             var stl1 = new StlDocument("WriteString", new List<Facet>
             {
-                new Facet(new Normal( 0, 0, 1), new List<Vertex>
+                new Facet(new Normal(0, 0, 1), new List<Vertex>
                 {
-                    new Vertex( 0, 0, 0),
+                    new Vertex(0, 0, 0),
                     new Vertex(-10, -10, 0),
                     new Vertex(-10, 0, 0)
                 }, 0)
@@ -101,9 +101,9 @@ namespace BioGenie.Stl.Tests
         {
             var stl1 = new StlDocument("WriteBinary", new List<Facet>
             {
-                new Facet(new Normal( 0, 0, 1), new List<Vertex>
+                new Facet(new Normal(0, 0, 1), new List<Vertex>
                 {
-                    new Vertex( 0, 0, 0),
+                    new Vertex(0, 0, 0),
                     new Vertex(-10, -10, 0),
                     new Vertex(-10, 0, 0)
                 }, 0)
@@ -169,6 +169,7 @@ namespace BioGenie.Stl.Tests
             };
             facet.Area.Should().Be(9.5);
         }
+
         [Test]
         public void FacetAreaPrimos()
         {

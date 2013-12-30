@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
-using BioGenie.Stl.Util;
+using BioGenie.Stl.Tools;
 using OpenTK;
 
 namespace BioGenie.Stl.Objects

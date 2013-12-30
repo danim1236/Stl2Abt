@@ -1,5 +1,5 @@
 using System.IO;
-using BioGenie.Stl.Util;
+using BioGenie.Stl.Tools;
 
 namespace BioGenie.Stl.Objects
 {
@@ -15,34 +15,37 @@ namespace BioGenie.Stl.Objects
             X = x;
             Y = y;
             Z = z;
+            NormalizeLength();
+        }
+
+        public Normal(Vertex v)
+            : this(v.X, v.Y, v.Z)
+        {
         }
 
         public new static Normal Read(StreamReader reader)
         {
-            return FromVertex(Vertex.Read(reader));
+            var vertex = Vertex.Read(reader);
+            return vertex != null ? new Normal(vertex) : null;
         }
 
         public new static Normal Read(BinaryReader reader)
         {
-            return FromVertex(Vertex.Read(reader));
-        }
-
-        public static Normal FromVertex(Vertex vertex)
-        {
-            if (vertex == null)
-                return null;
-
-            return new Normal
-            {
-                X = vertex.X,
-                Y = vertex.Y,
-                Z = vertex.Z
-            };
+            var vertex = Vertex.Read(reader);
+            return vertex != null ? new Normal(vertex) : null;
         }
 
         public override string ToString()
         {
             return "normal {0} {1} {2}".FormatString(X, Y, Z);
+        }
+
+        private void NormalizeLength()
+        {
+            var l = ToVector3().Length;
+            X /= l;
+            Y /= l;
+            Z /= l;
         }
     }
 }
