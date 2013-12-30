@@ -9,6 +9,20 @@ namespace BioGenie.Stl.Objects
 {
     public class Facet : IEquatable<Facet>
     {
+        public List<Vertex> Vertices { get; set; }
+        public int AttributeByteCount { get; set; }
+
+        public Normal Normal
+        {
+            get { return _normal ?? (_normal = CalcNormal()); }
+            set { _normal = value; }
+        }
+
+        public float Area
+        {
+            get { return (float) (_area ?? (_area = CalcArea())); }
+        }
+
         public Facet()
         {
             Vertices = new List<Vertex>();
@@ -22,9 +36,6 @@ namespace BioGenie.Stl.Objects
             AttributeByteCount = attributeByteCount;
         }
 
-        public Normal Normal { get; set; }
-        public List<Vertex> Vertices { get; set; }
-        public int AttributeByteCount { get; set; }
 
         public bool Equals(Facet other)
         {
@@ -103,20 +114,34 @@ namespace BioGenie.Stl.Objects
             return "facet {0}".FormatString(Normal);
         }
 
-        #region [ Area ]
+        #region [ Dados Privados ]
+
         private float? _area;
-        public float Area
+        private Normal _normal;
+
+        #endregion
+
+        #region [ Calculos ]
+
+        private Normal CalcNormal()
         {
-            get { return (float)(_area ?? (_area = CalcArea())); }
+            var vs = CalcAreaVector();
+            return new Normal(vs.X/vs.Length, vs.Y/vs.Length, vs.Z/vs.Length);
         }
 
         private float CalcArea()
+        {
+            var vs = CalcAreaVector();
+            return vs.Length/2;
+        }
+
+        private Vector3 CalcAreaVector()
         {
             var v1 = Vertices[0].ToVector3();
             var v2 = Vertices[1].ToVector3();
             var v3 = Vertices[2].ToVector3();
             var vs = Vector3.Cross(v1 - v2, v1 - v3);
-            return vs.Length/2;
+            return vs;
         }
 
         #endregion
