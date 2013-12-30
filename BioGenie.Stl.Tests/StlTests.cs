@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -151,6 +152,35 @@ namespace BioGenie.Stl.Tests
             }
 
             stls[0].Should().Equals(stls[1]);
+        }
+
+        [Test]
+        public void FacetAreaSimple()
+        {
+            var facet = new Facet
+            {
+                Vertices = new List<Vertex>
+                {
+                    new Vertex(2, 0, 0),
+                    new Vertex(0, 3, 0),
+                    new Vertex(0, 0, 5),
+                }
+            };
+            facet.Area.Should().Be(9.5);
+        }
+        [Test]
+        public void FacetAreaPrimos()
+        {
+            var facet = new Facet
+            {
+                Vertices = new List<Vertex>
+                {
+                    new Vertex(1, 2, 3),
+                    new Vertex(5, 7, 11),
+                    new Vertex(13, 17, 19),
+                }
+            };
+            Math.Round(facet.Area, 3).Should().Be(25.612);
         }
     }
 }

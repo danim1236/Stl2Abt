@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BioGenie.Stl.Util;
+using OpenTK;
 
 namespace BioGenie.Stl
 {
@@ -101,5 +102,23 @@ namespace BioGenie.Stl
         {
             return "facet {0}".FormatString(Normal);
         }
+
+        #region [ Area ]
+        private float? _area;
+        public float Area
+        {
+            get { return (float)(_area ?? (_area = CalcArea())); }
+        }
+
+        private float CalcArea()
+        {
+            var v1 = Vertices[0].ToVector3();
+            var v2 = Vertices[1].ToVector3();
+            var v3 = Vertices[2].ToVector3();
+            var vs = Vector3.Cross(v1 - v2, v1 - v3);
+            return vs.Length/2;
+        }
+
+        #endregion
     }
 }
