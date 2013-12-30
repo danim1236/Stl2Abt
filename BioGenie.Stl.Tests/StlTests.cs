@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using BioGenie.Stl.Tests.Data;
-using BioGenie.Stl.Util;
 using NUnit.Framework;
+using SharpTestsEx;
 
 namespace BioGenie.Stl.Tests
 {
@@ -25,11 +24,10 @@ namespace BioGenie.Stl.Tests
                 }
             }
 
-            Assert.IsNotNull(stl);
-            Assert.AreEqual(12, stl.Facets.Count);
-
+            stl.Should().Not.Be.Null();
+            stl.Facets.Count.Should().Be(12);
             foreach (Facet facet in stl.Facets)
-                Assert.AreEqual(3, facet.Vertices.Count);
+                facet.Vertices.Count.Should().Be(3);
         }
 
         [Test]
@@ -47,11 +45,10 @@ namespace BioGenie.Stl.Tests
                 }
             }
 
-            Assert.IsNotNull(stl);
-            Assert.AreEqual(12, stl.Facets.Count);
-
+            stl.Should().Not.Be.Null();
+            stl.Facets.Count.Should().Be(12);
             foreach (Facet facet in stl.Facets)
-                Assert.AreEqual(3, facet.Vertices.Count);
+                facet.Vertices.Count.Should().Be(3);
         }
 
         [Test]
@@ -93,8 +90,8 @@ namespace BioGenie.Stl.Tests
                 stl2String = Encoding.ASCII.GetString(stl2Data);
             }
 
-            Assert.IsTrue(stl1.Equals(stl2));
-            Assert.AreEqual(stl1String, stl2String);
+            stl1.Should().Equals(stl2);
+            stl1String.Should().Equals(stl2String);
         }
 
         [Test]
@@ -133,8 +130,8 @@ namespace BioGenie.Stl.Tests
                 stl2Data = stream.ToArray();
             }
 
-            Assert.IsTrue(stl1.Equals(stl2));
-            Assert.IsTrue(stl1Data.SequenceEqual(stl2Data));
+            stl1.Should().Equals(stl2);
+            stl1Data.Should().Equals(stl2Data);
         }
 
         [Test]
@@ -153,7 +150,7 @@ namespace BioGenie.Stl.Tests
                 }
             }
 
-            Assert.IsTrue(stls[0].Equals(stls[1]));
+            stls[0].Should().Equals(stls[1]);
         }
     }
 }
