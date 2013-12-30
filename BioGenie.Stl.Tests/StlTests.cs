@@ -91,8 +91,8 @@ namespace BioGenie.Stl.Tests
                 stl2String = Encoding.ASCII.GetString(stl2Data);
             }
 
-            stl1.Should().Equals(stl2);
-            stl1String.Should().Equals(stl2String);
+            stl1.Equals(stl2).Should().Be.True();
+            stl1String.Equals(stl2String).Should().Be.True();
         }
 
         [Test]
@@ -131,8 +131,8 @@ namespace BioGenie.Stl.Tests
                 stl2Data = stream.ToArray();
             }
 
-            stl1.Should().Equals(stl2);
-            stl1Data.Should().Equals(stl2Data);
+            stl1.Equals(stl2).Should().Be.True();
+            stl1Data.SequenceEqual(stl2Data).Should().Be.True();
         }
 
         [Test]
@@ -151,7 +151,7 @@ namespace BioGenie.Stl.Tests
                 }
             }
 
-            stls[0].Should().Equals(stls[1]);
+            stls[0].Equals(stls[1]).Should().Be.True();
         }
 
         [Test]
