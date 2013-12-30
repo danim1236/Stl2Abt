@@ -64,6 +64,8 @@
   <ItemGroup>
     <None Include="Data\ASCII.stl" />
     <None Include="Data\Binary.stl" />
+    <None Include="Data\Dr_Juliano_SLM_Jonas_Jonas_single_CorB_abutment_11.stl" />
+    <None Include="Data\fabio.stl" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

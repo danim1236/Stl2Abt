@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using BioGenie.Stl;
 using BioGenie.Stl.Objects;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -13,7 +14,7 @@ namespace BioGenie.Stl2Abt.Gui
         public string StlFileName { get; set; }
         public string AbtFileName { get; set; }
         
-        public StlDocument StlDocument { get; set; }
+        public StlAbutment StlAbutment { get; set; }
 
         public Stl2AbtMainForm(string stlFileName, string abtFileName)
         {
@@ -41,17 +42,18 @@ namespace BioGenie.Stl2Abt.Gui
             {
                 using (var reader = new StreamReader(StlFileName))
                 {
-                    StlDocument = StlDocument.Read(reader);
+                    StlAbutment = new StlAbutment(StlDocument.Read(reader));
                 }
             }
             catch (FormatException)
             {
                 using (var reader = new BinaryReader(File.Open(StlFileName, FileMode.Open)))
                 {
-                    StlDocument = StlDocument.Read(reader);
+                    StlAbutment = new StlAbutment(StlDocument.Read(reader));
                 }
             }
-            StlDocument.Name = Path.GetFileNameWithoutExtension(StlFileName);
+            var normal = StlAbutment.Base.Normal;
+            StlAbutment.Name = Path.GetFileNameWithoutExtension(StlFileName);
         }
 
         private void Stl2AbtMainForm_Resize(object sender, EventArgs e)
@@ -82,7 +84,7 @@ namespace BioGenie.Stl2Abt.Gui
             float xMax;
             float yMax;
             float zMax;
-            StlDocument.GetLimits(out xMin, out yMin, out zMin, out xMax, out yMax, out zMax);
+            StlAbutment.GetLimits(out xMin, out yMin, out zMin, out xMax, out yMax, out zMax);
             switch (GetAxisOrder())
             {
                 case AxisOrder.X:
@@ -101,7 +103,7 @@ namespace BioGenie.Stl2Abt.Gui
         {
             GL.PolygonMode(MaterialFace.FrontAndBack, radioButtonPoint.Checked ? PolygonMode.Point : PolygonMode.Line);
             GL.Begin(PrimitiveType.Triangles);
-            foreach (var facet in StlDocument.Facets)
+            foreach (var facet in StlAbutment.Facets)
             {
                 if (facet.Vertices.Count != 3)
                 {
@@ -132,7 +134,7 @@ namespace BioGenie.Stl2Abt.Gui
             float xMax;
             float yMax;
             float zMax;
-            StlDocument.GetLimits(out xMin, out yMin, out zMin, out xMax, out yMax, out zMax);
+            StlAbutment.GetLimits(out xMin, out yMin, out zMin, out xMax, out yMax, out zMax);
             GL.Light(LightName.Light0, LightParameter.SpotDirection,
                 new Vector4(new Vector3((xMin + xMax)/2, (yMin + yMax)/2, zMax*2)));
 

@@ -6,7 +6,7 @@ namespace BioGenie.Stl.Algorithm
 {
     public class FacetsGroup
     {
-        public List<Facet> Facets { get; set; }
+        public HashSet<Facet> Facets { get; set; }
         public Normal Normal { get; set; }
 
         private float? _area;

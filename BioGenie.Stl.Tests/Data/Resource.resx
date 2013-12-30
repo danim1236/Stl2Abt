@@ -124,4 +124,10 @@
   <data name="Binary" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>binary.stl;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Dr_Juliano_SLM_Jonas_Jonas_single_CorB_abutment_11" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>dr_juliano_slm_jonas_jonas_single_corb_abutment_11.stl;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="fabio" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>fabio.stl;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

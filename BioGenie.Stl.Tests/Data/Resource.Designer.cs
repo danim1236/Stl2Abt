@@ -79,5 +79,25 @@ namespace BioGenie.Stl.Tests.Data {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Dr_Juliano_SLM_Jonas_Jonas_single_CorB_abutment_11 {
+            get {
+                object obj = ResourceManager.GetObject("Dr_Juliano_SLM_Jonas_Jonas_single_CorB_abutment_11", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] fabio {
+            get {
+                object obj = ResourceManager.GetObject("fabio", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

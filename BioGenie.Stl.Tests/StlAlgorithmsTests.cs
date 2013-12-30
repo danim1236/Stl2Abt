@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BioGenie.Stl.Algorithm;
 using BioGenie.Stl.Objects;
+using BioGenie.Stl.Tests.Data;
 using NUnit.Framework;
 using SharpTestsEx;
 
@@ -30,7 +32,7 @@ namespace BioGenie.Stl.Tests
                     }
                 }
             };
-            var groups = new FacetGrouper(document).GroupByNormal(0).OrderByDescending(_ => _.Area).ToList();
+            var groups = new FacetGrouper(document).GroupByNormal().OrderByDescending(_ => _.Area).ToList();
             groups.Count.Should().Be(2);
             Math.Round(groups[0].Area, 3).Should().Be(25.612);
             groups[0].Normal.Equals(new Normal(0, 1, 0)).Should().Be.True();
@@ -67,7 +69,7 @@ namespace BioGenie.Stl.Tests
         }
 
         [Test]
-        public void StlAbutmentGreaterSurface()
+        public void StlAbutmentBase()
         {
             var document = new StlAbutment
             {
@@ -85,9 +87,34 @@ namespace BioGenie.Stl.Tests
                     }
                 }
             };
-            var greaterSurface = document.GreaterSurface;
-            Math.Round(greaterSurface.Area, 3).Should().Be(25.612);
-            greaterSurface.Normal.Equals(new Normal(0, 1, 0)).Should().Be.True();
+            var baseAbutment = document.Base;
+            Math.Round(baseAbutment.Area, 3).Should().Be(25.612);
+            baseAbutment.Normal.Equals(new Normal(0, 1, 0)).Should().Be.True();
+        }
+
+        [Test]
+        public void StlAbutmentBaseZ()
+        {
+            var document =
+                new StlAbutment(
+                    StlDocument.Read(
+                        new BinaryReader(new MemoryStream(Resource.Dr_Juliano_SLM_Jonas_Jonas_single_CorB_abutment_11))));
+            var baseAbutment = document.Base;
+            baseAbutment.Normal.X.Should().Be(0);
+            baseAbutment.Normal.Y.Should().Be(0);
+            baseAbutment.Normal.Z.Should().Be(-1);
+        }
+        [Test]
+        public void StlAbutmentBaseX()
+        {
+            var document =
+                new StlAbutment(
+                    StlDocument.Read(
+                        new BinaryReader(new MemoryStream(Resource.fabio))));
+            var baseAbutment = document.Base;
+            baseAbutment.Normal.X.Should().Be(1);
+            baseAbutment.Normal.Y.Should().Be(0);
+            baseAbutment.Normal.Z.Should().Be(0);
         }
     }
 }

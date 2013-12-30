@@ -9,6 +9,8 @@ namespace BioGenie.Stl.Algorithm
 {
     public class FacetGrouper
     {
+        public static float AxisAlignmentThreshold = (float) 1E-3;
+
         public StlDocument StlDocument { get; set; }
 
         public FacetGrouper(StlDocument document)
@@ -16,19 +18,19 @@ namespace BioGenie.Stl.Algorithm
             StlDocument = document;
         }
 
-        public List<FacetsGroup> GroupByNormal(float error)
+        public List<FacetsGroup> GroupByNormal(float? error = null)
         {
-            return Math.Abs(error) < 1E-3 ? GroupByNormalStrict() : GroupByNormalWithError(error);
+            return error.HasValue ? GroupByNormalWithError(error.Value) : GroupByNormalStrict();
         }
 
         private List<FacetsGroup> GroupByNormalStrict()
         {
-            var bag = new Dictionary<Normal, List<Facet>>();
+            var bag = new Dictionary<Normal, HashSet<Facet>>();
             foreach (var facet in StlDocument.Facets)
             {
                 var normal = facet.Normal;
                 if (!bag.ContainsKey(normal))
-                    bag[normal] = new List<Facet> {facet};
+                    bag[normal] = new HashSet<Facet> {facet};
                 else
                     bag[normal].Add(facet);
             }
@@ -43,7 +45,7 @@ namespace BioGenie.Stl.Algorithm
         private List<FacetsGroup> GroupByNormalWithError(float error)
         {
             var tol = 1 - error;
-            var bag = new HashSet<Tuple<Vertex, List<Facet>>>();
+            var bag = new HashSet<Tuple<Vertex, HashSet<Facet>>>();
             foreach (var facet in StlDocument.Facets)
             {
                 var normal = facet.Normal;
@@ -55,7 +57,7 @@ namespace BioGenie.Stl.Algorithm
                         var tFacets = tuple.Item2;
                         tFacets.Add(facet);
                         bag.Remove(tuple);
-                        bag.Add(new Tuple<Vertex, List<Facet>>(
+                        bag.Add(new Tuple<Vertex, HashSet<Facet>>(
                             tFacets.Select(_ => _.Normal).Mean(),
                             tFacets));
                         found = true;
@@ -64,15 +66,32 @@ namespace BioGenie.Stl.Algorithm
                 }
                 if (!found)
                 {
-                    bag.Add(new Tuple<Vertex, List<Facet>>(facet.Normal, new List<Facet> {facet}));
+                    bag.Add(new Tuple<Vertex, HashSet<Facet>>(facet.Normal, new HashSet<Facet> {facet}));
                 }
             }
             return (from g in bag
                     select new FacetsGroup
                     {
-                        Normal = new Normal(g.Item1),
+                        Normal = NormalOffError(g.Item1),
                         Facets = g.Item2,
                     }).ToList();
+        }
+
+        private Normal NormalOffError(Vertex v)
+        {
+            float x = v.X;
+            float y = v.Y;
+            float z = v.Z;
+            float xa = Math.Abs(x);
+            float ya = Math.Abs(y);
+            float za = Math.Abs(z);
+            if (xa > AxisAlignmentThreshold || ya > AxisAlignmentThreshold || za > AxisAlignmentThreshold)
+            {
+                if (xa < AxisAlignmentThreshold) x = 0;
+                if (ya < AxisAlignmentThreshold) y = 0;
+                if (za < AxisAlignmentThreshold) z = 0;
+            }
+            return new Normal(x, y, z);
         }
     }
 }
