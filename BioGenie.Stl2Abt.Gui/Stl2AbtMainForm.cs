@@ -2,8 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using BioGenie.Stl;
-
+using BioGenie.Stl.Objects;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 

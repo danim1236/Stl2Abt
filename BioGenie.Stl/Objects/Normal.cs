@@ -1,7 +1,7 @@
 using System.IO;
 using BioGenie.Stl.Util;
 
-namespace BioGenie.Stl
+namespace BioGenie.Stl.Objects
 {
     public class Normal : Vertex
     {

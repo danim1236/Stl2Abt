@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using BioGenie.Stl.Util;
 using OpenTK;
 
-namespace BioGenie.Stl
+namespace BioGenie.Stl.Objects
 {
     public class Vertex : IEquatable<Vertex>
     {

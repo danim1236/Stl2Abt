@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using BioGenie.Stl.Objects;
 using BioGenie.Stl.Tests.Data;
 using NUnit.Framework;
 using SharpTestsEx;

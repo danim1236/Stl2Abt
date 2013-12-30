@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using BioGenie.Stl.Util;
 
-namespace BioGenie.Stl
+namespace BioGenie.Stl.Objects
 {
     public class StlDocument : IEquatable<StlDocument>
     {

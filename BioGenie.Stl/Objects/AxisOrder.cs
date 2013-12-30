@@ -1,4 +1,4 @@
-namespace BioGenie.Stl
+namespace BioGenie.Stl.Objects
 {
     public enum AxisOrder
     {
