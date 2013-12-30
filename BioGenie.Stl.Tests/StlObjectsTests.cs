@@ -11,7 +11,7 @@ using SharpTestsEx;
 namespace BioGenie.Stl.Tests
 {
     [TestFixture]
-    public class StlTests
+    public class StlObjectsTests
     {
         [Test]
         public void FromString()
