@@ -131,5 +131,12 @@ namespace BioGenie.Stl.Objects
                     return new Vector3(Z, X, Y);
             }
         }
+
+        public void Subtract(Vertex other)
+        {
+            X -= other.X;
+            Y -= other.Y;
+            Z -= other.Z;
+        }
     }
 }

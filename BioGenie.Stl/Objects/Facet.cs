@@ -118,6 +118,15 @@ namespace BioGenie.Stl.Objects
             return "facet {0}".FormatString(Normal);
         }
 
+        public void Subtract(Vertex c)
+        {
+            foreach (var vertex in Vertices)
+            {
+                vertex.Subtract(c);
+            }
+            _center = null;
+        }
+
         #region [ Dados Privados ]
 
         private float? _area;
@@ -155,5 +164,23 @@ namespace BioGenie.Stl.Objects
         }
 
         #endregion
+
+        public void Rotate(Quaternion quaternion)
+        {
+            Vector3 v;
+            foreach (var vertex in Vertices)
+            {
+                var v3 = vertex.ToVector3();
+                Vector3.Transform(ref v3, ref quaternion, out v);
+                vertex.X = v.X;
+                vertex.Y = v.Y;
+                vertex.Z = v.Z;
+            }
+            var n3 = Normal.ToVector3();
+            Vector3.Transform(ref n3, ref quaternion, out v);
+            Normal.X = v.X;
+            Normal.Y = v.Y;
+            Normal.Z = v.Z;
+        }
     }
 }

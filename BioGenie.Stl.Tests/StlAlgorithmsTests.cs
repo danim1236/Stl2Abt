@@ -63,8 +63,8 @@ namespace BioGenie.Stl.Tests
             groups.Count.Should().Be(1);
             groups[0].Facets.Count.Should().Be(2);
             Math.Round(groups[0].Area, 3).Should().Be(35.112);
-            Math.Round(groups[0].Normal.X, 5).Equals(Math.Round((float)(1 / Math.Sqrt(2)), 5)).Should().Be.True();
-            Math.Round(groups[0].Normal.Y, 5).Equals(Math.Round((float)(1 / Math.Sqrt(2)), 5)).Should().Be.True();
+            Math.Round(groups[0].Normal.X, 5).Equals(Math.Round((float) (1/Math.Sqrt(2)), 5)).Should().Be.True();
+            Math.Round(groups[0].Normal.Y, 5).Equals(Math.Round((float) (1/Math.Sqrt(2)), 5)).Should().Be.True();
             groups[0].Normal.Z.Should().Be(0);
         }
 
@@ -87,9 +87,9 @@ namespace BioGenie.Stl.Tests
                     }
                 }
             };
-            var baseAbutment = document.Base;
-            Math.Round(baseAbutment.Area, 3).Should().Be(25.612);
-            baseAbutment.Normal.Equals(new Normal(0, 1, 0)).Should().Be.True();
+            var abutmentBase = document.AbutmentBase;
+            Math.Round(abutmentBase.Area, 3).Should().Be(25.612);
+            abutmentBase.Normal.Equals(new Normal(0, 1, 0)).Should().Be.True();
         }
 
         [Test]
@@ -99,11 +99,12 @@ namespace BioGenie.Stl.Tests
                 new StlAbutment(
                     StlDocument.Read(
                         new BinaryReader(new MemoryStream(Resource.Dr_Juliano_SLM_Jonas_Jonas_single_CorB_abutment_11))));
-            var baseAbutment = document.Base;
-            baseAbutment.Normal.X.Should().Be(0);
-            baseAbutment.Normal.Y.Should().Be(0);
-            baseAbutment.Normal.Z.Should().Be(-1);
+            var abutmentBase = document.AbutmentBase;
+            abutmentBase.Normal.X.Should().Be(0);
+            abutmentBase.Normal.Y.Should().Be(0);
+            abutmentBase.Normal.Z.Should().Be(-1);
         }
+
         [Test]
         public void StlAbutmentBaseX()
         {
@@ -111,10 +112,46 @@ namespace BioGenie.Stl.Tests
                 new StlAbutment(
                     StlDocument.Read(
                         new BinaryReader(new MemoryStream(Resource.fabio))));
-            var baseAbutment = document.Base;
-            baseAbutment.Normal.X.Should().Be(1);
-            baseAbutment.Normal.Y.Should().Be(0);
-            baseAbutment.Normal.Z.Should().Be(0);
+            var abutmentBase = document.AbutmentBase;
+            abutmentBase.Normal.X.Should().Be(1);
+            abutmentBase.Normal.Y.Should().Be(0);
+            abutmentBase.Normal.Z.Should().Be(0);
+        }
+
+        [Test]
+        public void StlAbutmentAlignAndCenterZ()
+        {
+            var document =
+                new StlAbutment(
+                    StlDocument.Read(
+                        new BinaryReader(new MemoryStream(Resource.Dr_Juliano_SLM_Jonas_Jonas_single_CorB_abutment_11))));
+            document.AlignAndCenterAbutment();
+            var abutmentBase = document.AbutmentBase;
+            Math.Round(abutmentBase.Center.X, 5).Should().Be(0);
+            Math.Round(abutmentBase.Center.Y, 5).Should().Be(0);
+            Math.Round(abutmentBase.Center.Z, 5).Should().Be(0);
+
+            abutmentBase.Normal.X.Should().Be(0);
+            abutmentBase.Normal.Y.Should().Be(0);
+            abutmentBase.Normal.Z.Should().Be(-1);
+        }
+
+        [Test]
+        public void StlAbutmentAlignAndCenterX()
+        {
+            var document =
+                new StlAbutment(
+                    StlDocument.Read(
+                        new BinaryReader(new MemoryStream(Resource.fabio))));
+            document.AlignAndCenterAbutment();
+            var abutmentBase = document.AbutmentBase;
+            Math.Round(abutmentBase.Center.X, 5).Should().Be(0);
+            Math.Round(abutmentBase.Center.Y, 5).Should().Be(0);
+            Math.Round(abutmentBase.Center.Z, 5).Should().Be(0);
+
+            abutmentBase.Normal.X.Should().Be(0);
+            abutmentBase.Normal.Y.Should().Be(0);
+            abutmentBase.Normal.Z.Should().Be(-1);
         }
     }
 }

@@ -23,6 +23,13 @@ namespace BioGenie.Stl.Algorithm
             return error.HasValue ? GroupByNormalWithError(error.Value) : GroupByNormalStrict();
         }
 
+        public HashSet<Facet> OutwardsFacets(Normal baseNormal, Vertex baseCenter)
+        {
+            throw new NotImplementedException();
+        }
+
+        #region [ Internal Methods ]
+
         private List<FacetsGroup> GroupByNormalStrict()
         {
             var bag = new Dictionary<Normal, HashSet<Facet>>();
@@ -70,11 +77,11 @@ namespace BioGenie.Stl.Algorithm
                 }
             }
             return (from g in bag
-                    select new FacetsGroup
-                    {
-                        Normal = NormalOffError(g.Item1),
-                        Facets = g.Item2,
-                    }).ToList();
+                select new FacetsGroup
+                {
+                    Normal = NormalOffError(g.Item1),
+                    Facets = g.Item2,
+                }).ToList();
         }
 
         private Normal NormalOffError(Vertex v)
@@ -93,5 +100,7 @@ namespace BioGenie.Stl.Algorithm
             }
             return new Normal(x, y, z);
         }
+
+        #endregion
     }
 }
