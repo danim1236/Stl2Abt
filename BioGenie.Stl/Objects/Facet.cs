@@ -23,6 +23,11 @@ namespace BioGenie.Stl.Objects
             get { return (float) (_area ?? (_area = CalcArea())); }
         }
 
+        public Vertex Center
+        {
+            get { return _center ?? (_center = CalcCenter()); }
+        }
+
         public Facet()
         {
             Vertices = new List<Vertex>();
@@ -35,8 +40,7 @@ namespace BioGenie.Stl.Objects
             Vertices = vertices.ToList();
             AttributeByteCount = attributeByteCount;
         }
-
-
+        
         public bool Equals(Facet other)
         {
             return (Normal.Equals(other.Normal)
@@ -118,6 +122,7 @@ namespace BioGenie.Stl.Objects
 
         private float? _area;
         private Normal _normal;
+        private Vertex _center;
 
         #endregion
 
@@ -129,6 +134,11 @@ namespace BioGenie.Stl.Objects
             return new Normal(vs.X/vs.Length, vs.Y/vs.Length, vs.Z/vs.Length);
         }
 
+        private Vertex CalcCenter()
+        {
+            return Vertices.Mean();
+        }
+        
         private float CalcArea()
         {
             var vs = CalcAreaVector();

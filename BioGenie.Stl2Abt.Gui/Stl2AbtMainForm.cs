@@ -52,7 +52,6 @@ namespace BioGenie.Stl2Abt.Gui
                     StlAbutment = new StlAbutment(StlDocument.Read(reader));
                 }
             }
-            var normal = StlAbutment.Base.Normal;
             StlAbutment.Name = Path.GetFileNameWithoutExtension(StlFileName);
         }
 
@@ -103,12 +102,14 @@ namespace BioGenie.Stl2Abt.Gui
         {
             GL.PolygonMode(MaterialFace.FrontAndBack, radioButtonPoint.Checked ? PolygonMode.Point : PolygonMode.Line);
             GL.Begin(PrimitiveType.Triangles);
+            var abutmentBase = StlAbutment.Base.Facets;
             foreach (var facet in StlAbutment.Facets)
             {
                 if (facet.Vertices.Count != 3)
                 {
                     throw new FormatException("There must be only triangles");
                 }
+                GL.Color3(abutmentBase.Contains(facet) ? Color.Red : Color.LightBlue);
                 GL.Normal3(facet.Normal.ToVector3(GetAxisOrder()));
                 foreach (var vertex in facet.Vertices)
                 {

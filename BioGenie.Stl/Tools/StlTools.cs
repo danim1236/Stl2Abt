@@ -21,5 +21,24 @@ namespace BioGenie.Stl.Tools
             }
             return new Vertex(x/count, y/count, z/count);
         }
+
+        public static Vertex Mean(this IEnumerable<Facet> facets)
+        {
+            float x = 0;
+            float y = 0;
+            float z = 0;
+            float totalArea = 0;
+            var facetList = facets.ToList();
+            foreach (var facet in facetList)
+            {
+                var area = facet.Area;
+                var center = facet.Center;
+                x += center.X * area;
+                y += center.Y * area;
+                z += center.Z * area;
+                totalArea += area;
+            }
+            return new Vertex(x / totalArea, y / totalArea, z / totalArea);
+        }
     }
 }
