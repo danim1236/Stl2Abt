@@ -23,9 +23,16 @@ namespace BioGenie.Stl.Algorithm
             return error.HasValue ? GroupByNormalWithError(error.Value) : GroupByNormalStrict();
         }
 
-        public HashSet<Facet> OutwardsFacets(Normal baseNormal, Vertex baseCenter)
+        public IEnumerable<Facet> GetOutwardsFacets()
         {
-            throw new NotImplementedException();
+            var facets = StlDocument.Facets;
+            var center = facets.Select(_ => _.Center).Mean().ToVector3();
+            var outwardsFacets =
+                (from facet in facets
+                    let ray = facet.Center.ToVector3() - center
+                    where Vector3.Dot(ray, facet.Normal.ToVector3()) >= 0
+                    select facet).ToList();
+            return outwardsFacets;
         }
 
         #region [ Internal Methods ]
@@ -33,7 +40,7 @@ namespace BioGenie.Stl.Algorithm
         private List<FacetsGroup> GroupByNormalStrict()
         {
             var bag = new Dictionary<Normal, HashSet<Facet>>();
-            foreach (var facet in StlDocument.Facets)
+            foreach (var facet in GetOutwardsFacets())
             {
                 var normal = facet.Normal;
                 if (!bag.ContainsKey(normal))
@@ -53,7 +60,7 @@ namespace BioGenie.Stl.Algorithm
         {
             var tol = 1 - error;
             var bag = new HashSet<Tuple<Vertex, HashSet<Facet>>>();
-            foreach (var facet in StlDocument.Facets)
+            foreach (var facet in GetOutwardsFacets())
             {
                 var normal = facet.Normal;
                 bool found = false;

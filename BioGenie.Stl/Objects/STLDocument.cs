@@ -24,7 +24,7 @@ namespace BioGenie.Stl.Objects
         }
 
         public string Name { get; set; }
-        public List<Facet> Facets { get; set; }
+        public virtual List<Facet> Facets { get; set; }
 
         public void GetLimits(out float xMin,out float yMin,out float zMin,out float xMax,out float yMax, out float zMax)
         {

@@ -9,6 +9,8 @@ namespace BioGenie.Stl
 {
     public class StlAbutment : StlDocument
     {
+        public override List<Facet> Facets { get; set; }
+
         public float NormalTolThreshold = (float)0.0001;
 
         public StlAbutment(string name, IEnumerable<Facet> facets)
