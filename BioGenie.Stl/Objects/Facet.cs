@@ -175,12 +175,14 @@ namespace BioGenie.Stl.Objects
                 vertex.X = v.X;
                 vertex.Y = v.Y;
                 vertex.Z = v.Z;
+                vertex.Reset();
             }
             var n3 = Normal.ToVector3();
             Vector3.Transform(ref n3, ref quaternion, out v);
             Normal.X = v.X;
             Normal.Y = v.Y;
             Normal.Z = v.Z;
+            Normal.Reset();
         }
     }
 }

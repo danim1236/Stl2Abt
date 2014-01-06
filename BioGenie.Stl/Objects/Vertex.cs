@@ -138,6 +138,12 @@ namespace BioGenie.Stl.Objects
             X -= other.X;
             Y -= other.Y;
             Z -= other.Z;
+            Reset();
+        }
+
+        public void Reset()
+        {
+            _vector3 = null;
         }
     }
 }

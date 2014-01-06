@@ -70,7 +70,6 @@
             this.groupBox2.Size = new System.Drawing.Size(174, 32);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Visible = false;
             // 
             // radioButtonZ
             // 
