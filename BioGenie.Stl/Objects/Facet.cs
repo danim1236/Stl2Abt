@@ -28,6 +28,11 @@ namespace BioGenie.Stl.Objects
             get { return _center ?? (_center = CalcCenter()); }
         }
 
+        private float? _maxZ;
+        private float? _minZ;
+        public float MaxZ { get { return (float) (_maxZ ?? (_maxZ = Vertices.Max(__ => __.Z))); } }
+        public float MinZ { get { return (float) (_minZ ?? (_minZ = Vertices.Min(__ => __.Z))); } }
+
         public Facet()
         {
             Vertices = new List<Vertex>();

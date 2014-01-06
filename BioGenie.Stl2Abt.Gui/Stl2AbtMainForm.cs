@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using BioGenie.Stl;
+using BioGenie.Stl.Algorithm;
 using BioGenie.Stl.Objects;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -15,6 +16,7 @@ namespace BioGenie.Stl2Abt.Gui
         public string AbtFileName { get; set; }
         
         public StlAbutment StlAbutment { get; set; }
+        public RevBoundary RevBoundary { get; set; }
 
         public Stl2AbtMainForm(string stlFileName, string abtFileName)
         {
@@ -54,6 +56,7 @@ namespace BioGenie.Stl2Abt.Gui
             }
             StlAbutment.AlignAndCenterAbutment();
             StlAbutment.Name = Path.GetFileNameWithoutExtension(StlFileName);
+            RevBoundary = new RevBoundaryDetector(StlAbutment, 360, 100).GetRevolutionBoundary();
         }
 
         private void Stl2AbtMainForm_Resize(object sender, EventArgs e)

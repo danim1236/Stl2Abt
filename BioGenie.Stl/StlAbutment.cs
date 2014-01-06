@@ -28,6 +28,7 @@ namespace BioGenie.Stl
 
         private FacetsGroup _abutmentBase;
         public double AngleThreshold = 0.005;
+        private double? _maxZ;
 
         public FacetsGroup AbutmentBase
         {
@@ -100,6 +101,11 @@ namespace BioGenie.Stl
                 }
             }
             return t;
+        }
+
+        public double MaxZ
+        {
+            get { return (double) (_maxZ ?? (_maxZ = Facets.Max(_ => _.MaxZ))); }
         }
     }
 }
