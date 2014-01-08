@@ -22,14 +22,14 @@ namespace BioGenie.Stl.Algorithm
             // Calculate the parameters for the plane
             Vector3 n = Vector3.Cross(pb - pa, pc - pa);
             Normalise(ref n);
-            float d = - n.X*pa.X - n.Y*pa.Y - n.Z*pa.Z;
+            float d = - Vector3.Dot(n, pa);
 
             // Calculate the position on the line that intersects the plane
             float denom = Vector3.Dot(n, dir);
             // Line and plane don't intersect
             if (Math.Abs(denom) < EPSILON)
                 return null;
-            float mu = - (d + n.X*p1.X + n.Y*p1.Y + n.Z*p1.Z)/denom;
+            float mu = - (d + Vector3.Dot(n, p1))/denom;
             Vector3 p = p1 + Vector3.Multiply(dir, mu);
             // Intersection not along line segment
             if (mu < 0 || mu > 1)
