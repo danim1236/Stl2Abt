@@ -177,15 +177,15 @@ namespace BioGenie.Stl2Abt.Gui
             GL.Color3(Color.LightBlue);
             if (true)
             {
+                GL.Begin(PrimitiveType.Points);
                 foreach (var boundaryByRotStep in RevBoundary.GetOrderedBoundariesByRotStep())
                 {
-                    GL.Begin(PrimitiveType.Lines);
                     foreach (var vertex in boundaryByRotStep.Value)
                     {
                         GL.Vertex3(vertex.ToVector3(GetAxisOrder()));
                     }
-                    GL.End();
                 }
+                GL.End();
             }
             else
             {
