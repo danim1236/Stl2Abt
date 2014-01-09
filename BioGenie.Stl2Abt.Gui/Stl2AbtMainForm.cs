@@ -175,28 +175,16 @@ namespace BioGenie.Stl2Abt.Gui
 
             GL.PolygonMode(MaterialFace.FrontAndBack, radioButtonPoint.Checked ? PolygonMode.Point : PolygonMode.Line);
             GL.Color3(Color.LightBlue);
-            if (true)
+            GL.Begin(PrimitiveType.Points);
+            foreach (var boundaryByRotStep in RevBoundary.GetOrderedBoundariesByRotStep())
             {
-                GL.Begin(PrimitiveType.Points);
-                foreach (var boundaryByRotStep in RevBoundary.GetOrderedBoundariesByRotStep())
+                foreach (var vertex in boundaryByRotStep.Value)
                 {
-                    foreach (var vertex in boundaryByRotStep.Value)
-                    {
-                        GL.Vertex3(vertex.ToVector3(GetAxisOrder()));
-                    }
+                    GL.Vertex3(vertex.ToVector3(GetAxisOrder()));
                 }
-                GL.End();
             }
-            else
-            {
-                GL.Begin(PrimitiveType.Points);
-                foreach (var facet in StlAbutment.Facets)
-                {
-                    GL.Color3(Color.LightBlue);
-                    GL.Vertex3(facet.Center.ToVector3(GetAxisOrder()));
-                }
-                GL.End();
-            }
+            GL.End();
+
             SetLight();
             glControl2.Context.SwapBuffers();
         }
