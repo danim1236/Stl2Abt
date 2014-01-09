@@ -51,10 +51,12 @@
   <ItemGroup>
     <Compile Include="Algorithm\FacetGrouper.cs" />
     <Compile Include="Algorithm\FacetsGroup.cs" />
+    <Compile Include="Algorithm\GeometryTools.cs" />
     <Compile Include="Algorithm\RevBoundary.cs" />
     <Compile Include="Algorithm\RevBoundaryDetector.cs" />
     <Compile Include="Objects\AxisOrder.cs" />
     <Compile Include="Objects\Facet.cs" />
+    <Compile Include="Objects\LineSegment.cs" />
     <Compile Include="Objects\Normal.cs" />
     <Compile Include="Objects\STLDocument.cs" />
     <Compile Include="Objects\Vertex.cs" />

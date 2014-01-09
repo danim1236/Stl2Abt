@@ -21,6 +21,11 @@ namespace BioGenie.Stl.Objects
             Z = z;
         }
 
+        public Vertex(Vector3 v)
+            : this(v.X, v.Y, v.Z)
+        {
+        }
+
         public float X { get; set; }
         public float Y { get; set; }
         public float Z { get; set; }

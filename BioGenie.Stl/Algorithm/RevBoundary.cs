@@ -1,32 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using BioGenie.Stl.Objects;
 
 namespace BioGenie.Stl.Algorithm
 {
 
     public class RevBoundary
     {
-        public Dictionary<int, AngularBoundary> Boundaries { get; set; }
+        public Dictionary<int, List<Vertex>> Boundaries { get; set; }
 
         public RevBoundary()
         {
-            Boundaries = new Dictionary<int, AngularBoundary>();
+            Boundaries = new Dictionary<int, List<Vertex>>();
         }
 
-        public List<KeyValuePair<int, AngularBoundary>> GetOrderedBoundaries()
+        public List<KeyValuePair<int, List<Vertex>>> GetOrderedBoundariesByRotStep()
         {
             return Boundaries.OrderBy(_ => _.Key).ToList();
         }
-    }
-
-    public class AngularBoundary
-    {
-        public List<Tuple<float, float>> RadiusAndZ { get; set; }
-
-        public AngularBoundary()
+        public List<List<Vertex>> GetOrderedBoundaries()
         {
-            RadiusAndZ = new List<Tuple<float, float>>();
+            return Boundaries.OrderBy(_ => _.Key).Select(_ => _.Value.OrderBy(__ => __.Z).ToList()).ToList();
         }
     }
 }

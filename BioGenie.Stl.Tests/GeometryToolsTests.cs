@@ -35,7 +35,7 @@ namespace BioGenie.Stl.Tests
             var r = new Random();
             for (int i = 0; i < 10; ++i)
             {
-                var a = new Vector3( r.Next(), r.Next(), r.Next());
+                var a = new Vector3(r.Next(), r.Next(), r.Next());
                 var length = a.Length;
                 a.X /= length;
                 a.Y /= length;

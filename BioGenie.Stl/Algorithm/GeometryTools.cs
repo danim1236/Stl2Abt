@@ -17,8 +17,6 @@ namespace BioGenie.Stl.Algorithm
             var pb = facet.Vertices[1].ToVector3();
             var pc = facet.Vertices[2].ToVector3();
 
-            Vector3 pa1, pa2, pa3;
-
             // Calculate the parameters for the plane
             Vector3 n = Vector3.Cross(pb - pa, pc - pa);
             Normalise(ref n);
@@ -36,26 +34,19 @@ namespace BioGenie.Stl.Algorithm
                 return null;
 
             // Determine whether or not the intersection point is bounded by pa,pb,pc
-            pa1.X = pa.X - p.X;
-            pa1.Y = pa.Y - p.Y;
-            pa1.Z = pa.Z - p.Z;
+            var pa1 = pa - p;
+            var pa2 = pb - p;
+            var pa3 = pc - p;
             Normalise(ref pa1);
-            pa2.X = pb.X - p.X;
-            pa2.Y = pb.Y - p.Y;
-            pa2.Z = pb.Z - p.Z;
             Normalise(ref pa2);
-            pa3.X = pc.X - p.X;
-            pa3.Y = pc.Y - p.Y;
-            pa3.Z = pc.Z - p.Z;
             Normalise(ref pa3);
-            float a1 = Vector3.Dot(pa1, pa2);
-            float a2 = Vector3.Dot(pa2, pa3);
-            float a3 = Vector3.Dot(pa3, pa1);
-            double total = (Math.Acos(a1) + Math.Acos(a2) + Math.Acos(a3));
-            if (Math.Abs(total - 2*Math.PI) > EPSILON)
-                return null;
-
-            return new Vertex(p);
+            var a1 = Vector3.Dot(pa1, pa2);
+            var a2 = Vector3.Dot(pa2, pa3);
+            var a3 = Vector3.Dot(pa3, pa1);
+            var total = Math.Acos(a1) + Math.Acos(a2) + Math.Acos(a3);
+            if (Math.Abs(total - 2*Math.PI) < EPSILON) 
+                return new Vertex(p);
+            return null;
         }
 
         private static void Normalise(ref Vector3 n)

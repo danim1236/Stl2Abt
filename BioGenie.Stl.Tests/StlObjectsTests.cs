@@ -6,6 +6,7 @@ using System.Text;
 using BioGenie.Stl.Objects;
 using BioGenie.Stl.Tests.Data;
 using NUnit.Framework;
+using OpenTK;
 using SharpTestsEx;
 
 namespace BioGenie.Stl.Tests
@@ -184,5 +185,30 @@ namespace BioGenie.Stl.Tests
             };
             Math.Round(facet.Area, 3).Should().Be(25.612);
         }
+
+        [Test]
+        public void LineSegmentLength()
+        {
+            var line = new LineSegment(new Vertex(1, 2, 3), new Vertex(4, 6, 8));
+            Math.Round(Math.Pow(line.Length, 2), 5).Should().Be(50);
+        }
+
+        [Test]
+        public void V1CrossV2()
+        {
+            var r = new Random();
+            var pa = new Vector3(r.Next(), r.Next(), r.Next());
+            var pb = new Vector3(r.Next(), r.Next(), r.Next());
+            var pc = new Vector3(r.Next(), r.Next(), r.Next());
+            var nLong = new Vector3();
+            nLong.X = (pb.Y - pa.Y) * (pc.Z - pa.Z) - (pb.Z - pa.Z) * (pc.Y - pa.Y);
+            nLong.Y = (pb.Z - pa.Z) * (pc.X - pa.X) - (pb.X - pa.X) * (pc.Z - pa.Z);
+            nLong.Z = (pb.X - pa.X) * (pc.Y - pa.Y) - (pb.Y - pa.Y) * (pc.X - pa.X);
+
+            var nShort = Vector3.Cross(pb - pa, pc - pa);
+
+            nShort.Equals(nLong).Should().Be.True();
+        }
+
     }
 }
