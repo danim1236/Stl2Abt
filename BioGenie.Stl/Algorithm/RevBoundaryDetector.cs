@@ -57,38 +57,66 @@ namespace BioGenie.Stl.Algorithm
             var facets = Facets.Where(_ => HasTheta(_, theta)).ToList();
             if (!facets.Any())
                 return null;
+            float minZ = float.MaxValue;
+            float minZR = float.MaxValue;
             float maxZ = float.MinValue;
+            float maxZR = float.MinValue;
             float maxR = float.MinValue;
-            float zOfMaxR = 0;
+            float maxRZ = float.MinValue;
+            Facet maxZFacet = null;
+            Facet minZFacet = null;
+            Facet maxRFacet = null;
+            Vertex maxZVertex = null;
+            Vertex minZVertex = null;
+            Vertex maxRVertex = null;
             foreach (var facet in facets)
             {
                 foreach (var v in facet.Vertices)
                 {
                     var z = v.Z;
-                    maxZ = Math.Max(maxZ, z);
                     var x = v.X;
                     var y = v.Y;
-                    var r = (float) Math.Sqrt(x * x + y * y);
+                    var r = (float)Math.Sqrt(x * x + y * y);
+
+                    if (minZ > z)
+                    {
+                        minZ = z;
+                        minZR = r;
+                        minZFacet = facet;
+                        minZVertex = v;
+                    }
+                    if (maxZ < z)
+                    {
+                        maxZ = z;
+                        maxZR = r;
+                        maxZFacet = facet;
+                        maxZVertex = v;
+                    }
                     if (maxR < r)
                     {
                         maxR = r;
-                        zOfMaxR = z;
+                        maxRZ = z;
+                        maxRFacet = facet;
+                        maxRVertex = v;
                     }
                 }
             }
-            var vertSteps = new float[6];
-            vertSteps[0] = 0;
-            vertSteps[1] = zOfMaxR/2;
-            vertSteps[2] = zOfMaxR;
-            vertSteps[3] = (maxZ - zOfMaxR) / 3 + zOfMaxR;
-            vertSteps[4] = (maxZ - zOfMaxR) * 0.67F + zOfMaxR;
-            vertSteps[5] = maxZ;
+            var cos = (float)Math.Cos(theta);
+            var sin = (float)Math.Sin(theta);
+            var bottom = new Vertex(cos * minZR, sin * minZR, 0);
+            var top = new Vertex(cos * maxZR, sin * maxZR, maxZ);
+            var fat = new Vertex(cos * maxR, sin * maxR, maxRZ);
+            var ps = new List<Vertex> {bottom, fat, top};
 
-            var ps = new List<Vertex>();
+            var vertSteps = new float[3];
+            vertSteps[0] = maxRZ/2;
+            vertSteps[1] = (maxZ - maxRZ) / 3 + maxRZ;
+            vertSteps[2] = (maxZ - maxRZ) * 0.67F + maxRZ;
+
             foreach (var z in vertSteps)
             {
-                var x = (float) Math.Cos(theta)*1000;
-                var y = (float) Math.Sin(theta)*1000;
+                var x = cos*1000;
+                var y = sin*1000;
                 var ray = new Vertex(x, y, z);
                 foreach (var facet in facets)
                 {
@@ -100,7 +128,7 @@ namespace BioGenie.Stl.Algorithm
                     }
                 }
             }
-            return ps;
+            return ps.OrderBy(_ => _.Z).ToList();
         }
 
         private bool HasTheta(Facet facet, float theta)
