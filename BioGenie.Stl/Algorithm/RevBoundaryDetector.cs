@@ -8,18 +8,15 @@ namespace BioGenie.Stl.Algorithm
     public class RevBoundaryDetector
     {
         public int NRotSteps { get; set; }
-        public int NVertSteps { get; set; }
         public float ThetaDelta { get; set; }
         public float VertDelta { get; set; }
         public List<Facet> Facets { get; set; }
     
-        public RevBoundaryDetector(StlAbutment abutment, int nRotSteps, int nVertSteps)
+        public RevBoundaryDetector(StlAbutment abutment, int nRotSteps)
         {
             NRotSteps = nRotSteps;
-            NVertSteps = nVertSteps;
             ThetaDelta = (float) (2 * Math.PI / NRotSteps);
-            VertDelta = (float) (abutment.MaxZ/NVertSteps);
-            Facets = new FacetGrouper(abutment).GetOutwardsFacets().Except(abutment.AbutmentBase.Facets).ToList();
+            Facets = abutment.ShellFacets.ToList();
         }
 
         public RevBoundary GetRevolutionBoundary()
@@ -54,9 +51,43 @@ namespace BioGenie.Stl.Algorithm
 
         private List<Vertex> GetRevolutionBoundaryForTheta(float theta)
         {
-            var facets = Facets.Where(_ => HasTheta(_, theta)).OrderBy(_ => _.Center.Z).ToList();
+            var facets = Facets.Where(_ => HasTheta(_, theta)).OrderBy(_ => _.MinZ).ToList();
             if (!facets.Any())
                 return null;
+            var vertices = facets.SelectMany(_ => _.Vertices).OrderBy(_ => _.Z).ToList();
+
+            var cos = (float)Math.Cos(theta);
+            var sin = (float)Math.Sin(theta);
+
+            var first = vertices.First();
+            var firstR = first.R;
+            var p0 = new Vertex(firstR*cos, firstR*sin, 0) {Theta = theta};
+            var last = vertices.Last();
+            var lastR = last.R;
+            var p5 = new Vertex(lastR * cos, lastR * sin, last.Z) { Theta = theta };
+            var p2 = FindP2(vertices, cos, sin);
+            p2.Theta = theta;
+
+            var x = cos * 1000;
+            var y = sin * 1000;
+            var p1Z = p2.Z/2;
+            var p1 = (from facet in facets
+                      let p = facet.Intersects(new LineSegment(new Vertex(0, 0, p1Z), new Vertex(x, y, p1Z)))
+                      where p != null
+                      select p).FirstOrDefault();
+            var p3Z = (p5.Z - p2.Z)/3 + p2.Z;
+            var p3 = (from facet in facets
+                      let p = facet.Intersects(new LineSegment(new Vertex(0, 0, p3Z), new Vertex(x, y, p3Z)))
+                      where p != null
+                      select p).FirstOrDefault();
+            var p4Z = (p5.Z - p2.Z) * 2 / 3 + p2.Z;
+            var p4 = (from facet in facets
+                      let p = facet.Intersects(new LineSegment(new Vertex(0, 0, p4Z), new Vertex(x, y, p4Z)))
+                      where p != null
+                      select p).FirstOrDefault();
+
+            return new List<Vertex> { p0, p1 ?? p2, p2, p3 ?? p2, p4 ?? p3 ?? p2, p5 };
+/*
             float minZ = float.MaxValue;
             float minZR = float.MaxValue;
             float maxZ = float.MinValue;
@@ -137,6 +168,23 @@ namespace BioGenie.Stl.Algorithm
                 }
             }
             return ps.OrderBy(_ => _.Z).ToList();
+ */
+        }
+
+        private Vertex FindP2(IEnumerable<Vertex> vertices, float cos, float sin)
+        {
+            float maxR = float.MinValue;
+            float maxRz = float.MinValue;
+            foreach (var vertex in vertices)
+            {
+                var r = vertex.R;
+                if (maxR < r)
+                {
+                    maxR = r;
+                    maxRz = vertex.Z;
+                }
+            }
+            return new Vertex(maxR*cos, maxR*sin, maxRz);
         }
 
         private bool HasTheta(Facet facet, float theta)

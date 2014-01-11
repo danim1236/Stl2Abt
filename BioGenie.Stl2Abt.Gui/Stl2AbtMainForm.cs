@@ -56,7 +56,8 @@ namespace BioGenie.Stl2Abt.Gui
             }
             StlAbutment.AlignAndCenterAbutment();
             StlAbutment.Name = Path.GetFileNameWithoutExtension(StlFileName);
-            RevBoundary = new RevBoundaryDetector(StlAbutment, 100, 20).GetRevolutionBoundary();
+            RevBoundary = new RevBoundaryDetector(StlAbutment, 6).GetRevolutionBoundary();
+            RevBoundary.WriteAbt(AbtFileName);
         }
 
         private void Stl2AbtMainForm_Resize(object sender, EventArgs e)

@@ -144,6 +144,14 @@ namespace BioGenie.Stl.Objects
             }
         }
 
+        public float Length
+        {
+            get { return ToVector3().Length; }
+        }
+
+        public float R{get { return (float) Math.Sqrt(X*X + Y*Y); }}
+        public float Theta { get; set; }
+
         public void Subtract(Vertex other)
         {
             X -= other.X;

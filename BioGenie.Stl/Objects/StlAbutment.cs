@@ -162,7 +162,7 @@ namespace BioGenie.Stl.Objects
                 if (!found)
                     bag.Add(new List<float> {z}, new List<Facet> {facet});
             }
-            minZ = bag.Keys.Min(_ => _.Min());
+            minZ = bag.Keys.Min(_ => _.Sum()/_.Count);
             var center = new Vertex(AbutmentBase.Center) {Z = minZ};
             foreach (var facet in Facets)
             {
