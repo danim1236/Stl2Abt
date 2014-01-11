@@ -113,7 +113,7 @@ namespace BioGenie.Stl2Abt.Gui
 
             GL.PolygonMode(MaterialFace.FrontAndBack, radioButtonPoint.Checked ? PolygonMode.Point : PolygonMode.Line);
             GL.Begin(PrimitiveType.Triangles);
-            foreach (var facet in StlAbutment.AbutmentBase.Facets)
+            foreach (var facet in StlAbutment.ShellFacets)
             {
                 if (facet.Vertices.Count != 3)
                 {

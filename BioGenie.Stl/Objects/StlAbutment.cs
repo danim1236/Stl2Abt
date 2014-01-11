@@ -74,7 +74,7 @@ namespace BioGenie.Stl.Objects
                 //    }
                 //}
                 _abutmentBase = null;
-                _centralTube = null;
+                _centralFacets = null;
                 _shellFacets = null;
             }
         }
@@ -112,14 +112,28 @@ namespace BioGenie.Stl.Objects
             get { return (double) (_maxZ ?? (_maxZ = Facets.Max(_ => _.MaxZ))); }
         }
 
-        private FacetsGroup _centralTube;
+        private HashSet<Facet> _centralFacets;
         private HashSet<Facet> _shellFacets;
-        public FacetsGroup CentralTube { get { return _centralTube ?? (_centralTube = CalcCentralTube()); } }
 
-        private FacetsGroup CalcCentralTube()
+        public HashSet<Facet> CentralFacets
+        {
+            get { return _centralFacets ?? (_centralFacets = CalcCentralFacets().Facets); }
+        }
+
+        private FacetsGroup CalcCentralFacets()
         {
             AlignAndCenterAbutment();
             return FacetGrouper.FindCentralTube(AbutmentBase);
+        }
+
+        private HashSet<Facet> _centralTubeFacets;
+        public HashSet<Facet> CentralTubeFacets
+        {
+            get
+            {
+                return _centralTubeFacets ??
+                       (_centralTubeFacets = new HashSet<Facet>(CentralFacets.Where(_ => _.Normal.Z < 0.1)));
+            }
         }
 
         public void CenterAbutment()
@@ -155,7 +169,7 @@ namespace BioGenie.Stl.Objects
                 facet.Subtract(center);
             }
             _abutmentBase = null;
-            _centralTube = null;
+            _centralFacets = null;
             _shellFacets = null;
         }
 
@@ -164,7 +178,7 @@ namespace BioGenie.Stl.Objects
             get
             {
                 return _shellFacets ??
-                       (_shellFacets = new HashSet<Facet>(Facets.Except(AbutmentBase.Facets).Except(CentralTube.Facets)));
+                       (_shellFacets = new HashSet<Facet>(Facets.Except(AbutmentBase.Facets).Except(CentralFacets)));
             }
         }
     }
