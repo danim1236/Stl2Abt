@@ -26,6 +26,11 @@ namespace BioGenie.Stl.Objects
         {
         }
 
+        public Vertex(Vertex v)
+            : this(v.X, v.Y, v.Z)
+        {
+        }
+
         public float X { get; set; }
         public float Y { get; set; }
         public float Z { get; set; }
@@ -39,7 +44,7 @@ namespace BioGenie.Stl.Objects
 
         public static Vertex Read(StreamReader reader)
         {
-            const string regex = @"\s*(facet normal|vertex)\s+(?<X>[^\s]+)\s+(?<Y>[^\s]+)\s+(?<Z>[^\s]+)";
+            const string regex = @"\s*(facet normal|vertex|Vector)\s+(?<X>[^\s]+)\s+(?<Y>[^\s]+)\s+(?<Z>[^\s]+)";
 
             float x, y, z;
             const NumberStyles numberStyle = (NumberStyles.AllowExponent | NumberStyles.AllowDecimalPoint |
@@ -116,10 +121,11 @@ namespace BioGenie.Stl.Objects
 
         public override string ToString()
         {
-            return "vertex {0} {1} {2}".FormatString(X, Y, Z);
+            return "Vector {0} {1} {2}".FormatString(X, Y, Z);
         }
 
         private Vector3? _vector3;
+
         public Vector3 ToVector3()
         {
             return (Vector3) (_vector3 ?? (_vector3 = new Vector3(X, Y, Z)));

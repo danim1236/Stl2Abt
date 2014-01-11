@@ -77,6 +77,10 @@
       <Project>{9D5EE438-17F0-4398-A1E0-046AE40721CF}</Project>
       <Name>BioGenie.Stl2Abt.Gui</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BioGenie.Stl2Abt.Separator\BioGenie.Stl2Abt.Separator.csproj">
+      <Project>{34D4510A-DB65-48B1-B226-D4C2F7F2AFB4}</Project>
+      <Name>BioGenie.Stl2Abt.Separator</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

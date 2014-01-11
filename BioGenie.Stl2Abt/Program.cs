@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BioGenie.Stl2Abt.Gui;
+using BioGenie.Stl2Abt.Separator;
 
 namespace BioGenie.Stl2Abt
 {
@@ -25,7 +26,10 @@ namespace BioGenie.Stl2Abt
             }
             if (args != null)
             {
-                Stl2AbtStart.Stl2AbtMainFormStart(args[0], args[1]);
+                if (true)
+                    Stl2AbtStart.Stl2AbtMainFormStart(args[0], args[1]);
+                else
+                    SeparatorStart.SeparatorFormStart(args[0], args[1]);
             }
         }
 

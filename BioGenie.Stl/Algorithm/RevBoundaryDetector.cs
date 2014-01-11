@@ -54,7 +54,7 @@ namespace BioGenie.Stl.Algorithm
 
         private List<Vertex> GetRevolutionBoundaryForTheta(float theta)
         {
-            var facets = Facets.Where(_ => HasTheta(_, theta)).ToList();
+            var facets = Facets.Where(_ => HasTheta(_, theta)).OrderBy(_ => _.Center.Z).ToList();
             if (!facets.Any())
                 return null;
             float minZ = float.MaxValue;
@@ -62,6 +62,7 @@ namespace BioGenie.Stl.Algorithm
             float maxZ = float.MinValue;
             float maxZR = float.MinValue;
             float maxR = float.MinValue;
+            bool maxRFound = false;
             float maxRZ = float.MinValue;
             Facet maxZFacet = null;
             Facet minZFacet = null;
@@ -92,12 +93,19 @@ namespace BioGenie.Stl.Algorithm
                         maxZFacet = facet;
                         maxZVertex = v;
                     }
-                    if (maxR < r)
+                    if (!maxRFound)
                     {
-                        maxR = r;
-                        maxRZ = z;
-                        maxRFacet = facet;
-                        maxRVertex = v;
+                        if (maxR < r)
+                        {
+                            maxR = r;
+                            maxRZ = z;
+                            maxRFacet = facet;
+                            maxRVertex = v;
+                        }
+                        else
+                        {
+                            maxRFound = r < maxR*0.95;
+                        }
                     }
                 }
             }

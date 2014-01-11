@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using BioGenie.Stl;
 using BioGenie.Stl.Algorithm;
 using BioGenie.Stl.Objects;
 using OpenTK;
@@ -114,7 +113,7 @@ namespace BioGenie.Stl2Abt.Gui
 
             GL.PolygonMode(MaterialFace.FrontAndBack, radioButtonPoint.Checked ? PolygonMode.Point : PolygonMode.Line);
             GL.Begin(PrimitiveType.Triangles);
-            foreach (var facet in StlAbutment.Facets)
+            foreach (var facet in StlAbutment.AbutmentBase.Facets)
             {
                 if (facet.Vertices.Count != 3)
                 {
@@ -175,15 +174,17 @@ namespace BioGenie.Stl2Abt.Gui
 
             GL.PolygonMode(MaterialFace.FrontAndBack, radioButtonPoint.Checked ? PolygonMode.Point : PolygonMode.Line);
             GL.Color3(Color.LightBlue);
-            GL.Begin(PrimitiveType.Points);
+            //GL.Begin(PrimitiveType.Points);
             foreach (var boundaryByRotStep in RevBoundary.GetOrderedBoundariesByRotStep())
             {
+                GL.Begin(PrimitiveType.LineStrip);
                 foreach (var vertex in boundaryByRotStep.Value)
                 {
                     GL.Vertex3(vertex.ToVector3(GetAxisOrder()));
                 }
+                GL.End();
             }
-            GL.End();
+            //GL.End();
 
             SetLight();
             glControl2.Context.SwapBuffers();
