@@ -1,5 +1,6 @@
 using System.IO;
 using BioGenie.Stl.Tools;
+using OpenTK;
 
 namespace BioGenie.Stl.Objects
 {
@@ -19,6 +20,11 @@ namespace BioGenie.Stl.Objects
         }
 
         public Normal(Vertex v)
+            : this(v.X, v.Y, v.Z)
+        {
+        }
+
+        public Normal(Vector3 v)
             : this(v.X, v.Y, v.Z)
         {
         }
@@ -46,6 +52,7 @@ namespace BioGenie.Stl.Objects
             X /= l;
             Y /= l;
             Z /= l;
+            Reset();
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using BioGenie.Stl.Objects;
 using OpenTK;
 
@@ -47,6 +49,30 @@ namespace BioGenie.Stl.Algorithm
             if (Math.Abs(total - 2*Math.PI) < EPSILON) 
                 return new Vertex(p);
             return null;
+        }
+
+        public static List<Vertex> Intersects(this Facet facet, Plane plane)
+        {
+            var segments = facet.GetEdgesAsSegments();
+            if (1 - Vector3.Dot(facet.Normal.ToVector3(), plane.Normal.ToVector3()) < EPSILON)
+                return null;
+            var vertices = segments.Select(_ => _.Intersects(plane)).Where(__ => __ != null).ToList();
+            return vertices;
+        }
+
+        public static Vertex Intersects(this Segment segment, Plane plane)
+        {
+            var p1 = segment.P1.ToVector3();
+            var p2 = segment.P2.ToVector3();
+            var dir = p2 - p1;
+            var normal = plane.Normal.ToVector3();
+            var vn = Vector3.Dot(dir, normal);
+            if (Math.Abs(vn) < EPSILON)
+                return null;
+            var r = Vector3.Dot(normal, (plane.V0.ToVector3() - p1))/vn;
+            if (r > 1 || r < -1)
+                return null;
+            return new Vertex(p1 + Vector3.Multiply(dir, r));
         }
 
         private static void Normalize(ref Vector3 n)

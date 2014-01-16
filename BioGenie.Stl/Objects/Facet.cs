@@ -189,5 +189,17 @@ namespace BioGenie.Stl.Objects
             Normal.Z = v.Z;
             Normal.Reset();
         }
+
+        public List<Segment> GetEdgesAsSegments()
+        {
+            var vertices = Vertices;
+            var count = vertices.Count;
+            var segments = new List<Segment>();
+            for (int i = 0; i < count; i++)
+            {
+                segments.Add(new Segment(vertices[i], vertices[(i + 1) % count]));
+            }
+            return segments;
+        }
     }
 }

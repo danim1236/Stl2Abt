@@ -56,6 +56,8 @@
     <Compile Include="Algorithm\RevBoundaryDetector.cs" />
     <Compile Include="Objects\AxisOrder.cs" />
     <Compile Include="Objects\Facet.cs" />
+    <Compile Include="Objects\Plane.cs" />
+    <Compile Include="Objects\Ray.cs" />
     <Compile Include="Objects\Segment.cs" />
     <Compile Include="Objects\Normal.cs" />
     <Compile Include="Objects\StlAbutment.cs" />
