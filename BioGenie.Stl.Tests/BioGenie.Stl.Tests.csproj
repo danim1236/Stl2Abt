@@ -55,7 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GeometryToolsTests.cs" />
+    <Compile Include="ObjectIntersectionTests.cs" />
     <Compile Include="StlAlgorithmsTests.cs" />
     <Compile Include="StlObjectsTests.cs" />
     <Compile Include="Data\Resource.Designer.cs">

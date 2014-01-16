@@ -39,7 +39,7 @@ namespace BioGenie.Stl.Algorithm
                                let z = vertStep*VertDelta
                                let ray = new Vector3((float) Math.Cos(theta), (float) Math.Sin(theta), z)
                                let vertex = (from facet in Facets
-                                             select facet.Intersects(new LineSegment(new Vertex(0, 0, z),
+                                             select facet.Intersects(new Segment(new Vertex(0, 0, z),
                                                                                      new Vertex(Vector3.Multiply(ray, 1000F)))))
                                    .FirstOrDefault()
                                where vertex != null
@@ -72,17 +72,17 @@ namespace BioGenie.Stl.Algorithm
             var y = sin * 1000;
             var p1Z = p2.Z/2;
             var p1 = (from facet in facets
-                      let p = facet.Intersects(new LineSegment(new Vertex(0, 0, p1Z), new Vertex(x, y, p1Z)))
+                      let p = facet.Intersects(new Segment(new Vertex(0, 0, p1Z), new Vertex(x, y, p1Z)))
                       where p != null
                       select p).FirstOrDefault();
             var p3Z = (p5.Z - p2.Z)/3 + p2.Z;
             var p3 = (from facet in facets
-                      let p = facet.Intersects(new LineSegment(new Vertex(0, 0, p3Z), new Vertex(x, y, p3Z)))
+                      let p = facet.Intersects(new Segment(new Vertex(0, 0, p3Z), new Vertex(x, y, p3Z)))
                       where p != null
                       select p).FirstOrDefault();
             var p4Z = (p5.Z - p2.Z) * 2 / 3 + p2.Z;
             var p4 = (from facet in facets
-                      let p = facet.Intersects(new LineSegment(new Vertex(0, 0, p4Z), new Vertex(x, y, p4Z)))
+                      let p = facet.Intersects(new Segment(new Vertex(0, 0, p4Z), new Vertex(x, y, p4Z)))
                       where p != null
                       select p).FirstOrDefault();
 
@@ -159,7 +159,7 @@ namespace BioGenie.Stl.Algorithm
                 var ray = new Vertex(x, y, z);
                 foreach (var facet in facets)
                 {
-                    Vertex p = facet.Intersects(new LineSegment(new Vertex(0, 0, z), ray));
+                    Vertex p = facet.Intersects(new Segment(new Vertex(0, 0, z), ray));
                     if (p != null)
                     {
                         ps.Add(p);

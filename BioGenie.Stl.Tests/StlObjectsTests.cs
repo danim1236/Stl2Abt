@@ -189,7 +189,7 @@ namespace BioGenie.Stl.Tests
         [Test]
         public void LineSegmentLength()
         {
-            var line = new LineSegment(new Vertex(1, 2, 3), new Vertex(4, 6, 8));
+            var line = new Segment(new Vertex(1, 2, 3), new Vertex(4, 6, 8));
             Math.Round(Math.Pow(line.Length, 2), 5).Should().Be(50);
         }
 

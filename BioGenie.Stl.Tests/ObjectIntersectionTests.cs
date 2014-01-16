@@ -9,10 +9,10 @@ using SharpTestsEx;
 namespace BioGenie.Stl.Tests
 {
     [TestFixture]
-    public class GeometryToolsTests
+    public class ObjectIntersectionTests
     {
         [Test]
-        public void IntersectsSimple()
+        public void FacetXSegmentSimple()
         {
             var facet = new Facet
             {
@@ -23,14 +23,14 @@ namespace BioGenie.Stl.Tests
                     new Vertex(0, 5, 0)
                 }
             };
-            var lineIn = new LineSegment(new Vertex(2.5F, 1, -1), new Vertex(2.5F, 1, 1));
-            var lineOut = new LineSegment(new Vertex(2.5F, 4, -1), new Vertex(2.5F, 4, 1));
+            var lineIn = new Segment(new Vertex(2.5F, 1, -1), new Vertex(2.5F, 1, 1));
+            var lineOut = new Segment(new Vertex(2.5F, 4, -1), new Vertex(2.5F, 4, 1));
             facet.Intersects(lineIn).Equals(new Vertex(2.5F, 1, 0)).Should().Be.True();
             facet.Intersects(lineOut).Should().Be.Null();
         }
 
         [Test]
-        public void IntersectsRandom()
+        public void FacetXSegmentRandom()
         {
             var r = new Random();
             for (int i = 0; i < 10; ++i)
@@ -51,8 +51,8 @@ namespace BioGenie.Stl.Tests
                         new Vertex(0, 5, 0)
                     }
                 };
-                var lineIn = new LineSegment(new Vertex(2.5F, 1, -1), new Vertex(2.5F, 1, 1));
-                var lineOut = new LineSegment(new Vertex(2.5F, 4, -1), new Vertex(2.5F, 4, 1));
+                var lineIn = new Segment(new Vertex(2.5F, 1, -1), new Vertex(2.5F, 1, 1));
+                var lineOut = new Segment(new Vertex(2.5F, 4, -1), new Vertex(2.5F, 4, 1));
                 var other = new Vertex(2.5F, 1, 0);
                 var vertices = new []
                 {

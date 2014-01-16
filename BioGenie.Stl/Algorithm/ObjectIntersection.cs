@@ -4,22 +4,22 @@ using OpenTK;
 
 namespace BioGenie.Stl.Algorithm
 {
-    public static class GeometryTools
+    public static class ObjectIntersection
     {
         public const double EPSILON = 1E-6;
 
 
-        public static Vertex Intersects(this Facet facet, LineSegment lineSegment)
+        public static Vertex Intersects(this Facet facet, Segment segment)
         {
-            var p1 = lineSegment.P1.ToVector3();
-            var dir = lineSegment.P2.ToVector3() - p1;
+            var p1 = segment.P1.ToVector3();
+            var dir = segment.P2.ToVector3() - p1;
             var pa = facet.Vertices[0].ToVector3();
             var pb = facet.Vertices[1].ToVector3();
             var pc = facet.Vertices[2].ToVector3();
 
             // Calculate the parameters for the plane
             Vector3 n = Vector3.Cross(pb - pa, pc - pa);
-            Normalise(ref n);
+            Normalize(ref n);
             float d = - Vector3.Dot(n, pa);
 
             // Calculate the position on the line that intersects the plane
@@ -37,9 +37,9 @@ namespace BioGenie.Stl.Algorithm
             var pa1 = pa - p;
             var pa2 = pb - p;
             var pa3 = pc - p;
-            Normalise(ref pa1);
-            Normalise(ref pa2);
-            Normalise(ref pa3);
+            Normalize(ref pa1);
+            Normalize(ref pa2);
+            Normalize(ref pa3);
             var a1 = Vector3.Dot(pa1, pa2);
             var a2 = Vector3.Dot(pa2, pa3);
             var a3 = Vector3.Dot(pa3, pa1);
@@ -49,7 +49,7 @@ namespace BioGenie.Stl.Algorithm
             return null;
         }
 
-        private static void Normalise(ref Vector3 n)
+        private static void Normalize(ref Vector3 n)
         {
             var l = n.Length;
             n.X /= l;

@@ -1,8 +1,8 @@
 ﻿namespace BioGenie.Stl.Objects
 {
-    public class LineSegment
+    public class Segment
     {
-        public LineSegment(Vertex p1, Vertex p2)
+        public Segment(Vertex p1, Vertex p2)
         {
             P1 = p1;
             P2 = p2;
