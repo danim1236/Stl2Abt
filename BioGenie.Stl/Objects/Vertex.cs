@@ -149,8 +149,23 @@ namespace BioGenie.Stl.Objects
             get { return ToVector3().Length; }
         }
 
-        public float R{get { return (float) Math.Sqrt(X*X + Y*Y); }}
+        public float R
+        {
+            get { return (float) Math.Sqrt(X*X + Y*Y); }
+        }
+
         public float Theta { get; set; }
+
+        public float ThetaZ
+        {
+            get
+            {
+                var length = Math.Sqrt(X*X + Y*Y);
+                return (float) (Y >= 0
+                    ? Math.Acos(X / length)
+                    : 2 * Math.PI - Math.Acos(X / length));
+            }
+        }
 
         public void Subtract(Vertex other)
         {

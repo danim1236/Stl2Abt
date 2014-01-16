@@ -178,7 +178,7 @@ namespace BioGenie.Stl.Objects
             get
             {
                 return _shellFacets ??
-                       (_shellFacets = new HashSet<Facet>(Facets.Except(AbutmentBase.Facets).Except(CentralFacets)));
+                       (_shellFacets = new HashSet<Facet>(Facets.Except(AbutmentBase.Facets).Except(CentralFacets).Where(_=>Math.Abs(_.Normal.Z) < 0.98)));
             }
         }
     }

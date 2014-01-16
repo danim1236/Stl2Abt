@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -15,7 +16,7 @@ namespace BioGenie.Stl2Abt.Gui
         public string AbtFileName { get; set; }
         
         public StlAbutment StlAbutment { get; set; }
-        public RevBoundary RevBoundary { get; set; }
+        public Dictionary<float, List<Vertex>> AngularBoundary { get; set; }
 
         public Stl2AbtMainForm(string stlFileName, string abtFileName)
         {
@@ -56,9 +57,11 @@ namespace BioGenie.Stl2Abt.Gui
             }
             StlAbutment.AlignAndCenterAbutment();
             StlAbutment.Name = Path.GetFileNameWithoutExtension(StlFileName);
-            RevBoundary = new RevBoundaryDetector(StlAbutment, 6).GetRevolutionBoundary();
-            RevBoundary.WriteAbt(AbtFileName);
+            AngularBoundary = new AngularBoundaryDetector(StlAbutment, 60).GetBoundaries();
+            //RevBoundary = new RevBoundaryDetector(StlAbutment, 6).GetRevolutionBoundary();
+            //RevBoundary.WriteAbt(AbtFileName);
         }
+
 
         private void Stl2AbtMainForm_Resize(object sender, EventArgs e)
         {
@@ -176,10 +179,10 @@ namespace BioGenie.Stl2Abt.Gui
             GL.PolygonMode(MaterialFace.FrontAndBack, radioButtonPoint.Checked ? PolygonMode.Point : PolygonMode.Line);
             GL.Color3(Color.LightBlue);
             //GL.Begin(PrimitiveType.Points);
-            foreach (var boundaryByRotStep in RevBoundary.GetOrderedBoundariesByRotStep())
+            foreach (var boundaryByRotStep in AngularBoundary.Values)
             {
                 GL.Begin(PrimitiveType.LineStrip);
-                foreach (var vertex in boundaryByRotStep.Value)
+                foreach (var vertex in boundaryByRotStep)
                 {
                     GL.Vertex3(vertex.ToVector3(GetAxisOrder()));
                 }

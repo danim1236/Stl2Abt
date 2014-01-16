@@ -49,11 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\AngularBoundaryDetector.cs" />
     <Compile Include="Algorithm\FacetGrouper.cs" />
     <Compile Include="Algorithm\FacetsGroup.cs" />
     <Compile Include="Algorithm\ObjectIntersection.cs" />
-    <Compile Include="Algorithm\RevBoundary.cs" />
-    <Compile Include="Algorithm\RevBoundaryDetector.cs" />
     <Compile Include="Objects\AxisOrder.cs" />
     <Compile Include="Objects\Facet.cs" />
     <Compile Include="Objects\Plane.cs" />
