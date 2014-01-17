@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BioGenie.Stl.Objects;
+using OpenTK;
 
 namespace BioGenie.Stl.Algorithm
 {
@@ -28,15 +29,62 @@ namespace BioGenie.Stl.Algorithm
                  let theta = pair.Key
                  let facets = pair.Value
                  let plane = GetPlaneFromThetaZ(theta)
+                 let vertices = facets.SelectMany(_ => _.Intersects(plane)).OrderBy(_ => _.Z).ToList()
                  select new
                  {
                      Theta = theta,
-                     Facets =
-                         facets.SelectMany(_ => _.Intersects(plane))
-                             .OrderBy(_ => _.Z)
-                             .ToList()
-                 }).ToDictionary(_ => _.Theta, _ => _.Facets);
+                     Vertices = ExtendToXYPlane(CompactInZ(vertices))
+                 }).ToDictionary(_ => _.Theta, _ => _.Vertices);
             return verticesByTheta;
+        }
+
+        private List<Vertex> CompactInZ(List<Vertex> vertices)
+        {
+            var result = new List<Vertex>();
+            var first = vertices.First();
+            var accX = first.X;
+            var accY = first.Y;
+            var accCount = 1;
+            var currentZ = first.Z;
+
+            for (int i = 1; i < vertices.Count; i++)
+            {
+                var vertex = vertices[i];
+                var z = vertex.Z;
+                if (z - currentZ > 1E-3)
+                {
+                    result.Add(new Vertex(accX/accCount, accY/accCount, currentZ));
+                    accX = 0;
+                    accY = 0;
+                    accCount = 0;
+                    currentZ = z;
+                }
+                accX += vertex.X;
+                accY += vertex.Y;
+                ++accCount;
+            }
+            result.Add(new Vertex(accX/accCount, accY/accCount, currentZ));
+            return result;
+        }
+
+        private List<Vertex> ExtendToXYPlane(List<Vertex> vertices)
+        {
+            int countBelow0 = 0;
+            for (; countBelow0 < vertices.Count; countBelow0++)
+            {
+                if (vertices[countBelow0].Z >= 0)
+                    break;
+            }
+            if (countBelow0 > 0)
+                vertices = vertices.GetRange(countBelow0, vertices.Count - countBelow0);
+            var p1 = vertices[0].ToVector3();
+            var p2 = vertices[1].ToVector3();
+            var dir = p2 - p1;
+            var r = p2.Z/dir.Z;
+            var p = p2 - Vector3.Multiply(dir, r);
+            p.Z = 0;
+            vertices.Insert(0, new Vertex(p));
+            return vertices;
         }
 
         private Dictionary<float, List<Facet>> GetFacetsByTheta()
