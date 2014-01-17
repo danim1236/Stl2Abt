@@ -56,13 +56,12 @@ namespace BioGenie.Stl2Abt.Gui
                     StlAbutment = new StlAbutment(StlDocument.Read(reader));
                 }
             }
-            var z1 = StlAbutment.ShellFacets.Select(_ => _.MinZ).Min();
             StlAbutment.AlignAndCenterAbutment();
             StlAbutment.Name = Path.GetFileNameWithoutExtension(StlFileName);
-            var z2 = StlAbutment.ShellFacets.Select(_ => _.MinZ).Min();
             AngularBoundary = new AngularBoundaryDetector(StlAbutment, 60).GetBoundaries();
-            var vs = AngularBoundary.Values.SelectMany(_ => _).Min(_ => _.Z);
-            AngularBoundary.WriteAbt(AbtFileName);
+            var abt = new Abt(AngularBoundary);
+            //AngularBoundary = abt.Get6Points();
+            //abt.WriteAbt(AbtFileName);
         }
 
 

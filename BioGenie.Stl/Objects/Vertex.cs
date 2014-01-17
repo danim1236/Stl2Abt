@@ -149,9 +149,10 @@ namespace BioGenie.Stl.Objects
             get { return ToVector3().Length; }
         }
 
+        private float? _r;
         public float R
         {
-            get { return (float) Math.Sqrt(X*X + Y*Y); }
+            get { return (float) (_r ?? (_r = (float) Math.Sqrt(X*X + Y*Y))); }
         }
 
         public float Theta { get; set; }

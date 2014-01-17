@@ -49,7 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algorithm\AbtFile.cs" />
+    <Compile Include="Algorithm\Abt.cs" />
     <Compile Include="Algorithm\AngularBoundaryDetector.cs" />
     <Compile Include="Algorithm\FacetGrouper.cs" />
     <Compile Include="Algorithm\FacetsGroup.cs" />
