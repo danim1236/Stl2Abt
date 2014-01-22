@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using BioGenie.Stl.Algorithm;
 using BioGenie.Stl.Objects;
@@ -58,8 +57,8 @@ namespace BioGenie.Stl2Abt.Gui
             }
             StlAbutment.AlignAndCenterAbutment();
             StlAbutment.Name = Path.GetFileNameWithoutExtension(StlFileName);
-            //Geratrizes = new AngularBoundaryDetector(StlAbutment, 60).GetBoundaries().Where(_ => _.Key - Math.PI / 2 >= 0 && _.Key - Math.PI / 2 <= Math.PI).ToDictionary(_ => _.Key, _ => _.Value);
             Geratrizes = new AngularBoundaryDetector(StlAbutment, 60).GetBoundaries();
+            //Geratrizes = new AngularBoundaryDetector(StlAbutment, 60).GetBoundaries().Where(_ => _.Key - Math.PI / 2 >= 0 && _.Key - Math.PI / 2 <= Math.PI).ToDictionary(_ => _.Key, _ => _.Value);
             var abt = new Abt(Geratrizes);
             AbtBoundary = abt.Get6Points();
             //abt.WriteAbt(AbtFileName);
@@ -189,15 +188,8 @@ namespace BioGenie.Stl2Abt.Gui
             foreach (var boundaryByRotStep in Geratrizes.Values)
             {
                 GL.Begin(PrimitiveType.LineStrip);
-                for (int i = 0; i < boundaryByRotStep.Count; i++)
+                foreach (var vertex in boundaryByRotStep)
                 {
-                    if (i == 71)
-                        GL.Color3(Color.Red);
-                    else if (i == 114)
-                        GL.Color3(Color.SaddleBrown);
-                    else
-                        GL.Color3(Color.LightBlue); 
-                    var vertex = boundaryByRotStep[i];
                     GL.Vertex3(vertex.ToVector3(GetAxisOrder()));
                 }
                 GL.End();

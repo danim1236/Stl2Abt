@@ -180,5 +180,10 @@ namespace BioGenie.Stl.Objects
         {
             _vector3 = null;
         }
+
+        public Vector2 ToVector2()
+        {
+            return new Vector2(Z, R);
+        }
     }
 }

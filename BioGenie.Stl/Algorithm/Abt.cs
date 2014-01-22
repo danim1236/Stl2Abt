@@ -31,23 +31,51 @@ namespace BioGenie.Stl.Algorithm
 
         private List<Vertex> Get6PontosNotaveis(List<Vertex> vertices)
         {
-            var result = new Vertex[6];
             var barrigaIndex = GetMaxRIndex(vertices);
+            var tolerance = 2F;
+            var points = PolygonSimplification.DouglasPeuckerSimplify(vertices, tolerance);
+            while (points.Count < 6)
+            {
+                tolerance /= 2;
+                points = PolygonSimplification.DouglasPeuckerSimplify(vertices, tolerance);
+            }
+            var indexes = PolygonSimplification.UsedPoints.ToArray().ToList();
+            if (barrigaIndex != indexes[2])
+            {
+                if (barrigaIndex == indexes[1])
+                {
+                    var meioCaminho = indexes[1]/2;
+                    indexes.Insert(1, meioCaminho);
+                    points.Insert(1, vertices[meioCaminho]);
+                }
+            }
 
-            result[0] = vertices.First();
-            result[2] = vertices[barrigaIndex];
-            result[5] = vertices.Last();
-            var pairs = vertices.Select(_ => new Tuple<float, float>(_.Z, _.R)).ToList();
-            var dd1 = CalcDerivada(pairs).ToList();
-            var inflexao = FindInflexao(dd1);
-            var inflexaoBelow = inflexao.FirstOrDefault(_ => _.Item2 < barrigaIndex) ??
-                                new Tuple<float, int, float>(0, barrigaIndex/2, 0);
-            var inflexoesAbove = inflexao.Where(_ => _.Item2 > barrigaIndex).ToList().GetRange(0, 2).OrderBy(_ => _.Item2).ToList();
-            result[1] = vertices[inflexaoBelow.Item2];
-            result[3] = vertices[inflexoesAbove[0].Item2];
-            result[4] = vertices[inflexoesAbove[1].Item2];
-            return result.ToList();
+            if (points.Count > 6)
+            {
+                var newStart = indexes[2];
+                indexes = new List<int> {indexes[0], indexes[1]};
+                points = new List<Vertex> {points[0], points[1]};
+                tolerance = 2F;
+                var newVerts = vertices.GetRange(newStart, vertices.Count - newStart).ToList();
+                var points2 = PolygonSimplification.DouglasPeuckerSimplify(vertices, tolerance);
+                while (points2.Count < 4)
+                {
+                    tolerance /= 1.5F;
+                    points2 = PolygonSimplification.DouglasPeuckerSimplify(newVerts, tolerance);
+                }
+                var indexes2 = PolygonSimplification.UsedPoints.ToArray().ToList();
+                points.AddRange(points2);
+                indexes.AddRange(indexes2.Select(_ => _ + newStart));
+                while (points.Count > 6)
+                {
+                    var toRemove = points.Count - 2;
+                    points.RemoveAt(toRemove);
+                    indexes.RemoveAt(toRemove);
+                }
+            }
+            return points;
         }
+
 
         protected List<Tuple<float, int, float>> FindInflexao(IEnumerable<Tuple<float, float>> a)
         {
@@ -80,18 +108,6 @@ namespace BioGenie.Stl.Algorithm
             }
 
             return result2;
-        }
-
-        private IEnumerable<Tuple<float, float>> CalcDerivada(List<Tuple<float, float>> pairs)
-        {
-            var result = new List<Tuple<float, float>>();
-            for (int i = 1; i < pairs.Count; i++)
-            {
-                result.Add(new Tuple<float, float>(pairs[i].Item1,
-                                                   (pairs[i].Item2 - pairs[i - 1].Item2)/
-                                                   (pairs[i].Item1 - pairs[i - 1].Item1)));
-            }
-            return result;
         }
 
         private int GetMaxRIndex(List<Vertex> vertices)
