@@ -39,7 +39,7 @@
             this.glControl1 = new OpenTK.GLControl();
             this.labelStlFileName = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.panelAbt = new System.Windows.Forms.Panel();
+            this.panelGeratrizes = new System.Windows.Forms.Panel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
@@ -47,15 +47,29 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
+            this.glControl2 = new OpenTK.GLControl();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.glControl2 = new OpenTK.GLControl();
+            this.panelAbt = new System.Windows.Forms.Panel();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.radioButton6 = new System.Windows.Forms.RadioButton();
+            this.radioButton7 = new System.Windows.Forms.RadioButton();
+            this.radioButton8 = new System.Windows.Forms.RadioButton();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.radioButton9 = new System.Windows.Forms.RadioButton();
+            this.radioButton10 = new System.Windows.Forms.RadioButton();
+            this.glControl3 = new OpenTK.GLControl();
+            this.label2 = new System.Windows.Forms.Label();
+            this.textBox3 = new System.Windows.Forms.TextBox();
             this.panelStl.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.panelAbt.SuspendLayout();
+            this.panelGeratrizes.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.panelAbt.SuspendLayout();
+            this.groupBox5.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelStl
@@ -190,20 +204,20 @@
             this.textBox1.Size = new System.Drawing.Size(323, 31);
             this.textBox1.TabIndex = 0;
             // 
-            // panelAbt
+            // panelGeratrizes
             // 
-            this.panelAbt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.panelGeratrizes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.panelAbt.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panelAbt.Controls.Add(this.groupBox3);
-            this.panelAbt.Controls.Add(this.groupBox4);
-            this.panelAbt.Controls.Add(this.glControl2);
-            this.panelAbt.Controls.Add(this.label1);
-            this.panelAbt.Controls.Add(this.textBox2);
-            this.panelAbt.Location = new System.Drawing.Point(463, 12);
-            this.panelAbt.Name = "panelAbt";
-            this.panelAbt.Size = new System.Drawing.Size(333, 487);
-            this.panelAbt.TabIndex = 1;
+            this.panelGeratrizes.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panelGeratrizes.Controls.Add(this.groupBox3);
+            this.panelGeratrizes.Controls.Add(this.groupBox4);
+            this.panelGeratrizes.Controls.Add(this.glControl2);
+            this.panelGeratrizes.Controls.Add(this.label1);
+            this.panelGeratrizes.Controls.Add(this.textBox2);
+            this.panelGeratrizes.Location = new System.Drawing.Point(351, 12);
+            this.panelGeratrizes.Name = "panelGeratrizes";
+            this.panelGeratrizes.Size = new System.Drawing.Size(333, 487);
+            this.panelGeratrizes.TabIndex = 1;
             // 
             // groupBox3
             // 
@@ -282,6 +296,22 @@
             this.radioButton5.Text = "Ponto";
             this.radioButton5.UseVisualStyleBackColor = true;
             // 
+            // glControl2
+            // 
+            this.glControl2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.glControl2.BackColor = System.Drawing.Color.Black;
+            this.glControl2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.glControl2.Location = new System.Drawing.Point(3, 25);
+            this.glControl2.Name = "glControl2";
+            this.glControl2.Size = new System.Drawing.Size(323, 380);
+            this.glControl2.TabIndex = 0;
+            this.glControl2.VSync = false;
+            this.glControl2.Load += new System.EventHandler(this.glControl2_Load);
+            this.glControl2.Paint += new System.Windows.Forms.PaintEventHandler(this.glControl2_Paint);
+            this.glControl2.Resize += new System.EventHandler(this.glControl2_Resize);
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -302,28 +332,141 @@
             this.textBox2.Size = new System.Drawing.Size(323, 31);
             this.textBox2.TabIndex = 0;
             // 
-            // glControl2
+            // panelAbt
             // 
-            this.glControl2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.panelAbt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.panelAbt.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panelAbt.Controls.Add(this.groupBox5);
+            this.panelAbt.Controls.Add(this.groupBox6);
+            this.panelAbt.Controls.Add(this.glControl3);
+            this.panelAbt.Controls.Add(this.label2);
+            this.panelAbt.Controls.Add(this.textBox3);
+            this.panelAbt.Location = new System.Drawing.Point(690, 12);
+            this.panelAbt.Name = "panelAbt";
+            this.panelAbt.Size = new System.Drawing.Size(333, 487);
+            this.panelAbt.TabIndex = 2;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox5.Controls.Add(this.radioButton6);
+            this.groupBox5.Controls.Add(this.radioButton7);
+            this.groupBox5.Controls.Add(this.radioButton8);
+            this.groupBox5.Location = new System.Drawing.Point(130, 411);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(174, 32);
+            this.groupBox5.TabIndex = 3;
+            this.groupBox5.TabStop = false;
+            // 
+            // radioButton6
+            // 
+            this.radioButton6.AutoSize = true;
+            this.radioButton6.Location = new System.Drawing.Point(82, 9);
+            this.radioButton6.Name = "radioButton6";
+            this.radioButton6.Size = new System.Drawing.Size(32, 17);
+            this.radioButton6.TabIndex = 2;
+            this.radioButton6.Text = "Z";
+            this.radioButton6.UseVisualStyleBackColor = true;
+            // 
+            // radioButton7
+            // 
+            this.radioButton7.AutoSize = true;
+            this.radioButton7.Checked = true;
+            this.radioButton7.Location = new System.Drawing.Point(44, 9);
+            this.radioButton7.Name = "radioButton7";
+            this.radioButton7.Size = new System.Drawing.Size(32, 17);
+            this.radioButton7.TabIndex = 1;
+            this.radioButton7.TabStop = true;
+            this.radioButton7.Text = "Y";
+            this.radioButton7.UseVisualStyleBackColor = true;
+            // 
+            // radioButton8
+            // 
+            this.radioButton8.AutoSize = true;
+            this.radioButton8.Location = new System.Drawing.Point(6, 9);
+            this.radioButton8.Name = "radioButton8";
+            this.radioButton8.Size = new System.Drawing.Size(32, 17);
+            this.radioButton8.TabIndex = 0;
+            this.radioButton8.Text = "X";
+            this.radioButton8.UseVisualStyleBackColor = true;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox6.Controls.Add(this.radioButton9);
+            this.groupBox6.Controls.Add(this.radioButton10);
+            this.groupBox6.Location = new System.Drawing.Point(3, 411);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(121, 32);
+            this.groupBox6.TabIndex = 2;
+            this.groupBox6.TabStop = false;
+            // 
+            // radioButton9
+            // 
+            this.radioButton9.AutoSize = true;
+            this.radioButton9.Location = new System.Drawing.Point(66, 9);
+            this.radioButton9.Name = "radioButton9";
+            this.radioButton9.Size = new System.Drawing.Size(51, 17);
+            this.radioButton9.TabIndex = 1;
+            this.radioButton9.Text = "Linha";
+            this.radioButton9.UseVisualStyleBackColor = true;
+            // 
+            // radioButton10
+            // 
+            this.radioButton10.AutoSize = true;
+            this.radioButton10.Checked = true;
+            this.radioButton10.Location = new System.Drawing.Point(6, 9);
+            this.radioButton10.Name = "radioButton10";
+            this.radioButton10.Size = new System.Drawing.Size(53, 17);
+            this.radioButton10.TabIndex = 0;
+            this.radioButton10.TabStop = true;
+            this.radioButton10.Text = "Ponto";
+            this.radioButton10.UseVisualStyleBackColor = true;
+            // 
+            // glControl3
+            // 
+            this.glControl3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.glControl2.BackColor = System.Drawing.Color.Black;
-            this.glControl2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.glControl2.Location = new System.Drawing.Point(3, 25);
-            this.glControl2.Name = "glControl2";
-            this.glControl2.Size = new System.Drawing.Size(323, 380);
-            this.glControl2.TabIndex = 0;
-            this.glControl2.VSync = false;
-            this.glControl2.Load += new System.EventHandler(this.glControl2_Load);
-            this.glControl2.Paint += new System.Windows.Forms.PaintEventHandler(this.glControl2_Paint);
-            this.glControl2.Resize += new System.EventHandler(this.glControl2_Resize);
+            this.glControl3.BackColor = System.Drawing.Color.Black;
+            this.glControl3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.glControl3.Location = new System.Drawing.Point(3, 25);
+            this.glControl3.Name = "glControl3";
+            this.glControl3.Size = new System.Drawing.Size(323, 380);
+            this.glControl3.TabIndex = 0;
+            this.glControl3.VSync = false;
+            this.glControl3.Load += new System.EventHandler(this.glControl3_Load);
+            this.glControl3.Paint += new System.Windows.Forms.PaintEventHandler(this.glControl3_Paint);
+            this.glControl3.Resize += new System.EventHandler(this.glControl3_Resize);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label2.Location = new System.Drawing.Point(3, 7);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(37, 15);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "label2";
+            // 
+            // textBox3
+            // 
+            this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox3.Location = new System.Drawing.Point(3, 449);
+            this.textBox3.Multiline = true;
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(323, 31);
+            this.textBox3.TabIndex = 0;
             // 
             // Stl2AbtMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(808, 511);
+            this.ClientSize = new System.Drawing.Size(1132, 511);
             this.Controls.Add(this.panelAbt);
+            this.Controls.Add(this.panelGeratrizes);
             this.Controls.Add(this.panelStl);
             this.Name = "Stl2AbtMainForm";
             this.Text = "Stl2AbtMainForm";
@@ -334,12 +477,18 @@
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.panelAbt.ResumeLayout(false);
-            this.panelAbt.PerformLayout();
+            this.panelGeratrizes.ResumeLayout(false);
+            this.panelGeratrizes.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            this.panelAbt.ResumeLayout(false);
+            this.panelAbt.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -357,7 +506,7 @@
         private System.Windows.Forms.RadioButton radioButtonZ;
         private System.Windows.Forms.RadioButton radioButtonY;
         private System.Windows.Forms.RadioButton radioButtonX;
-        private System.Windows.Forms.Panel panelAbt;
+        private System.Windows.Forms.Panel panelGeratrizes;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.RadioButton radioButton2;
@@ -368,5 +517,16 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox2;
         private OpenTK.GLControl glControl2;
+        private System.Windows.Forms.Panel panelAbt;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.RadioButton radioButton6;
+        private System.Windows.Forms.RadioButton radioButton7;
+        private System.Windows.Forms.RadioButton radioButton8;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.RadioButton radioButton9;
+        private System.Windows.Forms.RadioButton radioButton10;
+        private OpenTK.GLControl glControl3;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox textBox3;
     }
 }

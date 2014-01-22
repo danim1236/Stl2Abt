@@ -20,7 +20,9 @@ namespace BioGenie.Stl.Algorithm
         public Dictionary<float, List<Vertex>> Get6Points()
         {
             var result = new Dictionary<float, List<Vertex>>();
-            foreach (var pair in Boundaries)
+            var pairs = Boundaries.OrderBy(_=>_.Key).ToList();
+            var a = Get6PontosNotaveis(pairs.Last().Value);
+            foreach (var pair in pairs)
             {
                 result[pair.Key] = Get6PontosNotaveis(pair.Value);
             }
@@ -29,39 +31,67 @@ namespace BioGenie.Stl.Algorithm
 
         private List<Vertex> Get6PontosNotaveis(List<Vertex> vertices)
         {
-            var result = new Vertex[5];
-            result[0] = vertices.First();
-            result[4] = vertices.Last();
+            var result = new Vertex[6];
             var barrigaIndex = GetMaxRIndex(vertices);
+
+            result[0] = vertices.First();
             result[2] = vertices[barrigaIndex];
-            result[1] = vertices[barrigaIndex/2];
-            var primeiraInflexao = GetPrimeiraInflexaoParaFora(vertices.GetRange(barrigaIndex, vertices.Count-barrigaIndex)) + barrigaIndex;
-            if (primeiraInflexao >= 0)
-                result[3] = vertices[primeiraInflexao];
-            else 
-                result[3] = vertices[(vertices.Count + primeiraInflexao)/2];
+            result[5] = vertices.Last();
+            var pairs = vertices.Select(_ => new Tuple<float, float>(_.Z, _.R)).ToList();
+            var dd1 = CalcDerivada(pairs).ToList();
+            var inflexao = FindInflexao(dd1);
+            var inflexaoBelow = inflexao.FirstOrDefault(_ => _.Item2 < barrigaIndex) ??
+                                new Tuple<float, int, float>(0, barrigaIndex/2, 0);
+            var inflexoesAbove = inflexao.Where(_ => _.Item2 > barrigaIndex).ToList().GetRange(0, 2).OrderBy(_ => _.Item2).ToList();
+            result[1] = vertices[inflexaoBelow.Item2];
+            result[3] = vertices[inflexoesAbove[0].Item2];
+            result[4] = vertices[inflexoesAbove[1].Item2];
             return result.ToList();
         }
 
-        private int GetPrimeiraInflexaoParaFora(List<Vertex> vertices)
+        protected List<Tuple<float, int, float>> FindInflexao(IEnumerable<Tuple<float, float>> a)
         {
-            var derivadas = new List<float>();
-            for (int i = 1; i < vertices.Count; i++)
+            var d2S = a.Select(_ => _.Item2).ToList();
+            var result = new List<Tuple<float, int, float>>();
+            var result2 = new List<Tuple<float, int, float>>();
+            
+            for (int i = 1; i < d2S.Count; i++)
             {
-                derivadas.Add(vertices[i].R - vertices[i - 1].R);
+                result.Add(new Tuple<float, int, float>(Math.Abs((d2S[i] - d2S[i - 1])/((d2S[i] + d2S[i - 1])/2)), i, d2S[i]));
             }
-            var derivadas2Indexadas = new List<Tuple<float, int>>();
-            for (int i = 1; i < derivadas.Count; i++)
+            result.Sort();
+            result.Reverse();
+            for (int i = 0; i < result.Count; i++)
             {
-                var diff = derivadas[i] - derivadas[i - 1];
-                derivadas2Indexadas.Add(new Tuple<float, int>(diff, i + 1));
+                var jaTem = false;
+                var tuple = result[i];
+                for (int j = 0; j < i; j++)
+                {
+                    var tuple1 = result[j];
+                    var diff = Math.Abs(tuple1.Item2 - tuple.Item2);
+                    if (diff < 3)
+                    {
+                        jaTem = true;
+                        break;
+                    }
+                }
+                if (!jaTem)
+                    result2.Add(tuple);
             }
-            if (derivadas2Indexadas.Any())
+
+            return result2;
+        }
+
+        private IEnumerable<Tuple<float, float>> CalcDerivada(List<Tuple<float, float>> pairs)
+        {
+            var result = new List<Tuple<float, float>>();
+            for (int i = 1; i < pairs.Count; i++)
             {
-                derivadas2Indexadas.Sort();
-                return derivadas2Indexadas[derivadas2Indexadas.Count-2].Item2;
+                result.Add(new Tuple<float, float>(pairs[i].Item1,
+                                                   (pairs[i].Item2 - pairs[i - 1].Item2)/
+                                                   (pairs[i].Item1 - pairs[i - 1].Item1)));
             }
-            return -1;
+            return result;
         }
 
         private int GetMaxRIndex(List<Vertex> vertices)

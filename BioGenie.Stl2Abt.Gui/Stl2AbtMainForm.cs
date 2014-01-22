@@ -17,7 +17,7 @@ namespace BioGenie.Stl2Abt.Gui
         public string AbtFileName { get; set; }
         
         public StlAbutment StlAbutment { get; set; }
-        public Dictionary<float, List<Vertex>> AngularBoundary { get; set; }
+        public Dictionary<float, List<Vertex>> Geratrizes { get; set; }
 
         public Stl2AbtMainForm(string stlFileName, string abtFileName)
         {
@@ -58,19 +58,24 @@ namespace BioGenie.Stl2Abt.Gui
             }
             StlAbutment.AlignAndCenterAbutment();
             StlAbutment.Name = Path.GetFileNameWithoutExtension(StlFileName);
-            AngularBoundary = new AngularBoundaryDetector(StlAbutment, 60).GetBoundaries();
-            var abt = new Abt(AngularBoundary);
-            //AngularBoundary = abt.Get6Points();
+            //Geratrizes = new AngularBoundaryDetector(StlAbutment, 60).GetBoundaries().Where(_ => _.Key - Math.PI / 2 >= 0 && _.Key - Math.PI / 2 <= Math.PI).ToDictionary(_ => _.Key, _ => _.Value);
+            Geratrizes = new AngularBoundaryDetector(StlAbutment, 60).GetBoundaries();
+            var abt = new Abt(Geratrizes);
+            AbtBoundary = abt.Get6Points();
             //abt.WriteAbt(AbtFileName);
         }
+
+        public Dictionary<float, List<Vertex>> AbtBoundary { get; set; }
 
 
         private void Stl2AbtMainForm_Resize(object sender, EventArgs e)
         {
-            var width = (Width - 20) / 2;
+            var width = (Width - 20) / 3;
             panelStl.Width = width;
+            panelGeratrizes.Width = width;
             panelAbt.Width = width;
-            panelAbt.Left = width + 10;
+            panelGeratrizes.Left = width + 10;
+            panelAbt.Left = 2 * width + 10;
         }
 
         private void glControl1_Load(object sender, EventArgs e)
@@ -181,11 +186,18 @@ namespace BioGenie.Stl2Abt.Gui
             GL.PolygonMode(MaterialFace.FrontAndBack, radioButtonPoint.Checked ? PolygonMode.Point : PolygonMode.Line);
             GL.Color3(Color.LightBlue);
             //GL.Begin(PrimitiveType.Points);
-            foreach (var boundaryByRotStep in AngularBoundary.Values)
+            foreach (var boundaryByRotStep in Geratrizes.Values)
             {
                 GL.Begin(PrimitiveType.LineStrip);
-                foreach (var vertex in boundaryByRotStep)
+                for (int i = 0; i < boundaryByRotStep.Count; i++)
                 {
+                    if (i == 71)
+                        GL.Color3(Color.Red);
+                    else if (i == 114)
+                        GL.Color3(Color.SaddleBrown);
+                    else
+                        GL.Color3(Color.LightBlue); 
+                    var vertex = boundaryByRotStep[i];
                     GL.Vertex3(vertex.ToVector3(GetAxisOrder()));
                 }
                 GL.End();
@@ -201,6 +213,46 @@ namespace BioGenie.Stl2Abt.Gui
             glControl2.MakeCurrent();
 
             GL.Viewport(0, 0, glControl2.Width, glControl2.Height);
+
+            GL.MatrixMode(MatrixMode.Modelview);
+            GL.LoadIdentity();
+            SetOrtho();
+        }
+
+        private void glControl3_Load(object sender, EventArgs e)
+        {
+            glControl3.MakeCurrent();
+
+            GL.ClearColor(Color.MidnightBlue);
+        }
+
+        private void glControl3_Paint(object sender, PaintEventArgs e)
+        {
+            glControl3.MakeCurrent();
+
+            GL.PolygonMode(MaterialFace.FrontAndBack, radioButtonPoint.Checked ? PolygonMode.Point : PolygonMode.Line);
+            GL.Color3(Color.LightBlue);
+            //GL.Begin(PrimitiveType.Points);
+            foreach (var boundaryByRotStep in AbtBoundary.Values)
+            {
+                GL.Begin(PrimitiveType.LineStrip);
+                foreach (var vertex in boundaryByRotStep)
+                {
+                    GL.Vertex3(vertex.ToVector3(GetAxisOrder()));
+                }
+                GL.End();
+            }
+            //GL.End();
+
+            SetLight();
+            glControl3.Context.SwapBuffers();
+        }
+
+        private void glControl3_Resize(object sender, EventArgs e)
+        {
+            glControl3.MakeCurrent();
+
+            GL.Viewport(0, 0, glControl3.Width, glControl3.Height);
 
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();

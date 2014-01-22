@@ -34,6 +34,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\packages\MathNet.Numerics.2.6.2\lib\net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics.IO">
+      <HintPath>..\packages\MathNet.Numerics.2.6.2\lib\net40\MathNet.Numerics.IO.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenTK.1.1.1456.5398\lib\NET40\OpenTK.dll</HintPath>
     </Reference>
@@ -42,6 +48,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
