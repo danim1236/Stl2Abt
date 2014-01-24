@@ -18,6 +18,8 @@ namespace BioGenie.Stl2Abt.Gui
         public StlAbutment StlAbutment { get; set; }
         public Dictionary<float, List<Vertex>> Geratrizes { get; set; }
 
+        private bool _firstGenerate = true;
+
         public Stl2AbtMainForm(string stlFileName, string abtFileName)
         {
             StlFileName = stlFileName;
@@ -69,7 +71,7 @@ namespace BioGenie.Stl2Abt.Gui
 
         private void Stl2AbtMainForm_Resize(object sender, EventArgs e)
         {
-            var width = (Width - 20) / 3;
+            var width = (Width - 30) / 3;
             panelStl.Width = width;
             panelGeratrizes.Width = width;
             panelAbt.Width = width;
@@ -82,6 +84,7 @@ namespace BioGenie.Stl2Abt.Gui
             glControl1.MakeCurrent();
 
             GL.ClearColor(Color.MidnightBlue);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
         private void glControl1_Resize(object sender, EventArgs e)
@@ -92,6 +95,8 @@ namespace BioGenie.Stl2Abt.Gui
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();
             SetOrtho();
+            GL.ClearColor(Color.MidnightBlue);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
         private void SetOrtho()
@@ -173,12 +178,20 @@ namespace BioGenie.Stl2Abt.Gui
 
         private void Redraw()
         {
+            glControl1.MakeCurrent();
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             glControl1.Invalidate();
             glControl1_Resize(null, null);
             glControl1_Paint(null, null);
+
+            glControl2.MakeCurrent();
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             glControl2.Invalidate();
             glControl2_Resize(null, null);
             glControl2_Paint(null, null);
+
+            glControl3.MakeCurrent();
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             glControl3.Invalidate();
             glControl3_Resize(null, null);
             glControl3_Paint(null, null);
@@ -189,6 +202,7 @@ namespace BioGenie.Stl2Abt.Gui
             glControl2.MakeCurrent();
 
             GL.ClearColor(Color.MidnightBlue);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
         private void glControl2_Paint(object sender, PaintEventArgs e)
@@ -220,6 +234,8 @@ namespace BioGenie.Stl2Abt.Gui
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();
             SetOrtho();
+            GL.ClearColor(Color.MidnightBlue);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
         private void glControl3_Load(object sender, EventArgs e)
@@ -227,6 +243,7 @@ namespace BioGenie.Stl2Abt.Gui
             glControl3.MakeCurrent();
 
             GL.ClearColor(Color.MidnightBlue);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
         private void glControl3_Paint(object sender, PaintEventArgs e)
@@ -258,6 +275,8 @@ namespace BioGenie.Stl2Abt.Gui
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();
             SetOrtho();
+            GL.ClearColor(Color.MidnightBlue);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -266,7 +285,28 @@ namespace BioGenie.Stl2Abt.Gui
             Geratrizes = new AngularBoundaryDetector(StlAbutment, config.ResAngular).GetBoundaries();
             var abt = new Abt(Geratrizes);
             AbtBoundary = abt.GetPoints(config.ResVertical);
-            Redraw();
+            if (_firstGenerate)
+            {
+                Redraw();
+                _firstGenerate = false;
+            }
+            else
+            {
+                if (WindowState == FormWindowState.Normal)
+                {
+                    WindowState = FormWindowState.Minimized;
+                    Redraw();
+                    WindowState = FormWindowState.Normal;
+                    Redraw();
+                }
+                else if (WindowState == FormWindowState.Maximized)
+                {
+                    WindowState = FormWindowState.Minimized;
+                    Redraw();
+                    WindowState = FormWindowState.Maximized;
+                    Redraw();
+                }
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)

@@ -52,8 +52,8 @@
             this.panelAbt = new System.Windows.Forms.Panel();
             this.glControl3 = new OpenTK.GLControl();
             this.label2 = new System.Windows.Forms.Label();
-            this.bindingSourceConfig = new System.Windows.Forms.BindingSource(this.components);
             this.button2 = new System.Windows.Forms.Button();
+            this.bindingSourceConfig = new System.Windows.Forms.BindingSource(this.components);
             this.panelStl.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -236,6 +236,7 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label4.AutoSize = true;
+            this.label4.Enabled = false;
             this.label4.Location = new System.Drawing.Point(4, 440);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(96, 13);
@@ -246,6 +247,7 @@
             // 
             this.textBoxResVertical.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.textBoxResVertical.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bindingSourceConfig, "ResVertical", true));
+            this.textBoxResVertical.Enabled = false;
             this.textBoxResVertical.Location = new System.Drawing.Point(107, 437);
             this.textBoxResVertical.Name = "textBoxResVertical";
             this.textBoxResVertical.Size = new System.Drawing.Size(100, 20);
@@ -335,10 +337,6 @@
             this.label2.TabIndex = 1;
             this.label2.Text = "label2";
             // 
-            // bindingSourceConfig
-            // 
-            this.bindingSourceConfig.DataSource = typeof(BioGenie.Stl2Abt.Gui.Config);
-            // 
             // button2
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -349,6 +347,10 @@
             this.button2.Text = "Escrever e Sair";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // bindingSourceConfig
+            // 
+            this.bindingSourceConfig.DataSource = typeof(BioGenie.Stl2Abt.Gui.Config);
             // 
             // Stl2AbtMainForm
             // 
