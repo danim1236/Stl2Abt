@@ -33,11 +33,34 @@ namespace BioGenie.Stl.Algorithm
                  select new
                  {
                      Theta = theta,
-                     Vertices = CompactInZ(ExtendToXYPlane(CompactInZ(vertices)))
+                     Vertices = FilterInR(CompactInZ(ExtendToXYPlane(CompactInZ(vertices))))
                  }).ToDictionary(_ => _.Theta, _ => _.Vertices);
             //var vs = verticesByTheta.OrderBy(_ => _.Key).ToList();
             //var a = CompactInZ(verticesByTheta.Values.Last());
             return verticesByTheta;
+        }
+
+        private List<Vertex> FilterInR(List<Vertex> vertices)
+        {
+            var result = new List<Vertex> {vertices.First()};
+            for (int i = 1; i < vertices.Count - 1; i++)
+            {
+                var r1 = vertices[i - 1].R;
+                var v = vertices[i];
+                var r2 = v.R;
+                var r3 = vertices[i + 1].R;
+
+                if (Math.Abs(r2 - r1)/Math.Abs(r1 - r3) < 5)
+                {
+                    result.Add(v);
+                }
+                else
+                {
+                    int a = 1;
+                }
+            }
+            result.Add(vertices.Last());
+            return result;
         }
 
         private List<Vertex> CompactInZ(List<Vertex> vertices)
