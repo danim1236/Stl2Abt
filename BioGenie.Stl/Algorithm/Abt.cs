@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using BioGenie.Stl.Objects;
-using OpenTK;
 
 namespace BioGenie.Stl.Algorithm
 {
@@ -22,7 +21,6 @@ namespace BioGenie.Stl.Algorithm
         {
             var result = new Dictionary<float, List<Vertex>>();
             var pairs = Boundaries.OrderBy(_=>_.Key).ToList();
-            var a = Get6PontosNotaveis(pairs.Last().Value);
             foreach (var pair in pairs)
             {
                 result[pair.Key] = Get6PontosNotaveis(pair.Value);
@@ -35,90 +33,24 @@ namespace BioGenie.Stl.Algorithm
             var barrigaIndex = GetMaxRIndex(vertices);
             var tolerance = 2F;
             var points = PolygonSimplification.DouglasPeuckerSimplify(vertices, tolerance);
-            while (points.Count < 6)
-            {
-                tolerance /= 2;
-                points = PolygonSimplification.DouglasPeuckerSimplify(vertices, tolerance);
-            }
             var indexes = PolygonSimplification.UsedPoints.ToArray().ToList();
-            if (barrigaIndex != indexes[2])
+            FilterAdjacentPoints(ref points, ref indexes);
+            while (points.Count != 6)
             {
-                if (Math.Abs(barrigaIndex - indexes[2]) > vertices.Count/10F)
-                {
-                    tolerance = 2F;
-                    var verticesBelow = vertices.GetRange(0, barrigaIndex + 1);
-                    points = PolygonSimplification.DouglasPeuckerSimplify(verticesBelow, tolerance);
-                    while (points.Count < 3)
-                    {
-                        tolerance /= 2;
-                        points = PolygonSimplification.DouglasPeuckerSimplify(verticesBelow, tolerance);
-                    }
-                    points = new List<Vertex> {points[0], points[1]};
-                    indexes = PolygonSimplification.UsedPoints.ToArray().ToList();
-                    indexes = new List<int> {indexes[0], indexes[1]};
-
-                    tolerance = 2F;
-                    var verticesAbove = vertices.GetRange(barrigaIndex, vertices.Count - barrigaIndex);
-                    var pointsAbove = PolygonSimplification.DouglasPeuckerSimplify(verticesAbove, tolerance);
-                    var indexesAbove = PolygonSimplification.UsedPoints.ToArray().ToList();
-                    FilterAdjacentPoints(ref pointsAbove, ref indexesAbove);
-                    
-                    while (pointsAbove.Count < 4)
-                    {
-                        tolerance /= 2;
-                        pointsAbove = PolygonSimplification.DouglasPeuckerSimplify(verticesAbove, tolerance);
-                        indexesAbove = PolygonSimplification.UsedPoints.ToArray().ToList();
-                        FilterAdjacentPoints(ref pointsAbove, ref indexesAbove);
-                    }
-                    points.AddRange(pointsAbove);
-                    indexes.AddRange(indexesAbove.Select(_ => _ + barrigaIndex));
-                }
+                if (points.Count < 6)
+                    tolerance /= 2;
+                else
+                    tolerance *= 1.5F;
+                points = PolygonSimplification.DouglasPeuckerSimplify(vertices, tolerance);
+                indexes = PolygonSimplification.UsedPoints.ToArray().ToList();
+                FilterAdjacentPoints(ref points, ref indexes);
             }
-
-            while (points.Count > 6)
-            {
-                var coss = new List<Tuple<float, int>>();
-
-                for (int i = 3; i < points.Count - 2; i++)
-                {
-                    var segment1 = points[i].ToVector2() - points[i - 1].ToVector2();
-                    var segment2 = points[i + 1].ToVector2() - points[i].ToVector2();
-                    coss.Add(new Tuple<float, int>(Vector2.Dot(segment1, segment2), i));
-                }
-                coss.Sort();
-                points.RemoveAt(coss.First().Item2);
-
-                //var newStart = indexes[2];
-                //indexes = new List<int> {indexes[0], indexes[1]};
-                //points = new List<Vertex> {points[0], points[1]};
-                //tolerance = 2F;
-                //var newVerts = vertices.GetRange(newStart, vertices.Count - newStart).ToList();
-                //var points2 = PolygonSimplification.DouglasPeuckerSimplify(vertices, tolerance);
-                //while (points2.Count < 4)
-                //{
-                //    tolerance /= 1.5F;
-                //    points2 = PolygonSimplification.DouglasPeuckerSimplify(newVerts, tolerance);
-                //}
-                //var indexes2 = PolygonSimplification.UsedPoints.ToArray().ToList();
-                //points.AddRange(points2);
-                //indexes.AddRange(indexes2.Select(_ => _ + newStart));
-                //while (points.Count > 6)
-                //{
-                //    var toRemove = points.Count - 2;
-                //    points.RemoveAt(toRemove);
-                //    indexes.RemoveAt(toRemove);
-                //}
-            }
-            //var pp = PolygonSimplification.FindNPoints(vertices, 6);
-            //var ii  = PolygonSimplification.Indexes;
             return points;
-            //return pp;
         }
 
         private void FilterAdjacentPoints(ref List<Vertex> pointsAbove, ref List<int> indexesAbove)
         {
             var groups = new List<List<int>>();
-            var last = indexesAbove.Last();
 
             foreach (var i in indexesAbove)
             {

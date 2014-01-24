@@ -11,80 +11,7 @@ namespace BioGenie.Stl.Algorithm
         private static float _distanceTolerance;
         private static bool[] _usePt;
 
-        private static List<Tuple<double, int>> _nPointsData; 
         public static List<int> Indexes { get; set; } 
-        public static List<Vertex> FindNPoints(List<Vertex> vertices, int n)
-        {
-            var n2 = n - 2;
-            _nPointsData = new List<Tuple<double, int>>();
-            var lastPos = vertices.Count - 1;
-            var llastPos = lastPos - 1;
-            RecursiveFindPoints(vertices, 0, lastPos);
-            _nPointsData.Sort();
-            _nPointsData.Reverse();
-            var removedBuffer = new HashSet<int>();
-            bool removed;
-            do
-            {
-                removed = false;
-                for (int i = 0; i < n2; i++)
-                {
-                    var index1 = _nPointsData[i].Item2;
-                    if (index1 == 1 || index1 == llastPos || 
-                        removedBuffer.Contains(index1 + 1) ||
-                        removedBuffer.Contains(index1 - 1))
-                    {
-                        removed = true;
-                        _nPointsData.RemoveAt(i);
-                        removedBuffer.Add(index1);
-                        break;
-                    }
-
-                    for (int j = i + 1; j < n2; j++)
-                    {
-                        var index2 = _nPointsData[j].Item2;
-                        if (index1 == index2 + 1 || index1 == index2 - 1)
-                        {
-                            removed = true;
-                            _nPointsData.RemoveAt(i);
-                            removedBuffer.Add(index1);
-                            break;
-                        }
-                    }
-
-                    if (removed)
-                        break;
-                }
-            } while (removed);
-            Indexes = new List<int> {0};
-            Indexes.AddRange(_nPointsData.GetRange(0, n2).Select(_ => _.Item2));
-            Indexes.Add(lastPos);
-            Indexes.Sort();
-            return Indexes.Select(_ => vertices[_]).ToList();
-        }
-
-        private static void RecursiveFindPoints(List<Vertex> pts, int i, int j)
-        {
-            if (i + 1 == j)
-                return;
-            var a = pts[i].ToVector2();
-            var b = pts[j].ToVector2();
-            double maxDistance = -1.0;
-            int maxIndex = i;
-            for (int k = i + 1; k < j; k++)
-            {
-                double distance = DistancePointLine(pts[k].ToVector2(), a, b);
-
-                if (distance > maxDistance)
-                {
-                    maxDistance = distance;
-                    maxIndex = k;
-                }
-            }
-            _nPointsData.Add(new Tuple<double, int>(maxDistance, maxIndex));
-            RecursiveFindPoints(pts, i, maxIndex);
-            RecursiveFindPoints(pts, maxIndex, j);
-        }
 
         public static List<Vertex> DouglasPeuckerSimplify(List<Vertex> vertices, float tolerance)
         {
@@ -113,7 +40,7 @@ namespace BioGenie.Stl.Algorithm
             }
         }
 
-        private static void SimplifySection(List<Vertex> pts, int i, int j)
+      private static void SimplifySection(List<Vertex> pts, int i, int j)
         {
             if ((i + 1) == j)
                 return;
@@ -141,7 +68,7 @@ namespace BioGenie.Stl.Algorithm
                 SimplifySection(pts, maxIndex, j);
             }
         }
-        
+
         private static double DistancePointPoint(Vector2 p, Vector2 p2)
         {
             double dx = p.X - p2.X;

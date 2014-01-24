@@ -35,8 +35,6 @@ namespace BioGenie.Stl.Algorithm
                      Theta = theta,
                      Vertices = FilterInR(CompactInZ(ExtendToXYPlane(CompactInZ(vertices))))
                  }).ToDictionary(_ => _.Theta, _ => _.Vertices);
-            //var vs = verticesByTheta.OrderBy(_ => _.Key).ToList();
-            //var a = CompactInZ(verticesByTheta.Values.Last());
             return verticesByTheta;
         }
 
@@ -51,13 +49,7 @@ namespace BioGenie.Stl.Algorithm
                 var r3 = vertices[i + 1].R;
 
                 if (Math.Abs(r2 - r1)/Math.Abs(r1 - r3) < 5)
-                {
                     result.Add(v);
-                }
-                else
-                {
-                    int a = 1;
-                }
             }
             result.Add(vertices.Last());
             return result;
@@ -109,10 +101,6 @@ namespace BioGenie.Stl.Algorithm
             var p = p2 - Vector3.Multiply(dir, r);
             p.Z = 0;
             var vertex = new Vertex(p);
-            if (float.IsNaN(vertex.X))
-            {
-                int abv = 1;
-            }
                
             vertices.Insert(0, vertex);
             return vertices;
