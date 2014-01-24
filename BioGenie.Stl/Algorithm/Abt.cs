@@ -35,15 +35,46 @@ namespace BioGenie.Stl.Algorithm
             var points = PolygonSimplification.DouglasPeuckerSimplify(vertices, tolerance);
             var indexes = PolygonSimplification.UsedPoints.ToArray().ToList();
             FilterAdjacentPoints(ref points, ref indexes);
+            int it = 0;
             while (points.Count != 6)
             {
                 if (points.Count < 6)
-                    tolerance /= 2;
+                {
+                    if (it > 5 && points.Count == 5 && Math.Abs(barrigaIndex - indexes[1]) < 4)
+                    {
+                        var meioCaminho = indexes[1] / 2;
+                        points.Insert(1, vertices[meioCaminho]);
+                        indexes.Insert(1, meioCaminho);
+                        break;
+                    }
+                    else
+                        tolerance /= 2;
+                }
+                else if (barrigaIndex == indexes[2] && it > 5)
+                {
+                    var dists = new List<Tuple<float, int>>();
+                    for (int i = 3; i < points.Count - 1; i++)
+                    {
+                        dists.Add(new Tuple<float, int>(
+                                      (Math.Abs(points[i].R - points[i - 1].R) + Math.Abs(points[i].R - points[i + 1].R))/
+                                      2, i));
+                    }
+                    dists.Sort();
+                    var nToRemove = points.Count - 6;
+                    for (int i = 0; i < nToRemove; i++)
+                    {
+                        var index = dists[i].Item2;
+                        points.RemoveAt(index);
+                        indexes.RemoveAt(index);
+                    }
+                    break;
+                }
                 else
                     tolerance *= 1.5F;
                 points = PolygonSimplification.DouglasPeuckerSimplify(vertices, tolerance);
                 indexes = PolygonSimplification.UsedPoints.ToArray().ToList();
                 FilterAdjacentPoints(ref points, ref indexes);
+                ++it;
             }
             return points;
         }

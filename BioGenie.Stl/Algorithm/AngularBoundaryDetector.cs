@@ -29,25 +29,13 @@ namespace BioGenie.Stl.Algorithm
                  let theta = pair.Key
                  let facets = pair.Value
                  let plane = GetPlaneFromThetaZ(theta)
-                 let vertices = GetIntersectionVertices(facets, plane)
+                 let vertices = facets.SelectMany(_ => _.Intersects(plane)).OrderBy(_ => _.Z).ToList()
                  select new
                  {
                      Theta = theta,
                      Vertices = FilterInR(CompactInZ(ExtendToXYPlane(CompactInZ(vertices))))
                  }).ToDictionary(_ => _.Theta, _ => _.Vertices);
             return verticesByTheta;
-        }
-
-        private static List<Vertex> GetIntersectionVertices(IEnumerable<Facet> facets, Plane plane)
-        {
-            var result = new List<Vertex>();
-            foreach (var facet in facets)
-            {
-                var intersection = facet.Intersects(plane);
-                if (intersection != null)
-                    result.AddRange(intersection);
-            }
-            return result;
         }
 
         private List<Vertex> FilterInR(List<Vertex> vertices)

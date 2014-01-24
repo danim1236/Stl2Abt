@@ -59,6 +59,8 @@ namespace BioGenie.Stl2Abt.Gui
             StlAbutment.AlignAndCenterAbutment();
             StlAbutment.Name = Path.GetFileNameWithoutExtension(StlFileName);
             Geratrizes = new AngularBoundaryDetector(StlAbutment, 12).GetBoundaries();
+            //Geratrizes = new AngularBoundaryDetector(StlAbutment, 60).GetBoundaries().Where(_ => _.Key - Math.PI / 2 >= 0 && _.Key - Math.PI / 2 <= Math.PI).ToDictionary(_ => _.Key, _ => _.Value);
+            //Geratrizes = new AngularBoundaryDetector(StlAbutment, 60).GetBoundaries().Where(_ => _.Key - Math.PI / 2 >= Math.PI * 1.05 && _.Key - Math.PI / 2 <= Math.PI * 1.1).ToDictionary(_ => _.Key, _ => _.Value);
             var abt = new Abt(Geratrizes);
             AbtBoundary = abt.Get6Points();
             abt.WriteAbt(AbtFileName);
