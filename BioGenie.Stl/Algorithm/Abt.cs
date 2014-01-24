@@ -42,68 +42,22 @@ namespace BioGenie.Stl.Algorithm
             {
                 if (points.Count < 6)
                 {
-                    if (it > 5 && points.Count == 5 && Math.Abs(barrigaIndex - indexes[1]) < 4)
+                    if (it > 5 && points.Count == 5 && Math.Abs(barrigaIndex - indexes[1]) < 3)
                     {
                         var meioCaminho = indexes[1] / 2;
                         points.Insert(1, vertices[meioCaminho]);
                         indexes.Insert(1, meioCaminho);
                         break;
                     }
-                    else if (it > 20)
-                    {
-                        if (points.Count == 5)
-                        {
-                            var meioCaminho = indexes[1]/2;
-                            points.Insert(1, vertices[meioCaminho]);
-                            indexes.Insert(1, meioCaminho);
-                            if (points.Count < 6)
-                            {
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            return null;
-                        }
-                    }
-                    else
-                        tolerance /= 2;
-                }
-                else if (barrigaIndex == indexes[2] && it > 5)
-                {
-                    var dists = new List<Tuple<float, int>>();
-                    for (int i = 3; i < points.Count - 1; i++)
-                    {
-                        dists.Add(new Tuple<float, int>(
-                                      (Math.Abs(points[i].R - points[i - 1].R) + Math.Abs(points[i].R - points[i + 1].R))/
-                                      2, i));
-                    }
-                    dists.Sort();
-                    var nToRemove = points.Count - 6;
-                    for (int i = 0; i < nToRemove; i++)
-                    {
-                        var index = dists[i].Item2;
-                        points.RemoveAt(index);
-                        indexes.RemoveAt(index);
-                    }
-                    break;
-                }
-                else if (it > 15)
-                {
-                    while (points.Count > 6)
-                    {
-                        var index = points.Count - 2;
-                        points.RemoveAt(index);
-                        indexes.RemoveAt(index);
-                    }
-                    break;
+                    tolerance /= 2;
                 }
                 else
                     tolerance *= 1.5F;
                 points = PolygonSimplification.DouglasPeuckerSimplify(vertices, tolerance);
                 indexes = PolygonSimplification.UsedPoints.ToArray().ToList();
                 FilterAdjacentPoints(ref points, ref indexes);
-                ++it;
+                if (it++ > 20)
+                    return null;
             }
             return points;
         }
