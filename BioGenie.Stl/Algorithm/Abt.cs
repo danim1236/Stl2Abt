@@ -23,7 +23,9 @@ namespace BioGenie.Stl.Algorithm
             var pairs = Boundaries.OrderBy(_=>_.Key).ToList();
             foreach (var pair in pairs)
             {
-                result[pair.Key] = Get6PontosNotaveis(pair.Value);
+                var pontosNotaveis = Get6PontosNotaveis(pair.Value);
+                if (pontosNotaveis != null)
+                    result[pair.Key] = pontosNotaveis;
             }
             return result;
         }
@@ -49,12 +51,19 @@ namespace BioGenie.Stl.Algorithm
                     }
                     else if (it > 20)
                     {
-                        var meioCaminho = indexes[1] / 2;
-                        points.Insert(1, vertices[meioCaminho]);
-                        indexes.Insert(1, meioCaminho);
-                        if (points.Count < 6)
+                        if (points.Count == 5)
                         {
-                            break;
+                            var meioCaminho = indexes[1]/2;
+                            points.Insert(1, vertices[meioCaminho]);
+                            indexes.Insert(1, meioCaminho);
+                            if (points.Count < 6)
+                            {
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            return null;
                         }
                     }
                     else
