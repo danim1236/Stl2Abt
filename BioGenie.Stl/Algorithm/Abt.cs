@@ -109,7 +109,10 @@ namespace BioGenie.Stl.Algorithm
                 //    indexes.RemoveAt(toRemove);
                 //}
             }
+            //var pp = PolygonSimplification.FindNPoints(vertices, 6);
+            //var ii  = PolygonSimplification.Indexes;
             return points;
+            //return pp;
         }
 
         private void FilterAdjacentPoints(ref List<Vertex> pointsAbove, ref List<int> indexesAbove)
