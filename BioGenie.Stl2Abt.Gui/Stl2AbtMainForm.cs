@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using BioGenie.Stl.Algorithm;
 using BioGenie.Stl.Objects;
@@ -25,9 +24,14 @@ namespace BioGenie.Stl2Abt.Gui
             AbtFileName = abtFileName;
 
             InitializeComponent();
+
+            bindingSourceConfig.DataSource = new Config();
+            
             Stl2AbtMainForm_Resize(null, null);
             labelStlFileName.Text = Path.GetFileName(stlFileName);
 
+            AbtBoundary = new Dictionary<float, List<Vertex>>();
+            Geratrizes = new Dictionary<float, List<Vertex>>();
             ReadStlFile();
             DrawStlFile();
         }
@@ -58,12 +62,6 @@ namespace BioGenie.Stl2Abt.Gui
             }
             StlAbutment.AlignAndCenterAbutment();
             StlAbutment.Name = Path.GetFileNameWithoutExtension(StlFileName);
-            Geratrizes = new AngularBoundaryDetector(StlAbutment, 12).GetBoundaries();
-            //Geratrizes = new AngularBoundaryDetector(StlAbutment, 60).GetBoundaries().Where(_ => _.Key - Math.PI / 2 >= 0 && _.Key - Math.PI / 2 <= Math.PI).ToDictionary(_ => _.Key, _ => _.Value);
-            //Geratrizes = new AngularBoundaryDetector(StlAbutment, 60).GetBoundaries().Where(_ => _.Key - Math.PI / 2 >= Math.PI * 1.05 && _.Key - Math.PI / 2 <= Math.PI * 1.1).ToDictionary(_ => _.Key, _ => _.Value);
-            var abt = new Abt(Geratrizes);
-            AbtBoundary = abt.Get6Points();
-            abt.WriteAbt(AbtFileName);
         }
 
         public Dictionary<float, List<Vertex>> AbtBoundary { get; set; }
@@ -170,7 +168,20 @@ namespace BioGenie.Stl2Abt.Gui
 
         private void radioButtonX_CheckedChanged(object sender, EventArgs e)
         {
+            Redraw();
+        }
+
+        private void Redraw()
+        {
             glControl1.Invalidate();
+            glControl1_Resize(null, null);
+            glControl1_Paint(null, null);
+            glControl2.Invalidate();
+            glControl2_Resize(null, null);
+            glControl2_Paint(null, null);
+            glControl3.Invalidate();
+            glControl3_Resize(null, null);
+            glControl3_Paint(null, null);
         }
 
         private void glControl2_Load(object sender, EventArgs e)
@@ -186,7 +197,6 @@ namespace BioGenie.Stl2Abt.Gui
 
             GL.PolygonMode(MaterialFace.FrontAndBack, radioButtonPoint.Checked ? PolygonMode.Point : PolygonMode.Line);
             GL.Color3(Color.LightBlue);
-            //GL.Begin(PrimitiveType.Points);
             foreach (var boundaryByRotStep in Geratrizes.Values)
             {
                 GL.Begin(PrimitiveType.LineStrip);
@@ -196,7 +206,6 @@ namespace BioGenie.Stl2Abt.Gui
                 }
                 GL.End();
             }
-            //GL.End();
 
             SetLight();
             glControl2.Context.SwapBuffers();
@@ -226,7 +235,6 @@ namespace BioGenie.Stl2Abt.Gui
 
             GL.PolygonMode(MaterialFace.FrontAndBack, radioButtonPoint.Checked ? PolygonMode.Point : PolygonMode.Line);
             GL.Color3(Color.LightBlue);
-            //GL.Begin(PrimitiveType.Points);
             foreach (var boundaryByRotStep in AbtBoundary.Values)
             {
                 GL.Begin(PrimitiveType.LineStrip);
@@ -236,7 +244,6 @@ namespace BioGenie.Stl2Abt.Gui
                 }
                 GL.End();
             }
-            //GL.End();
 
             SetLight();
             glControl3.Context.SwapBuffers();
@@ -251,6 +258,33 @@ namespace BioGenie.Stl2Abt.Gui
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();
             SetOrtho();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var config = (Config) bindingSourceConfig.DataSource;
+            Geratrizes = new AngularBoundaryDetector(StlAbutment, config.ResAngular).GetBoundaries();
+            var abt = new Abt(Geratrizes);
+            AbtBoundary = abt.GetPoints(config.ResVertical);
+            Redraw();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Abt.WriteAbt(AbtFileName, AbtBoundary);
+            Close();
+        }
+    }
+
+    class Config
+    {
+        public int ResAngular { get; set; }
+        public int ResVertical { get; set; }
+
+        public Config()
+        {
+            ResAngular = 12;
+            ResVertical = 6;
         }
     }
 }
