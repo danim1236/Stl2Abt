@@ -9,28 +9,22 @@ namespace BioGenie.Stl.Algorithm
 {
     public class Abt
     {
-        private Dictionary<float, List<Vertex>> _abtBoundaries;
         public Dictionary<float, List<Vertex>> Boundaries { get; set; }
 
-        public Dictionary<float, List<Vertex>> AbtBoundaries
-        {
-            get { return _abtBoundaries ?? (_abtBoundaries = Get6Points()); }
-        }
-
-        public Dictionary<float, List<Vertex>> Get6Points()
+        public Dictionary<float, List<Vertex>> GetPoints(int resVertical)
         {
             var result = new Dictionary<float, List<Vertex>>();
             var pairs = Boundaries.OrderBy(_=>_.Key).ToList();
             foreach (var pair in pairs)
             {
-                var pontosNotaveis = Get6PontosNotaveis(pair.Value);
+                var pontosNotaveis = GetPontosNotaveis(pair.Value, resVertical);
                 if (pontosNotaveis != null)
                     result[pair.Key] = pontosNotaveis;
             }
             return result;
         }
 
-        private List<Vertex> Get6PontosNotaveis(List<Vertex> vertices)
+        private List<Vertex> GetPontosNotaveis(List<Vertex> vertices, int resVertical)
         {
             var barrigaIndex = GetMaxRIndex(vertices);
             var tolerance = 2F;
@@ -38,9 +32,9 @@ namespace BioGenie.Stl.Algorithm
             var indexes = PolygonSimplification.UsedPoints.ToArray().ToList();
             FilterAdjacentPoints(ref points, ref indexes);
             int it = 0;
-            while (points.Count != 6)
+            while (points.Count != resVertical)
             {
-                if (points.Count < 6)
+                if (points.Count < resVertical)
                 {
                     if (it > 5 && points.Count == 5 && Math.Abs(barrigaIndex - indexes[1]) < 3)
                     {
@@ -151,7 +145,7 @@ namespace BioGenie.Stl.Algorithm
             Boundaries = boundaries;
         }
 
-        public void WriteAbt(string fileName)
+        public static void WriteAbt(string fileName, Dictionary<float, List<Vertex>> abtBoundary)
         {
 
             var cultureInfo = CultureInfo.InvariantCulture;
@@ -165,7 +159,7 @@ namespace BioGenie.Stl.Algorithm
                     writer.WriteLine("\t<Blank BaseDiameter=\"8.0\" TopDiameter=\"8.0\" Height=\"13.0\" />");
                     writer.WriteLine("\t<Faces>");
 
-                    foreach (var pair in Get6Points())
+                    foreach (var pair in abtBoundary)
                     {
                         var theta = (pair.Key * 180.0 / Math.PI).ToString(cultureInfo);
                         var vertices = pair.Value;
