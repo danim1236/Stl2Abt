@@ -47,6 +47,16 @@ namespace BioGenie.Stl.Algorithm
                         indexes.Insert(1, meioCaminho);
                         break;
                     }
+                    else if (it > 20)
+                    {
+                        var meioCaminho = indexes[1] / 2;
+                        points.Insert(1, vertices[meioCaminho]);
+                        indexes.Insert(1, meioCaminho);
+                        if (points.Count < 6)
+                        {
+                            break;
+                        }
+                    }
                     else
                         tolerance /= 2;
                 }
@@ -64,6 +74,16 @@ namespace BioGenie.Stl.Algorithm
                     for (int i = 0; i < nToRemove; i++)
                     {
                         var index = dists[i].Item2;
+                        points.RemoveAt(index);
+                        indexes.RemoveAt(index);
+                    }
+                    break;
+                }
+                else if (it > 15)
+                {
+                    while (points.Count > 6)
+                    {
+                        var index = points.Count - 2;
                         points.RemoveAt(index);
                         indexes.RemoveAt(index);
                     }
