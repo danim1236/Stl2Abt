@@ -33,8 +33,10 @@ namespace BioGenie.Stl.Algorithm
                  select new
                  {
                      Theta = theta,
-                     Vertices = ExtendToXYPlane(CompactInZ(vertices))
+                     Vertices = CompactInZ(ExtendToXYPlane(CompactInZ(vertices)))
                  }).ToDictionary(_ => _.Theta, _ => _.Vertices);
+            //var vs = verticesByTheta.OrderBy(_ => _.Key).ToList();
+            //var a = CompactInZ(verticesByTheta.Values.Last());
             return verticesByTheta;
         }
 
@@ -83,7 +85,13 @@ namespace BioGenie.Stl.Algorithm
             var r = p2.Z/dir.Z;
             var p = p2 - Vector3.Multiply(dir, r);
             p.Z = 0;
-            vertices.Insert(0, new Vertex(p));
+            var vertex = new Vertex(p);
+            if (float.IsNaN(vertex.X))
+            {
+                int abv = 1;
+            }
+               
+            vertices.Insert(0, vertex);
             return vertices;
         }
 

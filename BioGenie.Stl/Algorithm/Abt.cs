@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using BioGenie.Stl.Objects;
+using OpenTK;
 
 namespace BioGenie.Stl.Algorithm
 {
@@ -42,38 +43,108 @@ namespace BioGenie.Stl.Algorithm
             var indexes = PolygonSimplification.UsedPoints.ToArray().ToList();
             if (barrigaIndex != indexes[2])
             {
-                if (barrigaIndex == indexes[1])
+                if (Math.Abs(barrigaIndex - indexes[2]) > vertices.Count/10F)
                 {
-                    var meioCaminho = indexes[1]/2;
-                    indexes.Insert(1, meioCaminho);
-                    points.Insert(1, vertices[meioCaminho]);
+                    tolerance = 2F;
+                    var verticesBelow = vertices.GetRange(0, barrigaIndex + 1);
+                    points = PolygonSimplification.DouglasPeuckerSimplify(verticesBelow, tolerance);
+                    while (points.Count < 3)
+                    {
+                        tolerance /= 2;
+                        points = PolygonSimplification.DouglasPeuckerSimplify(verticesBelow, tolerance);
+                    }
+                    points = new List<Vertex> {points[0], points[1]};
+                    indexes = PolygonSimplification.UsedPoints.ToArray().ToList();
+                    indexes = new List<int> {indexes[0], indexes[1]};
+
+                    tolerance = 2F;
+                    var verticesAbove = vertices.GetRange(barrigaIndex, vertices.Count - barrigaIndex);
+                    var pointsAbove = PolygonSimplification.DouglasPeuckerSimplify(verticesAbove, tolerance);
+                    var indexesAbove = PolygonSimplification.UsedPoints.ToArray().ToList();
+                    FilterAdjacentPoints(ref pointsAbove, ref indexesAbove);
+                    
+                    while (pointsAbove.Count < 4)
+                    {
+                        tolerance /= 2;
+                        pointsAbove = PolygonSimplification.DouglasPeuckerSimplify(verticesAbove, tolerance);
+                        indexesAbove = PolygonSimplification.UsedPoints.ToArray().ToList();
+                        FilterAdjacentPoints(ref pointsAbove, ref indexesAbove);
+                    }
+                    points.AddRange(pointsAbove);
+                    indexes.AddRange(indexesAbove.Select(_ => _ + barrigaIndex));
                 }
             }
 
-            if (points.Count > 6)
+            while (points.Count > 6)
             {
-                var newStart = indexes[2];
-                indexes = new List<int> {indexes[0], indexes[1]};
-                points = new List<Vertex> {points[0], points[1]};
-                tolerance = 2F;
-                var newVerts = vertices.GetRange(newStart, vertices.Count - newStart).ToList();
-                var points2 = PolygonSimplification.DouglasPeuckerSimplify(vertices, tolerance);
-                while (points2.Count < 4)
+                var coss = new List<Tuple<float, int>>();
+
+                for (int i = 3; i < points.Count - 2; i++)
                 {
-                    tolerance /= 1.5F;
-                    points2 = PolygonSimplification.DouglasPeuckerSimplify(newVerts, tolerance);
+                    var segment1 = points[i].ToVector2() - points[i - 1].ToVector2();
+                    var segment2 = points[i + 1].ToVector2() - points[i].ToVector2();
+                    coss.Add(new Tuple<float, int>(Vector2.Dot(segment1, segment2), i));
                 }
-                var indexes2 = PolygonSimplification.UsedPoints.ToArray().ToList();
-                points.AddRange(points2);
-                indexes.AddRange(indexes2.Select(_ => _ + newStart));
-                while (points.Count > 6)
-                {
-                    var toRemove = points.Count - 2;
-                    points.RemoveAt(toRemove);
-                    indexes.RemoveAt(toRemove);
-                }
+                coss.Sort();
+                points.RemoveAt(coss.First().Item2);
+
+                //var newStart = indexes[2];
+                //indexes = new List<int> {indexes[0], indexes[1]};
+                //points = new List<Vertex> {points[0], points[1]};
+                //tolerance = 2F;
+                //var newVerts = vertices.GetRange(newStart, vertices.Count - newStart).ToList();
+                //var points2 = PolygonSimplification.DouglasPeuckerSimplify(vertices, tolerance);
+                //while (points2.Count < 4)
+                //{
+                //    tolerance /= 1.5F;
+                //    points2 = PolygonSimplification.DouglasPeuckerSimplify(newVerts, tolerance);
+                //}
+                //var indexes2 = PolygonSimplification.UsedPoints.ToArray().ToList();
+                //points.AddRange(points2);
+                //indexes.AddRange(indexes2.Select(_ => _ + newStart));
+                //while (points.Count > 6)
+                //{
+                //    var toRemove = points.Count - 2;
+                //    points.RemoveAt(toRemove);
+                //    indexes.RemoveAt(toRemove);
+                //}
             }
             return points;
+        }
+
+        private void FilterAdjacentPoints(ref List<Vertex> pointsAbove, ref List<int> indexesAbove)
+        {
+            var groups = new List<List<int>>();
+            var last = indexesAbove.Last();
+
+            foreach (var i in indexesAbove)
+            {
+                var found = false;
+                foreach (var @group in groups)
+                {
+                    if (@group.Any(i1 => i - i1 < 2))
+                    {
+                        @group.Add(i);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                    groups.Add(new List<int> {i});
+            }
+            var toRemove = groups.Where(_ => _.Count > 1).SelectMany(_ => _);
+            foreach (var i in toRemove)
+            {
+                for (int j = 1; j < indexesAbove.Count - 1; j++)
+                {
+                    if (i == indexesAbove[j])
+                    {
+                        pointsAbove.RemoveAt(j);
+                        indexesAbove.RemoveAt(j);
+                        break;
+                    }
+                }
+            }
         }
 
 
