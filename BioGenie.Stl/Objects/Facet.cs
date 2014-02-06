@@ -130,6 +130,8 @@ namespace BioGenie.Stl.Objects
                 vertex.Subtract(c);
             }
             _center = null;
+            _minZ = null;
+            _maxZ = null;
         }
 
         #region [ Dados Privados ]
@@ -200,6 +202,17 @@ namespace BioGenie.Stl.Objects
                 segments.Add(new Segment(vertices[i], vertices[(i + 1) % count]));
             }
             return segments;
+        }
+
+        public void Reset()
+        {
+            _center = null;
+            _maxZ = null;
+            _minZ = null;
+            foreach (var vertex in Vertices)
+            {
+                vertex.Reset();
+            }
         }
     }
 }
