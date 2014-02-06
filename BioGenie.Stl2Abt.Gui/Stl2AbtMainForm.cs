@@ -83,7 +83,7 @@ namespace BioGenie.Stl2Abt.Gui
         {
             glControl1.MakeCurrent();
 
-            GL.ClearColor(Color.MidnightBlue);
+            GL.ClearColor(Color.Black);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
@@ -95,7 +95,7 @@ namespace BioGenie.Stl2Abt.Gui
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();
             SetOrtho();
-            GL.ClearColor(Color.MidnightBlue);
+            GL.ClearColor(Color.Black);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
@@ -201,7 +201,7 @@ namespace BioGenie.Stl2Abt.Gui
         {
             glControl2.MakeCurrent();
 
-            GL.ClearColor(Color.MidnightBlue);
+            GL.ClearColor(Color.Black);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
@@ -234,7 +234,7 @@ namespace BioGenie.Stl2Abt.Gui
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();
             SetOrtho();
-            GL.ClearColor(Color.MidnightBlue);
+            GL.ClearColor(Color.Black);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
@@ -242,7 +242,7 @@ namespace BioGenie.Stl2Abt.Gui
         {
             glControl3.MakeCurrent();
 
-            GL.ClearColor(Color.MidnightBlue);
+            GL.ClearColor(Color.Black);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
@@ -275,7 +275,7 @@ namespace BioGenie.Stl2Abt.Gui
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();
             SetOrtho();
-            GL.ClearColor(Color.MidnightBlue);
+            GL.ClearColor(Color.Black);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
@@ -284,7 +284,7 @@ namespace BioGenie.Stl2Abt.Gui
             var config = (Config) bindingSourceConfig.DataSource;
             Geratrizes = new AngularBoundaryDetector(StlAbutment, config.ResAngular).GetBoundaries();
             var abt = new Abt(Geratrizes);
-            AbtBoundary = abt.GetPoints(config.ResVertical);
+            AbtBoundary = abt.GetPoints(config.ResVertical, cbP3Maior.Checked);
             if (_firstGenerate)
             {
                 Redraw();

@@ -55,7 +55,7 @@
     <Compile Include="Algorithm\FacetGrouper.cs" />
     <Compile Include="Algorithm\FacetsGroup.cs" />
     <Compile Include="Algorithm\ObjectIntersection.cs" />
-    <Compile Include="Algorithm\PolygonSimplification.cs" />
+    <Compile Include="Algorithm\PolygonSimplfy.cs" />
     <Compile Include="Objects\AxisOrder.cs" />
     <Compile Include="Objects\Facet.cs" />
     <Compile Include="Objects\Plane.cs" />

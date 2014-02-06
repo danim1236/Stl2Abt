@@ -25,7 +25,7 @@ namespace BioGenie.Stl2Abt
             }
             if (args != null)
             {
-                Stl2AbtStart.Stl2AbtMainFormStart(args[0], args[1]);
+                Stl2AbtStart.Stl2AbtMainFormStart(args[0]);
             }
         }
 

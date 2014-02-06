@@ -11,117 +11,23 @@ namespace BioGenie.Stl.Algorithm
     {
         public Dictionary<float, List<Vertex>> Boundaries { get; set; }
 
-        public Dictionary<float, List<Vertex>> GetPoints(int resVertical)
+        public Dictionary<float, List<Vertex>> GetPoints(int resVertical, bool p3Maior)
         {
             var result = new Dictionary<float, List<Vertex>>();
             var pairs = Boundaries.OrderBy(_=>_.Key).ToList();
             foreach (var pair in pairs)
             {
-                var pontosNotaveis = GetPontosNotaveis(pair.Value, resVertical);
+                var pontosNotaveis = GetPontosNotaveis2(pair.Value, resVertical, p3Maior);
                 if (pontosNotaveis != null)
                     result[pair.Key] = pontosNotaveis;
             }
             return result;
         }
 
-        private List<Vertex> GetPontosNotaveis(List<Vertex> vertices, int resVertical)
+        private List<Vertex> GetPontosNotaveis2(List<Vertex> vertices, int resVertical, bool p3Maior)
         {
-            var barrigaIndex = GetMaxRIndex(vertices);
-            var tolerance = 2F;
-            var points = PolygonSimplification.DouglasPeuckerSimplify(vertices, tolerance);
-            var indexes = PolygonSimplification.UsedPoints.ToArray().ToList();
-            FilterAdjacentPoints(ref points, ref indexes);
-            int it = 0;
-            while (points.Count != resVertical)
-            {
-                if (points.Count < resVertical)
-                {
-                    if (it > 5 && points.Count == 5 && Math.Abs(barrigaIndex - indexes[1]) < 3)
-                    {
-                        var meioCaminho = indexes[1] / 2;
-                        points.Insert(1, vertices[meioCaminho]);
-                        indexes.Insert(1, meioCaminho);
-                        break;
-                    }
-                    tolerance /= 2;
-                }
-                else
-                    tolerance *= 1.5F;
-                points = PolygonSimplification.DouglasPeuckerSimplify(vertices, tolerance);
-                indexes = PolygonSimplification.UsedPoints.ToArray().ToList();
-                FilterAdjacentPoints(ref points, ref indexes);
-                if (it++ > 20)
-                    return null;
-            }
+            var points = PolygonSimplfy.Simplify(vertices, resVertical, p3Maior ? GetMaxRIndex(vertices) : (int?) null);
             return points;
-        }
-
-        private void FilterAdjacentPoints(ref List<Vertex> pointsAbove, ref List<int> indexesAbove)
-        {
-            var groups = new List<List<int>>();
-
-            foreach (var i in indexesAbove)
-            {
-                var found = false;
-                foreach (var @group in groups)
-                {
-                    if (@group.Any(i1 => i - i1 < 2))
-                    {
-                        @group.Add(i);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found)
-                    groups.Add(new List<int> {i});
-            }
-            var toRemove = groups.Where(_ => _.Count > 1).SelectMany(_ => _);
-            foreach (var i in toRemove)
-            {
-                for (int j = 1; j < indexesAbove.Count - 1; j++)
-                {
-                    if (i == indexesAbove[j])
-                    {
-                        pointsAbove.RemoveAt(j);
-                        indexesAbove.RemoveAt(j);
-                        break;
-                    }
-                }
-            }
-        }
-
-
-        protected List<Tuple<float, int, float>> FindInflexao(IEnumerable<Tuple<float, float>> a)
-        {
-            var d2S = a.Select(_ => _.Item2).ToList();
-            var result = new List<Tuple<float, int, float>>();
-            var result2 = new List<Tuple<float, int, float>>();
-            
-            for (int i = 1; i < d2S.Count; i++)
-            {
-                result.Add(new Tuple<float, int, float>(Math.Abs((d2S[i] - d2S[i - 1])/((d2S[i] + d2S[i - 1])/2)), i, d2S[i]));
-            }
-            result.Sort();
-            result.Reverse();
-            for (int i = 0; i < result.Count; i++)
-            {
-                var jaTem = false;
-                var tuple = result[i];
-                for (int j = 0; j < i; j++)
-                {
-                    var tuple1 = result[j];
-                    var diff = Math.Abs(tuple1.Item2 - tuple.Item2);
-                    if (diff < 3)
-                    {
-                        jaTem = true;
-                        break;
-                    }
-                }
-                if (!jaTem)
-                    result2.Add(tuple);
-            }
-
-            return result2;
         }
 
         private int GetMaxRIndex(List<Vertex> vertices)
