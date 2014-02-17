@@ -17,14 +17,14 @@ namespace BioGenie.Stl.Algorithm
             var pairs = Boundaries.OrderBy(_=>_.Key).ToList();
             foreach (var pair in pairs)
             {
-                var pontosNotaveis = GetPontosNotaveis2(pair.Value, resVertical, p3Maior);
+                var pontosNotaveis = GetPontosNotaveis(pair.Value, resVertical, p3Maior);
                 if (pontosNotaveis != null)
                     result[pair.Key] = pontosNotaveis;
             }
             return result;
         }
 
-        private List<Vertex> GetPontosNotaveis2(List<Vertex> vertices, int resVertical, bool p3Maior)
+        private List<Vertex> GetPontosNotaveis(List<Vertex> vertices, int resVertical, bool p3Maior)
         {
             var points = PolygonSimplfy.Simplify(vertices, resVertical, p3Maior ? GetMaxRIndex(vertices) : (int?) null);
             return points;
@@ -34,9 +34,14 @@ namespace BioGenie.Stl.Algorithm
         {
             int index = 0;
             var maxR = float.MinValue;
+            vertices = vertices.OrderBy(_ => _.Z).ToList();
+            var maxZ = vertices.Last().Z/2;
             for (int i = 0; i < vertices.Count; i++)
             {
-                var r = vertices[i].R;
+                var vertex = vertices[i];
+                if (vertex.Z > maxZ)
+                    break;
+                var r = vertex.R;
                 if (r > maxR)
                 {
                     maxR = r;

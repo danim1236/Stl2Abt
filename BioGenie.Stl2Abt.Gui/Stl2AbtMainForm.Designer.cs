@@ -41,10 +41,12 @@
             this.labelStlFileName = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.panelGeratrizes = new System.Windows.Forms.Panel();
+            this.cbP3Maior = new System.Windows.Forms.CheckBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.button1 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.textBoxResVertical = new System.Windows.Forms.TextBox();
+            this.bindingSourceConfig = new System.Windows.Forms.BindingSource(this.components);
             this.label3 = new System.Windows.Forms.Label();
             this.textBoxResAngular = new System.Windows.Forms.TextBox();
             this.glControl2 = new OpenTK.GLControl();
@@ -53,14 +55,12 @@
             this.button2 = new System.Windows.Forms.Button();
             this.glControl3 = new OpenTK.GLControl();
             this.label2 = new System.Windows.Forms.Label();
-            this.bindingSourceConfig = new System.Windows.Forms.BindingSource(this.components);
-            this.cbP3Maior = new System.Windows.Forms.CheckBox();
             this.panelStl.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panelGeratrizes.SuspendLayout();
-            this.panelAbt.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceConfig)).BeginInit();
+            this.panelAbt.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelStl
@@ -214,6 +214,19 @@
             this.panelGeratrizes.Size = new System.Drawing.Size(333, 487);
             this.panelGeratrizes.TabIndex = 1;
             // 
+            // cbP3Maior
+            // 
+            this.cbP3Maior.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbP3Maior.AutoSize = true;
+            this.cbP3Maior.Checked = true;
+            this.cbP3Maior.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbP3Maior.Location = new System.Drawing.Point(251, 411);
+            this.cbP3Maior.Name = "cbP3Maior";
+            this.cbP3Maior.Size = new System.Drawing.Size(68, 17);
+            this.cbP3Maior.TabIndex = 8;
+            this.cbP3Maior.Text = "P3 Maior";
+            this.cbP3Maior.UseVisualStyleBackColor = true;
+            // 
             // progressBar1
             // 
             this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -252,6 +265,10 @@
             this.textBoxResVertical.Name = "textBoxResVertical";
             this.textBoxResVertical.Size = new System.Drawing.Size(100, 20);
             this.textBoxResVertical.TabIndex = 4;
+            // 
+            // bindingSourceConfig
+            // 
+            this.bindingSourceConfig.DataSource = typeof(BioGenie.Stl2Abt.Gui.Config);
             // 
             // label3
             // 
@@ -348,22 +365,6 @@
             this.label2.TabIndex = 1;
             this.label2.Text = "label2";
             // 
-            // bindingSourceConfig
-            // 
-            this.bindingSourceConfig.DataSource = typeof(BioGenie.Stl2Abt.Gui.Config);
-            // 
-            // cbP3Maior
-            // 
-            this.cbP3Maior.AutoSize = true;
-            this.cbP3Maior.Checked = true;
-            this.cbP3Maior.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbP3Maior.Location = new System.Drawing.Point(251, 411);
-            this.cbP3Maior.Name = "cbP3Maior";
-            this.cbP3Maior.Size = new System.Drawing.Size(68, 17);
-            this.cbP3Maior.TabIndex = 8;
-            this.cbP3Maior.Text = "P3 Maior";
-            this.cbP3Maior.UseVisualStyleBackColor = true;
-            // 
             // Stl2AbtMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -383,9 +384,9 @@
             this.groupBox1.PerformLayout();
             this.panelGeratrizes.ResumeLayout(false);
             this.panelGeratrizes.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSourceConfig)).EndInit();
             this.panelAbt.ResumeLayout(false);
             this.panelAbt.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSourceConfig)).EndInit();
             this.ResumeLayout(false);
 
         }

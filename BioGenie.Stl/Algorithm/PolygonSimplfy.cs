@@ -21,6 +21,7 @@ namespace BioGenie.Stl.Algorithm
             };
             int maxPoints = numVertices - 2;
             int firstPoint = 0;
+            float? maxR = preSelectedVertex.HasValue ? vertices[preSelectedVertex.Value].R : (float?) null;
             if (preSelectedVertex.HasValue)
             {
                 var p3 = preSelectedVertex.Value;
@@ -31,7 +32,7 @@ namespace BioGenie.Stl.Algorithm
                 firstPoint = p3;
             }
 
-            var points = SimplifySection(vertices, firstPoint, vertices.Count - 1, maxPoints);
+            var points = SimplifySection(vertices, firstPoint, vertices.Count - 1, maxPoints, maxR);
             points.Sort();
             while (points.Count > maxPoints)
             {
@@ -42,19 +43,22 @@ namespace BioGenie.Stl.Algorithm
             return _points.Select(_ => vertices[_]).ToList();
         }
 
-        private static List<Tuple<double, int>> SimplifySection(List<Vertex> pts, int i, int j, int vertexToFind)
+        private static List<Tuple<double, int>> SimplifySection(List<Vertex> pts, int i, int j, int vertexToFind, float? maxR)
         {
             var points = new List<Tuple<double, int>>();
             if ((i + 1) == j)
                 return new List<Tuple<double, int>>();
 
             var maxDistanceIndex = GetMaxDistanceIndex(pts, i, j);
-            points.Add(maxDistanceIndex);
-            vertexToFind--;
+            if (!maxR.HasValue || pts[maxDistanceIndex.Item2].R <= maxR.Value)
+            {
+                points.Add(maxDistanceIndex);
+                vertexToFind--;
+            }
             if (vertexToFind > 0)
             {
-                points.AddRange(SimplifySection(pts, i, maxDistanceIndex.Item2, vertexToFind));
-                points.AddRange(SimplifySection(pts, maxDistanceIndex.Item2, j, vertexToFind));
+                points.AddRange(SimplifySection(pts, i, maxDistanceIndex.Item2, vertexToFind, maxR));
+                points.AddRange(SimplifySection(pts, maxDistanceIndex.Item2, j, vertexToFind, maxR));
             }
             return points;
         }
