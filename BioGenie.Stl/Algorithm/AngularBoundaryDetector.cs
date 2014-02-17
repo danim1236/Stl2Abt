@@ -21,7 +21,7 @@ namespace BioGenie.Stl.Algorithm
             Facets = abutment.ShellFacets.ToList();
         }
 
-        public Dictionary<float, List<Vertex>> GetBoundaries()
+        public Dictionary<float, List<Vertex>> GetBoundaries(bool doFiltering)
         {
             var facetsByTheta = GetFacetsByTheta();
             Dictionary<float, List<Vertex>> verticesByTheta =
@@ -30,29 +30,61 @@ namespace BioGenie.Stl.Algorithm
                  let facets = pair.Value
                  let plane = GetPlaneFromThetaZ(theta)
                  let vertices = facets.SelectMany(_ => _.Intersects(plane)).OrderBy(_ => _.Z).ToList()
+                 let compactInZ = CompactInZ(ExtendToXYPlane(CompactInZ(vertices)))
                  select new
                  {
                      Theta = theta,
-                     Vertices = FilterInR(CompactInZ(ExtendToXYPlane(CompactInZ(vertices))))
+                     Vertices = doFiltering ? FilterInR(compactInZ) : compactInZ
                  }).ToDictionary(_ => _.Theta, _ => _.Vertices);
             return verticesByTheta;
         }
 
         private List<Vertex> FilterInR(List<Vertex> vertices)
         {
-            var result = new List<Vertex> {vertices.First()};
+            vertices = vertices.OrderBy(_ => _.Z).ToList();
+            var first = vertices.First();
+            var minZ = first.Z;
+            var maxZ = vertices.Last().Z;
+            var maxStep = (maxZ - minZ)/20;
+
+            var result = new List<Vertex> {first};
+            var lastR = first.R;
+            var lastZ = first.Z;
             for (int i = 1; i < vertices.Count - 1; i++)
             {
-                var r1 = vertices[i - 1].R;
                 var v = vertices[i];
-                var r2 = v.R;
-                var r3 = vertices[i + 1].R;
-
-                if (Math.Abs(r2 - r1)/Math.Abs(r1 - r3) < 5)
-                    result.Add(v);
+                var z = v.Z;
+                var diffZ = z - lastZ;
+                if (diffZ < maxStep)
+                {
+                    var r = v.R;
+                    var diffR = r - lastR;
+                    if (Math.Abs(diffR / diffZ) > 7)
+                    {
+                        for (int j = i + 1; j < vertices.Count - 1; j++)
+                        {
+                            v = vertices[j];
+                            z = v.Z;
+                            diffZ = z - lastZ;
+                            if (diffZ < maxStep)
+                            {
+                                r = v.R;
+                                diffR = r - lastR;
+                                if (Math.Abs(diffR/diffZ) < 2)
+                                {
+                                    i = j;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                result.Add(v);
+                lastR = v.R;
+                lastZ = v.Z;
             }
             result.Add(vertices.Last());
-            return result;
+            return result.OrderBy(_ => _.Z).ToList();
         }
 
         private List<Vertex> CompactInZ(List<Vertex> vertices)

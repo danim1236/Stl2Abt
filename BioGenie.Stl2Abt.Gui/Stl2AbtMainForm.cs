@@ -282,7 +282,7 @@ namespace BioGenie.Stl2Abt.Gui
         private void button1_Click(object sender, EventArgs e)
         {
             var config = (Config) bindingSourceConfig.DataSource;
-            Geratrizes = new AngularBoundaryDetector(StlAbutment, config.ResAngular).GetBoundaries();
+            Geratrizes = new AngularBoundaryDetector(StlAbutment, config.ResAngular).GetBoundaries(cbFiltrar.Checked);
             var abt = new Abt(Geratrizes);
             AbtBoundary = abt.GetPoints(config.ResVertical, cbP3Maior.Checked);
             if (_firstGenerate)
