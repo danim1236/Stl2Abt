@@ -4,6 +4,11 @@ namespace BioGenie.Stl.Objects
     {
         X,
         Y,
-        Z
+        Z,
+// ReSharper disable InconsistentNaming
+        _X,
+        _Y,
+        _Z
+        // ReSharper restore InconsistentNaming
     }
 }

@@ -31,6 +31,9 @@
             this.components = new System.ComponentModel.Container();
             this.panelStl = new System.Windows.Forms.Panel();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.radioButton_Z = new System.Windows.Forms.RadioButton();
+            this.radioButton_Y = new System.Windows.Forms.RadioButton();
+            this.radioButton_X = new System.Windows.Forms.RadioButton();
             this.radioButtonZ = new System.Windows.Forms.RadioButton();
             this.radioButtonY = new System.Windows.Forms.RadioButton();
             this.radioButtonX = new System.Windows.Forms.RadioButton();
@@ -39,13 +42,14 @@
             this.radioButtonPoint = new System.Windows.Forms.RadioButton();
             this.glControl1 = new OpenTK.GLControl();
             this.labelStlFileName = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.panelGeratrizes = new System.Windows.Forms.Panel();
+            this.cbFiltrar = new System.Windows.Forms.CheckBox();
             this.cbP3Maior = new System.Windows.Forms.CheckBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.button1 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.textBoxResVertical = new System.Windows.Forms.TextBox();
+            this.bindingSourceConfig = new System.Windows.Forms.BindingSource(this.components);
             this.label3 = new System.Windows.Forms.Label();
             this.textBoxResAngular = new System.Windows.Forms.TextBox();
             this.glControl2 = new OpenTK.GLControl();
@@ -54,14 +58,12 @@
             this.button2 = new System.Windows.Forms.Button();
             this.glControl3 = new OpenTK.GLControl();
             this.label2 = new System.Windows.Forms.Label();
-            this.bindingSourceConfig = new System.Windows.Forms.BindingSource(this.components);
-            this.cbFiltrar = new System.Windows.Forms.CheckBox();
             this.panelStl.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panelGeratrizes.SuspendLayout();
-            this.panelAbt.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceConfig)).BeginInit();
+            this.panelAbt.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelStl
@@ -73,7 +75,6 @@
             this.panelStl.Controls.Add(this.groupBox1);
             this.panelStl.Controls.Add(this.glControl1);
             this.panelStl.Controls.Add(this.labelStlFileName);
-            this.panelStl.Controls.Add(this.textBox1);
             this.panelStl.Location = new System.Drawing.Point(12, 12);
             this.panelStl.Name = "panelStl";
             this.panelStl.Size = new System.Drawing.Size(333, 487);
@@ -82,22 +83,60 @@
             // groupBox2
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox2.Controls.Add(this.radioButton_Z);
+            this.groupBox2.Controls.Add(this.radioButton_Y);
+            this.groupBox2.Controls.Add(this.radioButton_X);
             this.groupBox2.Controls.Add(this.radioButtonZ);
             this.groupBox2.Controls.Add(this.radioButtonY);
             this.groupBox2.Controls.Add(this.radioButtonX);
-            this.groupBox2.Location = new System.Drawing.Point(130, 411);
+            this.groupBox2.Location = new System.Drawing.Point(206, 414);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(174, 32);
+            this.groupBox2.Size = new System.Drawing.Size(120, 61);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
+            // 
+            // radioButton_Z
+            // 
+            this.radioButton_Z.AutoSize = true;
+            this.radioButton_Z.Location = new System.Drawing.Point(82, 36);
+            this.radioButton_Z.Name = "radioButton_Z";
+            this.radioButton_Z.Size = new System.Drawing.Size(35, 17);
+            this.radioButton_Z.TabIndex = 5;
+            this.radioButton_Z.Text = "-Z";
+            this.radioButton_Z.UseVisualStyleBackColor = true;
+            this.radioButton_Z.CheckedChanged += new System.EventHandler(this.radioButtonX_CheckedChanged);
+            // 
+            // radioButton_Y
+            // 
+            this.radioButton_Y.AutoSize = true;
+            this.radioButton_Y.Location = new System.Drawing.Point(44, 36);
+            this.radioButton_Y.Name = "radioButton_Y";
+            this.radioButton_Y.Size = new System.Drawing.Size(35, 17);
+            this.radioButton_Y.TabIndex = 4;
+            this.radioButton_Y.Text = "-Y";
+            this.radioButton_Y.UseVisualStyleBackColor = true;
+            this.radioButton_Y.CheckedChanged += new System.EventHandler(this.radioButtonX_CheckedChanged);
+            // 
+            // radioButton_X
+            // 
+            this.radioButton_X.AutoSize = true;
+            this.radioButton_X.Location = new System.Drawing.Point(6, 36);
+            this.radioButton_X.Name = "radioButton_X";
+            this.radioButton_X.Size = new System.Drawing.Size(35, 17);
+            this.radioButton_X.TabIndex = 3;
+            this.radioButton_X.Text = "-X";
+            this.radioButton_X.UseVisualStyleBackColor = true;
+            this.radioButton_X.CheckedChanged += new System.EventHandler(this.radioButtonX_CheckedChanged);
             // 
             // radioButtonZ
             // 
             this.radioButtonZ.AutoSize = true;
+            this.radioButtonZ.Checked = true;
             this.radioButtonZ.Location = new System.Drawing.Point(82, 9);
             this.radioButtonZ.Name = "radioButtonZ";
             this.radioButtonZ.Size = new System.Drawing.Size(32, 17);
             this.radioButtonZ.TabIndex = 2;
+            this.radioButtonZ.TabStop = true;
             this.radioButtonZ.Text = "Z";
             this.radioButtonZ.UseVisualStyleBackColor = true;
             this.radioButtonZ.CheckedChanged += new System.EventHandler(this.radioButtonX_CheckedChanged);
@@ -105,12 +144,10 @@
             // radioButtonY
             // 
             this.radioButtonY.AutoSize = true;
-            this.radioButtonY.Checked = true;
             this.radioButtonY.Location = new System.Drawing.Point(44, 9);
             this.radioButtonY.Name = "radioButtonY";
             this.radioButtonY.Size = new System.Drawing.Size(32, 17);
             this.radioButtonY.TabIndex = 1;
-            this.radioButtonY.TabStop = true;
             this.radioButtonY.Text = "Y";
             this.radioButtonY.UseVisualStyleBackColor = true;
             this.radioButtonY.CheckedChanged += new System.EventHandler(this.radioButtonX_CheckedChanged);
@@ -186,16 +223,6 @@
             this.labelStlFileName.TabIndex = 1;
             this.labelStlFileName.Text = "label1";
             // 
-            // textBox1
-            // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(3, 449);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(323, 31);
-            this.textBox1.TabIndex = 0;
-            // 
             // panelGeratrizes
             // 
             this.panelGeratrizes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -215,6 +242,19 @@
             this.panelGeratrizes.Name = "panelGeratrizes";
             this.panelGeratrizes.Size = new System.Drawing.Size(333, 487);
             this.panelGeratrizes.TabIndex = 1;
+            // 
+            // cbFiltrar
+            // 
+            this.cbFiltrar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbFiltrar.AutoSize = true;
+            this.cbFiltrar.Checked = true;
+            this.cbFiltrar.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbFiltrar.Location = new System.Drawing.Point(213, 440);
+            this.cbFiltrar.Name = "cbFiltrar";
+            this.cbFiltrar.Size = new System.Drawing.Size(51, 17);
+            this.cbFiltrar.TabIndex = 9;
+            this.cbFiltrar.Text = "Filtrar";
+            this.cbFiltrar.UseVisualStyleBackColor = true;
             // 
             // cbP3Maior
             // 
@@ -267,6 +307,10 @@
             this.textBoxResVertical.Name = "textBoxResVertical";
             this.textBoxResVertical.Size = new System.Drawing.Size(100, 20);
             this.textBoxResVertical.TabIndex = 4;
+            // 
+            // bindingSourceConfig
+            // 
+            this.bindingSourceConfig.DataSource = typeof(BioGenie.Stl2Abt.Gui.Config);
             // 
             // label3
             // 
@@ -363,23 +407,6 @@
             this.label2.TabIndex = 1;
             this.label2.Text = "label2";
             // 
-            // bindingSourceConfig
-            // 
-            this.bindingSourceConfig.DataSource = typeof(BioGenie.Stl2Abt.Gui.Config);
-            // 
-            // cbFiltrar
-            // 
-            this.cbFiltrar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbFiltrar.AutoSize = true;
-            this.cbFiltrar.Checked = true;
-            this.cbFiltrar.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbFiltrar.Location = new System.Drawing.Point(213, 440);
-            this.cbFiltrar.Name = "cbFiltrar";
-            this.cbFiltrar.Size = new System.Drawing.Size(51, 17);
-            this.cbFiltrar.TabIndex = 9;
-            this.cbFiltrar.Text = "Filtrar";
-            this.cbFiltrar.UseVisualStyleBackColor = true;
-            // 
             // Stl2AbtMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -399,9 +426,9 @@
             this.groupBox1.PerformLayout();
             this.panelGeratrizes.ResumeLayout(false);
             this.panelGeratrizes.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSourceConfig)).EndInit();
             this.panelAbt.ResumeLayout(false);
             this.panelAbt.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSourceConfig)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -409,7 +436,6 @@
         #endregion
 
         private System.Windows.Forms.Panel panelStl;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label labelStlFileName;
         private OpenTK.GLControl glControl1;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -435,5 +461,8 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.CheckBox cbP3Maior;
         private System.Windows.Forms.CheckBox cbFiltrar;
+        private System.Windows.Forms.RadioButton radioButton_Z;
+        private System.Windows.Forms.RadioButton radioButton_Y;
+        private System.Windows.Forms.RadioButton radioButton_X;
     }
 }

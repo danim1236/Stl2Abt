@@ -41,8 +41,8 @@ namespace BioGenie.Stl.Objects
         public Facet(Normal normal, IEnumerable<Vertex> vertices, int attributeByteCount)
             : this()
         {
-            Normal = normal;
-            Vertices = vertices.ToList();
+            Normal = new Normal(normal);
+            Vertices = vertices.Select(_ => new Vertex(_)).ToList();
             AttributeByteCount = attributeByteCount;
         }
         

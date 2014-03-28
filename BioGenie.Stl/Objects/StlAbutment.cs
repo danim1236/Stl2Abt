@@ -22,7 +22,7 @@ namespace BioGenie.Stl.Objects
         public StlAbutment(StlDocument stlDocument)
         {
             Name = stlDocument.Name;
-            Facets = stlDocument.Facets;
+            Facets = stlDocument.Facets.Select(_ => new Facet(_.Normal, _.Vertices, _.AttributeByteCount)).ToList();
         }
 
         private FacetsGroup _abutmentBase;
@@ -41,18 +41,19 @@ namespace BioGenie.Stl.Objects
             return FacetGrouper.GroupByNormal(NormalTolThreshold).OrderByDescending(_ => _.Area).FirstOrDefault();
         }
 
-        private bool _alignAndCenterDone;
         public void AlignAndCenterAbutment()
         {
-            if (!_alignAndCenterDone)
-            {
-                _alignAndCenterDone = true;
-                AlignAbutment();
-                CenterAbutment();
-            }
+            AlignAbutment();
+            CenterAbutment();
         }
 
-        private void AlignAbutment()
+        public void AlignAndCenterAbutment(AxisOrder axisOrder)
+        {
+            AlignAbutment(axisOrder);
+            CenterAbutment();
+        }
+
+        public void AlignAbutment()
         {
             var normals = new[]
             {
@@ -86,64 +87,8 @@ namespace BioGenie.Stl.Objects
             var facetGroupAreas = facetGroups.Select((fs, i) => new Tuple<float, int>(fs.Sum(f => f.Area), i)).ToList();
             facetGroupAreas.Sort();
             var foundAxis = facetGroupAreas.Last().Item2;
-            switch (foundAxis)
-            {
-                case 0: // -Z
-                    break;
-                case 1: // Z
-                    foreach (var facet in Facets)
-                    {
-                        facet.Vertices = facet.Vertices.Select(_ => new Vertex(-_.X, _.Y, -_.Z)).ToList();
-                        Normal normal = facet.Normal;
-                        facet.Normal = new Normal(-normal.X, normal.Y, -normal.Z);
-                        facet.Reset();
-                    }
-                    break;
-                case 2: // -X
-                    foreach (var facet in Facets)
-                    {
-                        facet.Vertices = facet.Vertices.Select(_ => new Vertex(-_.Z, _.Y, _.X)).ToList();
-                        Normal normal = facet.Normal;
-                        facet.Normal = new Normal(-normal.Z, normal.Y, normal.X);
-                        facet.Reset();
-                    }
-                    break;
-                case 3: // X
-                    foreach (var facet in Facets)
-                    {
-                        facet.Vertices = facet.Vertices.Select(_ => new Vertex(_.Z, _.Y, -_.X)).ToList();
-                        Normal normal = facet.Normal;
-                        facet.Normal = new Normal(normal.Z, normal.Y, -normal.X);
-                        facet.Reset();
-                    }
-                    break;
-                case 4: // -Y
-                    foreach (var facet in Facets)
-                    {
-                        facet.Vertices = facet.Vertices.Select(_ => new Vertex(_.X, -_.Z, _.Y)).ToList();
-                        Normal normal = facet.Normal;
-                        facet.Normal = new Normal(normal.X, -normal.Z, normal.Y);
-                        facet.Reset();
-                    }
-                    break;
-                case 5: // Y
-                    foreach (var facet in Facets)
-                    {
-                        facet.Vertices = facet.Vertices.Select(_ => new Vertex(_.X, _.Z, -_.Y)).ToList();
-                        Normal normal = facet.Normal;
-                        facet.Normal = new Normal(normal.X, normal.Z, -normal.Y);
-                        facet.Reset();
-                    }
-                    break;
-            }
-            _abutmentBase = new FacetsGroup
-            {
-                Facets = new HashSet<Facet>(facetGroups[foundAxis]),
-                Normal = new Normal(0, 0, -1),
-                Area = facetGroupAreas.Last().Item1
-            };
-            _centralFacets = null;
-            _shellFacets = null;
+            var axisOdermap = new[] {AxisOrder._Z, AxisOrder.Z, AxisOrder._X, AxisOrder.X, AxisOrder._Y, AxisOrder.Y};
+            AlignAbutment(axisOdermap[foundAxis], facetGroups[foundAxis], facetGroupAreas.Last().Item1);
         }
 
         public double MaxZ
@@ -161,7 +106,6 @@ namespace BioGenie.Stl.Objects
 
         private FacetsGroup CalcCentralFacets()
         {
-            AlignAndCenterAbutment();
             return FacetGrouper.FindCentralTube(AbutmentBase);
         }
 
@@ -219,6 +163,85 @@ namespace BioGenie.Stl.Objects
                 return _shellFacets ??
                        (_shellFacets = new HashSet<Facet>(Facets.Except(AbutmentBase.Facets).Except(CentralFacets).Where(_=>Math.Abs(_.Normal.Z) < 0.98)));
             }
+        }
+
+        public void AlignAbutment(AxisOrder axisOrder, List<Facet> baseFacets, float area)
+        {
+            switch (axisOrder)
+            {
+                case AxisOrder._Z:
+                    break;
+                case AxisOrder.Z:
+                    foreach (var facet in Facets)
+                    {
+                        facet.Vertices = facet.Vertices.Select(_ => new Vertex(-_.X, _.Y, -_.Z)).ToList();
+                        Normal normal = facet.Normal;
+                        facet.Normal = new Normal(-normal.X, normal.Y, -normal.Z);
+                        facet.Reset();
+                    }
+                    break;
+                case AxisOrder._X:
+                    foreach (var facet in Facets)
+                    {
+                        facet.Vertices = facet.Vertices.Select(_ => new Vertex(-_.Z, _.Y, _.X)).ToList();
+                        Normal normal = facet.Normal;
+                        facet.Normal = new Normal(-normal.Z, normal.Y, normal.X);
+                        facet.Reset();
+                    }
+                    break;
+                case AxisOrder.X:
+                    foreach (var facet in Facets)
+                    {
+                        facet.Vertices = facet.Vertices.Select(_ => new Vertex(_.Z, _.Y, -_.X)).ToList();
+                        Normal normal = facet.Normal;
+                        facet.Normal = new Normal(normal.Z, normal.Y, -normal.X);
+                        facet.Reset();
+                    }
+                    break;
+                case AxisOrder._Y:
+                    foreach (var facet in Facets)
+                    {
+                        facet.Vertices = facet.Vertices.Select(_ => new Vertex(_.X, -_.Z, _.Y)).ToList();
+                        Normal normal = facet.Normal;
+                        facet.Normal = new Normal(normal.X, -normal.Z, normal.Y);
+                        facet.Reset();
+                    }
+                    break;
+                case AxisOrder.Y:
+                    foreach (var facet in Facets)
+                    {
+                        facet.Vertices = facet.Vertices.Select(_ => new Vertex(_.X, _.Z, -_.Y)).ToList();
+                        Normal normal = facet.Normal;
+                        facet.Normal = new Normal(normal.X, normal.Z, -normal.Y);
+                        facet.Reset();
+                    }
+                    break;
+            }
+            _abutmentBase = new FacetsGroup
+            {
+                Facets = new HashSet<Facet>(baseFacets),
+                Normal = new Normal(0, 0, -1),
+                Area = area
+            };
+            _centralFacets = null;
+            _shellFacets = null;
+        }
+
+        public void AlignAbutment(AxisOrder axisOrder)
+        {
+            var axisOdermap = new Dictionary<AxisOrder, Vector3>
+            {
+                {AxisOrder._Z, new Normal(0, 0, -1).ToVector3()},
+                {AxisOrder.Z, new Normal(0, 0, 1).ToVector3()},
+                {AxisOrder._X, new Normal(-1, 0, 0).ToVector3()},
+                {AxisOrder.X, new Normal(1, 0, 0).ToVector3()},
+                {AxisOrder._Y, new Normal(0, -1, 0).ToVector3()},
+                {AxisOrder.Y, new Normal(0, -1, 0).ToVector3()}
+            };
+
+            var normal = axisOdermap[axisOrder];
+            var baseFacets = Facets.Where(facet => Vector3.Dot(normal, facet.Normal.ToVector3()) > 0.999).ToList();
+            AlignAbutment(axisOrder, baseFacets, baseFacets.Sum(_ => _.Area));
         }
     }
 }

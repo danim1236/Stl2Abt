@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -14,8 +15,11 @@ namespace BioGenie.Stl2Abt.Gui
     {
         public string StlFileName { get; set; }
         public string AbtFileName { get; set; }
-        
+
+        public StlDocument StlDocument { get; set; }
+
         public StlAbutment StlAbutment { get; set; }
+
         public Dictionary<float, List<Vertex>> Geratrizes { get; set; }
 
         private bool _firstGenerate = true;
@@ -52,23 +56,21 @@ namespace BioGenie.Stl2Abt.Gui
             {
                 using (var reader = new StreamReader(StlFileName))
                 {
-                    StlAbutment = new StlAbutment(StlDocument.Read(reader));
+                    StlDocument = StlDocument.Read(reader);
                 }
             }
             catch (FormatException)
             {
                 using (var reader = new BinaryReader(File.Open(StlFileName, FileMode.Open)))
                 {
-                    StlAbutment = new StlAbutment(StlDocument.Read(reader));
+                    StlDocument = StlDocument.Read(reader);
                 }
             }
-            StlAbutment.AlignAndCenterAbutment();
-            StlAbutment.Name = Path.GetFileNameWithoutExtension(StlFileName);
+            GenerateModel();
         }
 
         public Dictionary<float, List<Vertex>> AbtBoundary { get; set; }
-
-
+        
         private void Stl2AbtMainForm_Resize(object sender, EventArgs e)
         {
             var width = (Width - 30) / 3;
@@ -108,18 +110,7 @@ namespace BioGenie.Stl2Abt.Gui
             float yMax;
             float zMax;
             StlAbutment.GetLimits(out xMin, out yMin, out zMin, out xMax, out yMax, out zMax);
-            switch (GetAxisOrder())
-            {
-                case AxisOrder.X:
-                    GL.Ortho(xMin - 1, xMax + 1, yMin - 1, yMax + 1, zMin - 1, zMax + 1);
-                    break;
-                case AxisOrder.Y:
-                    GL.Ortho(yMax + 1, yMin - 1, zMin - 1, zMax + 1, xMin - 1, xMax + 1);
-                    break;
-                case AxisOrder.Z:
-                    GL.Ortho(zMin - 1, zMax + 1, xMin - 1, xMax + 1, yMin - 1, yMax + 1);
-                    break;
-            }
+            GL.Ortho(yMax + 1, yMin - 1, zMin - 1, zMax + 1, xMin - 1, xMax + 1);
         }
 
         private void glControl1_Paint(object sender, PaintEventArgs e)
@@ -128,17 +119,17 @@ namespace BioGenie.Stl2Abt.Gui
 
             GL.PolygonMode(MaterialFace.FrontAndBack, radioButtonPoint.Checked ? PolygonMode.Point : PolygonMode.Line);
             GL.Begin(PrimitiveType.Triangles);
-            foreach (var facet in StlAbutment.ShellFacets)
+            foreach (var facet in StlAbutment.Facets)
             {
                 if (facet.Vertices.Count != 3)
                 {
                     throw new FormatException("There must be only triangles");
                 }
                 GL.Color3(Color.LightBlue);
-                GL.Normal3(facet.Normal.ToVector3(GetAxisOrder()));
+                GL.Normal3(facet.Normal.ToVector3(AxisOrder.Y));
                 foreach (var vertex in facet.Vertices)
                 {
-                    GL.Vertex3(vertex.ToVector3(GetAxisOrder()));
+                    GL.Vertex3(vertex.ToVector3(AxisOrder.Y));
                 }
             }
             GL.End();
@@ -147,9 +138,24 @@ namespace BioGenie.Stl2Abt.Gui
             glControl1.Context.SwapBuffers();
         }
 
-        private AxisOrder GetAxisOrder()
+        public AxisOrder GetAxisOrder()
         {
-            return radioButtonX.Checked ? AxisOrder.X : (radioButtonY.Checked ? AxisOrder.Y : AxisOrder.Z);
+            AxisOrder result;
+            if (radioButtonX.Checked)
+                result=AxisOrder._X;
+            else if (radioButtonY.Checked)
+                result = AxisOrder._Y;
+            else if (radioButtonZ.Checked)
+                result = AxisOrder._Z;
+            else if (radioButton_X.Checked)
+                result = AxisOrder.X;
+            else if (radioButton_Y.Checked)
+                result = AxisOrder.Y;
+            else if (radioButton_Z.Checked)
+                result = AxisOrder.Z;
+            else
+                throw new InvalidEnumArgumentException();
+            return result;
         }
 
         private void SetLight()
@@ -160,10 +166,9 @@ namespace BioGenie.Stl2Abt.Gui
             float xMax;
             float yMax;
             float zMax;
-            StlAbutment.GetLimits(out xMin, out yMin, out zMin, out xMax, out yMax, out zMax);
+            StlDocument.GetLimits(out xMin, out yMin, out zMin, out xMax, out yMax, out zMax);
             GL.Light(LightName.Light0, LightParameter.SpotDirection,
                 new Vector4(new Vector3((xMin + xMax)/2, (yMin + yMax)/2, zMax*2)));
-
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
@@ -173,7 +178,16 @@ namespace BioGenie.Stl2Abt.Gui
 
         private void radioButtonX_CheckedChanged(object sender, EventArgs e)
         {
+            GenerateModel();
             Redraw();
+        }
+
+        private void GenerateModel()
+        {
+            StlAbutment = new StlAbutment(StlDocument);
+            StlAbutment.AlignAndCenterAbutment(GetAxisOrder());
+            var config = (Config)bindingSourceConfig.DataSource;
+            Geratrizes = new AngularBoundaryDetector(StlAbutment, config.ResAngular).GetBoundaries(cbFiltrar.Checked);
         }
 
         private void Redraw()
@@ -216,7 +230,7 @@ namespace BioGenie.Stl2Abt.Gui
                 GL.Begin(PrimitiveType.LineStrip);
                 foreach (var vertex in boundaryByRotStep)
                 {
-                    GL.Vertex3(vertex.ToVector3(GetAxisOrder()));
+                    GL.Vertex3(vertex.ToVector3(AxisOrder.Y));
                 }
                 GL.End();
             }
@@ -257,7 +271,7 @@ namespace BioGenie.Stl2Abt.Gui
                 GL.Begin(PrimitiveType.LineStrip);
                 foreach (var vertex in boundaryByRotStep)
                 {
-                    GL.Vertex3(vertex.ToVector3(GetAxisOrder()));
+                    GL.Vertex3(vertex.ToVector3(AxisOrder.Y));
                 }
                 GL.End();
             }
@@ -282,7 +296,6 @@ namespace BioGenie.Stl2Abt.Gui
         private void button1_Click(object sender, EventArgs e)
         {
             var config = (Config) bindingSourceConfig.DataSource;
-            Geratrizes = new AngularBoundaryDetector(StlAbutment, config.ResAngular).GetBoundaries(cbFiltrar.Checked);
             var abt = new Abt(Geratrizes);
             AbtBoundary = abt.GetPoints(config.ResVertical, cbP3Maior.Checked);
             if (_firstGenerate)
