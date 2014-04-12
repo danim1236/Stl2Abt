@@ -44,7 +44,11 @@ namespace BioGenie.Stl.Objects
 
         public void AlignAndCenterAbutment()
         {
-            if (AlignAbutmentOrtho(AbutmentBase)) return;
+            if (AlignAbutmentOrtho(AbutmentBase))
+            {
+                CenterAbutment();
+                return;
+            }
             do
             {
                 var normal = AbutmentBase.Normal;
