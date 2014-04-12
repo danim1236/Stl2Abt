@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BioGenie.Stl.Algorithm;
+using BioGenie.Stl.Tools;
 using OpenTK;
 
 namespace BioGenie.Stl.Objects
@@ -36,24 +37,76 @@ namespace BioGenie.Stl.Objects
             get { return _abutmentBase ?? (_abutmentBase = CalcGreaterSurface()); }
         }
 
-        private FacetsGroup CalcGreaterSurface()
+        public FacetsGroup CalcGreaterSurface()
         {
             return FacetGrouper.GroupByNormal(NormalTolThreshold).OrderByDescending(_ => _.Area).FirstOrDefault();
         }
 
         public void AlignAndCenterAbutment()
         {
-            AlignAbutment();
-            CenterAbutment();
+            if (AlignAbutmentOrtho(AbutmentBase)) return;
+            var normal = AbutmentBase.Normal;
+
+            double ty = 0;
+            double tx = 0;
+            if (Math.Abs(normal.X) > AngleThreshold)
+            {
+                ty = CalcQy(normal.Z, normal.X);
+            }
+            var quaternionY = Quaternion.FromAxisAngle(new Vector3(0, -1, 0), (float) ty);
+            var newNormal = new Normal(normal);
+            newNormal.Rotate(quaternionY);
+            if (Math.Abs(newNormal.Y) > AngleThreshold)
+            {
+                tx = CalcQy(newNormal.Z, newNormal.Y);
+            }
+
+            var center = AbutmentBase.Center;
+            var quaternionX = Quaternion.FromAxisAngle(new Vector3(1, 0, 0), (float) tx);
+            foreach (var facet in Facets)
+            {
+                facet.Subtract(center);
+                if (Math.Abs(ty) > AngleThreshold)
+                {
+                    facet.Rotate(quaternionY);
+                }
+                if (Math.Abs(tx) > AngleThreshold)
+                {
+                    facet.Rotate(quaternionX);
+                }
+            }
+            _abutmentBase = null;
         }
 
-        public void AlignAndCenterAbutment(AxisOrder axisOrder)
+        private static double CalcQy(float z, float x)
         {
-            AlignAbutment(axisOrder);
-            CenterAbutment();
+            double t;
+            if (z < 0)
+            {
+                if (x < 0)
+                {
+                    t = Math.Acos(-z);
+                }
+                else
+                {
+                    t = -Math.Acos(-z);
+                }
+            }
+            else
+            {
+                if (x < 0)
+                {
+                    t = Math.PI - Math.Acos(z);
+                }
+                else
+                {
+                    t = Math.PI + Math.Acos(z);
+                }
+            }
+            return t;
         }
 
-        public void AlignAbutment()
+        private bool AlignAbutmentOrtho(FacetsGroup abutmentBase)
         {
             var normals = new[]
             {
@@ -64,31 +117,25 @@ namespace BioGenie.Stl.Objects
                 new Normal(0, -1, 0).ToVector3(),
                 new Normal(0, -1, 0).ToVector3()
             };
-            var facetGroups = new[]
+            var axisOdermap = new[] {AxisOrder._Z, AxisOrder.Z, AxisOrder._X, AxisOrder.X, AxisOrder._Y, AxisOrder.Y};
+            var normal = AbutmentBase.Normal.ToVector3();
+            var th = 1 - NormalTolThreshold;
+            var foundAxis = -1;
+            for (int i = 0; i < normals.Length; i++)
             {
-                new List<Facet>(),
-                new List<Facet>(),
-                new List<Facet>(),
-                new List<Facet>(),
-                new List<Facet>(),
-                new List<Facet>()
-            };
-            foreach (var facet in Facets)
-            {
-                for (int i = 0; i < 6; i++)
+                if (Vector3.Dot(normal, normals[i]) > th)
                 {
-                    if (Vector3.Dot(normals[i], facet.Normal.ToVector3()) > 0.999)
-                    {
-                        facetGroups[i].Add(facet);
-                        break;
-                    }
+                    foundAxis = i;
+                    break;
                 }
             }
-            var facetGroupAreas = facetGroups.Select((fs, i) => new Tuple<float, int>(fs.Sum(f => f.Area), i)).ToList();
-            facetGroupAreas.Sort();
-            var foundAxis = facetGroupAreas.Last().Item2;
-            var axisOdermap = new[] {AxisOrder._Z, AxisOrder.Z, AxisOrder._X, AxisOrder.X, AxisOrder._Y, AxisOrder.Y};
-            AlignAbutment(axisOdermap[foundAxis], facetGroups[foundAxis], facetGroupAreas.Last().Item1);
+            var ret = foundAxis != -1;
+            if (ret)
+            {
+                var abutmentBaseFacets = abutmentBase.Facets;
+                AlignAbutmentOrtho(axisOdermap[foundAxis], abutmentBaseFacets.ToList(), abutmentBaseFacets.Area());
+            }
+            return ret;
         }
 
         public double MaxZ
@@ -121,39 +168,45 @@ namespace BioGenie.Stl.Objects
 
         public void CenterAbutment()
         {
-            var bag = new Dictionary<List<float>, List<Facet>>();
-            var facets = AbutmentBase.Facets;
-            var minZ = facets.Select(_ => _.MinZ).Min();
-            var maxZ = facets.Select(_ => _.MaxZ).Max();
-            var tolerance = (maxZ - minZ)/10;
-            foreach (var facet in facets)
+            try
             {
-                var found = false;
-                var z = facet.Center.Z;
-                foreach (var pair in bag)
+                var bag = new Dictionary<List<float>, List<Facet>>();
+                var facets = AbutmentBase.Facets;
+                var minZ = facets.Select(_ => _.MinZ).Min();
+                var maxZ = facets.Select(_ => _.MaxZ).Max();
+                var tolerance = (maxZ - minZ)/10;
+                foreach (var facet in facets)
                 {
-                    var zs = pair.Key;
-                    var meanZ = zs.Sum()/zs.Count;
-                    if (Math.Abs(meanZ - z) < tolerance)
+                    var found = false;
+                    var z = facet.Center.Z;
+                    foreach (var pair in bag)
                     {
-                        zs.Add(z);
-                        pair.Value.Add(facet);
-                        found = true;
-                        break;
+                        var zs = pair.Key;
+                        var meanZ = zs.Sum()/zs.Count;
+                        if (Math.Abs(meanZ - z) < tolerance)
+                        {
+                            zs.Add(z);
+                            pair.Value.Add(facet);
+                            found = true;
+                            break;
+                        }
                     }
+                    if (!found)
+                        bag.Add(new List<float> {z}, new List<Facet> {facet});
                 }
-                if (!found)
-                    bag.Add(new List<float> {z}, new List<Facet> {facet});
+                minZ = bag.Keys.Min(_ => _.Sum()/_.Count);
+                var center = new Vertex(AbutmentBase.Center) {Z = minZ};
+                foreach (var facet in Facets)
+                {
+                    facet.Subtract(center);
+                    facet.Reset();
+                }
+                _centralFacets = null;
+                _shellFacets = null;
             }
-            minZ = bag.Keys.Min(_ => _.Sum()/_.Count);
-            var center = new Vertex(AbutmentBase.Center) {Z = minZ};
-            foreach (var facet in Facets)
+            catch
             {
-                facet.Subtract(center);
-                facet.Reset();
             }
-            _centralFacets = null;
-            _shellFacets = null;
         }
 
         public HashSet<Facet> ShellFacets
@@ -165,7 +218,7 @@ namespace BioGenie.Stl.Objects
             }
         }
 
-        public void AlignAbutment(AxisOrder axisOrder, List<Facet> baseFacets, float area)
+        public void AlignAbutmentOrtho(AxisOrder axisOrder, List<Facet> baseFacets, float area)
         {
             switch (axisOrder)
             {
@@ -225,23 +278,6 @@ namespace BioGenie.Stl.Objects
             };
             _centralFacets = null;
             _shellFacets = null;
-        }
-
-        public void AlignAbutment(AxisOrder axisOrder)
-        {
-            var axisOdermap = new Dictionary<AxisOrder, Vector3>
-            {
-                {AxisOrder._Z, new Normal(0, 0, -1).ToVector3()},
-                {AxisOrder.Z, new Normal(0, 0, 1).ToVector3()},
-                {AxisOrder._X, new Normal(-1, 0, 0).ToVector3()},
-                {AxisOrder.X, new Normal(1, 0, 0).ToVector3()},
-                {AxisOrder._Y, new Normal(0, -1, 0).ToVector3()},
-                {AxisOrder.Y, new Normal(0, -1, 0).ToVector3()}
-            };
-
-            var normal = axisOdermap[axisOrder];
-            var baseFacets = Facets.Where(facet => Vector3.Dot(normal, facet.Normal.ToVector3()) > 0.999).ToList();
-            AlignAbutment(axisOrder, baseFacets, baseFacets.Sum(_ => _.Area));
         }
     }
 }

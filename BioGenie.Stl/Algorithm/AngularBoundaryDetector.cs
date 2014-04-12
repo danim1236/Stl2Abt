@@ -125,7 +125,11 @@ namespace BioGenie.Stl.Algorithm
                     break;
             }
             if (countBelow0 > 0)
-                vertices = vertices.GetRange(countBelow0, vertices.Count - countBelow0);
+            {
+                var range = vertices.GetRange(countBelow0, vertices.Count - countBelow0);
+                if (range.Any())
+                    vertices = range;
+            }
             var p1 = vertices[0].ToVector3();
             var p2 = vertices[1].ToVector3();
             var dir = p2 - p1;

@@ -176,9 +176,25 @@ namespace BioGenie.Stl.Objects
             Reset();
         }
 
+        public void Rotate(Quaternion quaternion)
+        {
+            Vector3 v;
+            var v3 = ToVector3();
+            Vector3.Transform(ref v3, ref quaternion, out v);
+            X = v.X;
+            Y = v.Y;
+            Z = v.Z;
+            Reset();
+        }
+
         public void Reset()
         {
             _vector3 = null;
+        }
+
+        public static Vertex operator +(Vertex a, Vertex b)
+        {
+            return new Vertex(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
         }
 
         private Vector2? _vector2;

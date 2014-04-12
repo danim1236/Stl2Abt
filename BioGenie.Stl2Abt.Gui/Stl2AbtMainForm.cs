@@ -185,7 +185,7 @@ namespace BioGenie.Stl2Abt.Gui
         private void GenerateModel()
         {
             StlAbutment = new StlAbutment(StlDocument);
-            StlAbutment.AlignAndCenterAbutment(GetAxisOrder());
+            StlAbutment.AlignAndCenterAbutment();
             var config = (Config)bindingSourceConfig.DataSource;
             Geratrizes = new AngularBoundaryDetector(StlAbutment, config.ResAngular).GetBoundaries(cbFiltrar.Checked);
         }

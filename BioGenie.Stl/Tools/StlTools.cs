@@ -40,5 +40,10 @@ namespace BioGenie.Stl.Tools
             }
             return new Vertex(x / totalArea, y / totalArea, z / totalArea);
         }
+
+        public static float Area(this IEnumerable<Facet> facets)
+        {
+            return facets.Sum(_ => _.Area);
+        }
     }
 }

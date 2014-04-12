@@ -30,8 +30,8 @@ namespace BioGenie.Stl.Objects
 
         private float? _maxZ;
         private float? _minZ;
-        public float MaxZ { get { return (float) (_maxZ ?? (_maxZ = Vertices.Max(__ => __.Z))); } }
-        public float MinZ { get { return (float) (_minZ ?? (_minZ = Vertices.Min(__ => __.Z))); } }
+        public float MaxZ { get { return (float)(_maxZ ?? (_maxZ = Vertices.Max(__ => __.Z))); } }
+        public float MinZ { get { return (float)(_minZ ?? (_minZ = Vertices.Min(__ => __.Z))); } }
 
         public Facet()
         {
@@ -174,22 +174,11 @@ namespace BioGenie.Stl.Objects
 
         public void Rotate(Quaternion quaternion)
         {
-            Vector3 v;
             foreach (var vertex in Vertices)
             {
-                var v3 = vertex.ToVector3();
-                Vector3.Transform(ref v3, ref quaternion, out v);
-                vertex.X = v.X;
-                vertex.Y = v.Y;
-                vertex.Z = v.Z;
-                vertex.Reset();
+                vertex.Rotate(quaternion);
             }
-            var n3 = Normal.ToVector3();
-            Vector3.Transform(ref n3, ref quaternion, out v);
-            Normal.X = v.X;
-            Normal.Y = v.Y;
-            Normal.Z = v.Z;
-            Normal.Reset();
+            Normal.Rotate(quaternion);
         }
 
         public List<Segment> GetEdgesAsSegments()
