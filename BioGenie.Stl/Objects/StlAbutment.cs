@@ -45,37 +45,40 @@ namespace BioGenie.Stl.Objects
         public void AlignAndCenterAbutment()
         {
             if (AlignAbutmentOrtho(AbutmentBase)) return;
-            var normal = AbutmentBase.Normal;
+            do
+            {
+                var normal = AbutmentBase.Normal;
 
-            double ty = 0;
-            double tx = 0;
-            if (Math.Abs(normal.X) > AngleThreshold)
-            {
-                ty = CalcQy(normal.Z, normal.X);
-            }
-            var quaternionY = Quaternion.FromAxisAngle(new Vector3(0, -1, 0), (float) ty);
-            var newNormal = new Normal(normal);
-            newNormal.Rotate(quaternionY);
-            if (Math.Abs(newNormal.Y) > AngleThreshold)
-            {
-                tx = CalcQy(newNormal.Z, newNormal.Y);
-            }
+                double ty = 0;
+                double tx = 0;
+                if (Math.Abs(normal.X) > AngleThreshold)
+                {
+                    ty = CalcQy(normal.Z, normal.X);
+                }
+                var quaternionY = Quaternion.FromAxisAngle(new Vector3(0, -1, 0), (float) ty);
+                var newNormal = new Normal(normal);
+                newNormal.Rotate(quaternionY);
+                if (Math.Abs(newNormal.Y) > AngleThreshold)
+                {
+                    tx = CalcQy(newNormal.Z, newNormal.Y);
+                }
 
-            var center = AbutmentBase.Center;
-            var quaternionX = Quaternion.FromAxisAngle(new Vector3(1, 0, 0), (float) tx);
-            foreach (var facet in Facets)
-            {
-                facet.Subtract(center);
-                if (Math.Abs(ty) > AngleThreshold)
+                var center = AbutmentBase.Center;
+                var quaternionX = Quaternion.FromAxisAngle(new Vector3(1, 0, 0), (float) tx);
+                foreach (var facet in Facets)
                 {
-                    facet.Rotate(quaternionY);
+                    facet.Subtract(center);
+                    if (Math.Abs(ty) > AngleThreshold)
+                    {
+                        facet.Rotate(quaternionY);
+                    }
+                    if (Math.Abs(tx) > AngleThreshold)
+                    {
+                        facet.Rotate(quaternionX);
+                    }
                 }
-                if (Math.Abs(tx) > AngleThreshold)
-                {
-                    facet.Rotate(quaternionX);
-                }
-            }
-            _abutmentBase = null;
+                _abutmentBase = null;
+            } while (AbutmentBase.Normal.Z > NormalTolThreshold - 1);
         }
 
         private static double CalcQy(float z, float x)
