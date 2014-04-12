@@ -27,7 +27,7 @@ namespace BioGenie.Stl.Algorithm
             Dictionary<float, List<Vertex>> verticesByTheta =
                 (from pair in facetsByTheta
                  let theta = pair.Key
-                 let facets = pair.Value
+                 let facets = GetOuterFacets(pair.Value)
                  let plane = GetPlaneFromThetaZ(theta)
                  let vertices = facets.SelectMany(_ => _.Intersects(plane)).OrderBy(_ => _.Z).ToList()
                  let compactInZ = CompactInZ(ExtendToXYPlane(CompactInZ(vertices)))
@@ -37,6 +37,37 @@ namespace BioGenie.Stl.Algorithm
                      Vertices = doFiltering ? FilterInR(compactInZ) : compactInZ
                  }).ToDictionary(_ => _.Theta, _ => _.Vertices);
             return verticesByTheta;
+        }
+
+        private List<Facet> GetOuterFacets(List<Facet> facets)
+        {
+            var result = facets.Select(_ => _).ToList();
+            Facet lastFacet = null;
+            foreach (var facet in facets)
+            {
+                if (lastFacet == null)
+                {
+                    lastFacet = facet;
+                    continue;
+                }
+                if (facet.MinZ < lastFacet.MaxZ)
+                {
+                    if (Math.Abs(facet.Center.R /lastFacet.Center.R) > 1.2)
+                    {
+                        result.Remove(lastFacet);
+                        lastFacet = facet;
+                    }
+                    else if (Math.Abs(facet.Center.R / lastFacet.Center.R) < 0.8)
+                    {
+                        result.Remove(facet);
+                    }
+                }
+                else
+                {
+                    lastFacet = facet;
+                }
+            }
+            return result;
         }
 
         private List<Vertex> FilterInR(List<Vertex> vertices)
