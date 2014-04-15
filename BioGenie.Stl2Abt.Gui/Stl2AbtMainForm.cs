@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using BioGenie.Stl.Algorithm;
 using BioGenie.Stl.Objects;
@@ -66,6 +67,8 @@ namespace BioGenie.Stl2Abt.Gui
                     StlDocument = StlDocument.Read(reader);
                 }
             }
+            StlAbutment = new StlAbutment(StlDocument);
+            StlAbutment.AlignAndCenterAbutment();
             GenerateModel();
         }
 
@@ -184,10 +187,8 @@ namespace BioGenie.Stl2Abt.Gui
 
         private void GenerateModel()
         {
-            StlAbutment = new StlAbutment(StlDocument);
-            StlAbutment.AlignAndCenterAbutment();
             var config = (Config)bindingSourceConfig.DataSource;
-            Geratrizes = new AngularBoundaryDetector(StlAbutment, config.ResAngular).GetBoundaries(cbFiltrar.Checked);
+            Geratrizes = new AngularBoundaryDetector(StlAbutment, config.ResAngular).GetBoundaries(true);
         }
 
         private void Redraw()
@@ -276,6 +277,18 @@ namespace BioGenie.Stl2Abt.Gui
                 GL.End();
             }
 
+            if (AbtBoundary.Any())
+            {
+                GL.Begin(PrimitiveType.LineStrip);
+                var values = AbtBoundary.OrderBy(_ => _.Key).Select(_ => _.Value).ToList();
+                for (int i = 0; i <= values.Count; i++)
+                {
+                    var boundaryByRotStep = values[i % values.Count];
+                    GL.Vertex3(boundaryByRotStep[2].ToVector3(AxisOrder.Y));
+                }
+                GL.End();
+            }
+
             SetLight();
             glControl3.Context.SwapBuffers();
         }
@@ -327,6 +340,22 @@ namespace BioGenie.Stl2Abt.Gui
             Abt.WriteAbt(AbtFileName, AbtBoundary);
             Close();
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            GenerateModel();
+            Redraw();
+            if (WindowState == FormWindowState.Normal)
+            {
+                WindowState = FormWindowState.Minimized;
+                WindowState = FormWindowState.Normal;
+            }
+            else if (WindowState == FormWindowState.Maximized)
+            {
+                WindowState = FormWindowState.Minimized;
+                WindowState = FormWindowState.Maximized;
+            }
+       }
     }
 
     class Config
@@ -336,7 +365,7 @@ namespace BioGenie.Stl2Abt.Gui
 
         public Config()
         {
-            ResAngular = 12;
+            ResAngular = 9;
             ResVertical = 6;
         }
     }

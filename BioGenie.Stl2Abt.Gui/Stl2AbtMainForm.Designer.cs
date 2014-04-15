@@ -43,13 +43,11 @@
             this.glControl1 = new OpenTK.GLControl();
             this.labelStlFileName = new System.Windows.Forms.Label();
             this.panelGeratrizes = new System.Windows.Forms.Panel();
-            this.cbFiltrar = new System.Windows.Forms.CheckBox();
             this.cbP3Maior = new System.Windows.Forms.CheckBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.button1 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.textBoxResVertical = new System.Windows.Forms.TextBox();
-            this.bindingSourceConfig = new System.Windows.Forms.BindingSource(this.components);
             this.label3 = new System.Windows.Forms.Label();
             this.textBoxResAngular = new System.Windows.Forms.TextBox();
             this.glControl2 = new OpenTK.GLControl();
@@ -58,12 +56,14 @@
             this.button2 = new System.Windows.Forms.Button();
             this.glControl3 = new OpenTK.GLControl();
             this.label2 = new System.Windows.Forms.Label();
+            this.bindingSourceConfig = new System.Windows.Forms.BindingSource(this.components);
+            this.button3 = new System.Windows.Forms.Button();
             this.panelStl.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panelGeratrizes.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSourceConfig)).BeginInit();
             this.panelAbt.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSourceConfig)).BeginInit();
             this.SuspendLayout();
             // 
             // panelStl
@@ -228,7 +228,7 @@
             this.panelGeratrizes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.panelGeratrizes.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panelGeratrizes.Controls.Add(this.cbFiltrar);
+            this.panelGeratrizes.Controls.Add(this.button3);
             this.panelGeratrizes.Controls.Add(this.cbP3Maior);
             this.panelGeratrizes.Controls.Add(this.progressBar1);
             this.panelGeratrizes.Controls.Add(this.button1);
@@ -243,26 +243,13 @@
             this.panelGeratrizes.Size = new System.Drawing.Size(333, 487);
             this.panelGeratrizes.TabIndex = 1;
             // 
-            // cbFiltrar
-            // 
-            this.cbFiltrar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbFiltrar.AutoSize = true;
-            this.cbFiltrar.Checked = true;
-            this.cbFiltrar.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbFiltrar.Location = new System.Drawing.Point(213, 440);
-            this.cbFiltrar.Name = "cbFiltrar";
-            this.cbFiltrar.Size = new System.Drawing.Size(51, 17);
-            this.cbFiltrar.TabIndex = 9;
-            this.cbFiltrar.Text = "Filtrar";
-            this.cbFiltrar.UseVisualStyleBackColor = true;
-            // 
             // cbP3Maior
             // 
             this.cbP3Maior.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbP3Maior.AutoSize = true;
             this.cbP3Maior.Checked = true;
             this.cbP3Maior.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbP3Maior.Location = new System.Drawing.Point(213, 411);
+            this.cbP3Maior.Location = new System.Drawing.Point(213, 439);
             this.cbP3Maior.Name = "cbP3Maior";
             this.cbP3Maior.Size = new System.Drawing.Size(68, 17);
             this.cbP3Maior.TabIndex = 8;
@@ -307,10 +294,6 @@
             this.textBoxResVertical.Name = "textBoxResVertical";
             this.textBoxResVertical.Size = new System.Drawing.Size(100, 20);
             this.textBoxResVertical.TabIndex = 4;
-            // 
-            // bindingSourceConfig
-            // 
-            this.bindingSourceConfig.DataSource = typeof(BioGenie.Stl2Abt.Gui.Config);
             // 
             // label3
             // 
@@ -407,6 +390,21 @@
             this.label2.TabIndex = 1;
             this.label2.Text = "label2";
             // 
+            // bindingSourceConfig
+            // 
+            this.bindingSourceConfig.DataSource = typeof(BioGenie.Stl2Abt.Gui.Config);
+            // 
+            // button3
+            // 
+            this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.button3.Location = new System.Drawing.Point(213, 408);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(113, 23);
+            this.button3.TabIndex = 10;
+            this.button3.Text = "Redraw";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // Stl2AbtMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -426,9 +424,9 @@
             this.groupBox1.PerformLayout();
             this.panelGeratrizes.ResumeLayout(false);
             this.panelGeratrizes.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSourceConfig)).EndInit();
             this.panelAbt.ResumeLayout(false);
             this.panelAbt.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSourceConfig)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -460,9 +458,9 @@
         private System.Windows.Forms.BindingSource bindingSourceConfig;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.CheckBox cbP3Maior;
-        private System.Windows.Forms.CheckBox cbFiltrar;
         private System.Windows.Forms.RadioButton radioButton_Z;
         private System.Windows.Forms.RadioButton radioButton_Y;
         private System.Windows.Forms.RadioButton radioButton_X;
+        private System.Windows.Forms.Button button3;
     }
 }

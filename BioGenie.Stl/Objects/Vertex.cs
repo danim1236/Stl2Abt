@@ -153,6 +153,16 @@ namespace BioGenie.Stl.Objects
         public float R
         {
             get { return (float) (_r ?? (_r = (float) Math.Sqrt(X*X + Y*Y))); }
+            set
+            {
+                var r = R;
+                if (r > 0)
+                {
+                    var ratio = value/r;
+                    X *= ratio;
+                    Y *= ratio;
+                }
+            }
         }
 
         public float Theta { get; set; }

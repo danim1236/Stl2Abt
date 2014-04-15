@@ -26,7 +26,7 @@ namespace BioGenie.Stl.Algorithm
 
         private List<Vertex> GetPontosNotaveis(List<Vertex> vertices, int resVertical, bool p3Maior)
         {
-            var points = PolygonSimplfy.Simplify(vertices, resVertical, p3Maior ? GetMaxRIndex(vertices) : (int?) null);
+            var points = PolygonSimplfy.Simplify(vertices, resVertical, p3Maior);
             return points;
         }
 

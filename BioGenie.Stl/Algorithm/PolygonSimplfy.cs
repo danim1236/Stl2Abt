@@ -12,7 +12,7 @@ namespace BioGenie.Stl.Algorithm
 
         public static List<int> Points { get { return _points; } }
 
-        public static List<Vertex> Simplify(List<Vertex> vertices, int numVertices, int? preSelectedVertex = null)
+        public static List<Vertex> Simplify(List<Vertex> vertices, int numVertices, bool p3Maior)
         {
             _points = new List<int>
             {
@@ -20,19 +20,8 @@ namespace BioGenie.Stl.Algorithm
                 vertices.Count - 1 // PLast
             };
             int maxPoints = numVertices - 2;
-            int firstPoint = 0;
-            float? maxR = preSelectedVertex.HasValue ? vertices[preSelectedVertex.Value].R : (float?) null;
-            if (preSelectedVertex.HasValue)
-            {
-                var p3 = preSelectedVertex.Value;
-                _points.Add(p3); // P3
-                _points.Add(GetMaxDistanceIndex(vertices, 0, p3).Item2); // P2
 
-                maxPoints = numVertices - 4;
-                firstPoint = p3;
-            }
-
-            var points = SimplifySection(vertices, firstPoint, vertices.Count - 1, maxPoints, maxR);
+            var points = SimplifySection(vertices, 0, vertices.Count - 1, maxPoints);
             points.Sort();
             while (points.Count > maxPoints)
             {
@@ -40,25 +29,37 @@ namespace BioGenie.Stl.Algorithm
             }
             _points.AddRange(points.Select(_ => _.Item2));
             _points.Sort();
-            return _points.Select(_ => vertices[_]).ToList();
+            var result = _points.Select(_ => new Vertex(vertices[_])).ToList();
+            if (p3Maior)
+            {
+                var maxR = result[2].R;
+                for (int i = 3; i < _points.Count; i++)
+                {
+                    var point = result[i];
+                    if (point.R > maxR)
+                        point.R = maxR;
+                }
+            }
+            if (result.Count < 4)
+            {
+                int a = 1;
+            }
+            return result;
         }
 
-        private static List<Tuple<double, int>> SimplifySection(List<Vertex> pts, int i, int j, int vertexToFind, float? maxR)
+        private static List<Tuple<double, int>> SimplifySection(List<Vertex> pts, int i, int j, int vertexToFind)
         {
             var points = new List<Tuple<double, int>>();
             if ((i + 1) == j)
                 return new List<Tuple<double, int>>();
 
             var maxDistanceIndex = GetMaxDistanceIndex(pts, i, j);
-            if (!maxR.HasValue || pts[maxDistanceIndex.Item2].R <= maxR.Value)
-            {
-                points.Add(maxDistanceIndex);
-                vertexToFind--;
-            }
+            points.Add(maxDistanceIndex);
+            vertexToFind--;
             if (vertexToFind > 0)
             {
-                points.AddRange(SimplifySection(pts, i, maxDistanceIndex.Item2, vertexToFind, maxR));
-                points.AddRange(SimplifySection(pts, maxDistanceIndex.Item2, j, vertexToFind, maxR));
+                points.AddRange(SimplifySection(pts, i, maxDistanceIndex.Item2, vertexToFind));
+                points.AddRange(SimplifySection(pts, maxDistanceIndex.Item2, j, vertexToFind));
             }
             return points;
         }
