@@ -10,7 +10,10 @@ namespace BioGenie.Stl.Algorithm
     {
         private static List<int> _points;
 
-        public static List<int> Points { get { return _points; } }
+        public static List<int> Points
+        {
+            get { return _points; }
+        }
 
         public static List<Vertex> Simplify(List<Vertex> vertices, int numVertices, bool p3Maior)
         {

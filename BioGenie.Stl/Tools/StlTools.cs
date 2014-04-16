@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BioGenie.Stl.Objects;
@@ -44,6 +45,26 @@ namespace BioGenie.Stl.Tools
         public static float Area(this IEnumerable<Facet> facets)
         {
             return facets.Sum(_ => _.Area);
+        }
+
+        public static Tuple<float, float> AngularLimits(this Facet facet)
+        {
+            var results = new List<float>();
+
+            var ts = facet.Vertices.Select(_ => _.ThetaZ).ToList();
+            var t1 = ts.Min();
+            var t2 = ts.Max();
+            if (t1 >= Math.PI || t2 - t1 <= Math.PI)
+            {
+                results.Add(t1);
+                results.Add(t2);
+            }
+            else
+            {
+                results.Add(t1);
+                results.Add((float)-(2 * Math.PI - t2));
+            }
+            return new Tuple<float, float>(results.Min(), results.Max());
         }
     }
 }

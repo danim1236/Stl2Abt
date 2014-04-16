@@ -85,12 +85,14 @@ namespace BioGenie.Stl.Algorithm
         public FacetsGroup FindCentralTube(FacetsGroup abutmentBase)
         {
             var facets = StlDocument.Facets.Except(abutmentBase.Facets);
-            var tubeFacets = 
-                (from facet in facets
-                 let ray = new Vector3(facet.Center.X, facet.Center.Y, 0)
-                 let normal = facet.Normal.ToVector3()
-                 where Vector3.Dot(ray, normal) < 0
-                 select facet);
+            var tubeFacets = new List<Facet>();
+            foreach (Facet facet in facets)
+            {
+                var ray = new Vector3(facet.Center.X, facet.Center.Y, 0);
+                var normal = facet.Normal.ToVector3();
+                if (Vector3.Dot(ray, normal) < 0)
+                    tubeFacets.Add(facet);
+            }
             return new FacetsGroup {Facets = new HashSet<Facet>(tubeFacets)};
         }
     }

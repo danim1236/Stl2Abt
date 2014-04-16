@@ -228,6 +228,5 @@ namespace BioGenie.Stl.Algorithm
             return new Plane {Normal = normal, V0 = new Vertex(0, 0, 0)};
 
         }
-
     }
 }

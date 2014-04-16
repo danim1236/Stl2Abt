@@ -118,7 +118,7 @@ namespace BioGenie.Stl2Abt.Gui
 
             GL.PolygonMode(MaterialFace.FrontAndBack, radioButtonPoint.Checked ? PolygonMode.Point : PolygonMode.Line);
             GL.Begin(PrimitiveType.Triangles);
-            foreach (var facet in StlAbutment.Facets)
+            foreach (var facet in StlAbutment.ShellFacets)
             {
                 if (facet.Vertices.Count != 3)
                 {
@@ -158,7 +158,7 @@ namespace BioGenie.Stl2Abt.Gui
         private void GenerateModel()
         {
             var config = GetConfig();
-            Geratrizes = new AngularBoundaryDetector(StlAbutment, config.ResAngular).GetBoundaries(true);
+            Geratrizes = new AngularBoundaryPacker(StlAbutment, config.ResAngular).GetBoundaries(true);
             AbtBoundary = new Abt(Geratrizes).GetPoints(config.ResVertical, cbP3Maior.Checked);
         }
 

@@ -212,5 +212,10 @@ namespace BioGenie.Stl.Objects
         {
             return (Vector2) (_vector2 ?? (_vector2 = new Vector2(Z, R)));
         }
+
+        public static Vertex FromCilindric(float r, float theta, float z)
+        {
+            return new Vertex((float) (r*Math.Cos(theta)), (float) (r*Math.Sin(theta)), z);
+        }
     }
 }
