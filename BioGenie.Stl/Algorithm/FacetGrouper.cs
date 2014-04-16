@@ -18,45 +18,7 @@ namespace BioGenie.Stl.Algorithm
             StlDocument = document;
         }
 
-        public List<FacetsGroup> GroupByNormal(float? error = null)
-        {
-            return error.HasValue ? GroupByNormalWithError(error.Value) : GroupByNormalStrict();
-        }
-
-        public IEnumerable<Facet> GetOutwardsFacets()
-        {
-            var facets = StlDocument.Facets;
-            var center = facets.Select(_ => _.Center).Mean().ToVector3();
-            var outwardsFacets =
-                (from facet in facets
-                    let ray = facet.Center.ToVector3() - center
-                    where Vector3.Dot(ray, facet.Normal.ToVector3()) >= 0
-                    select facet).ToList();
-            return outwardsFacets;
-        }
-
-        #region [ Internal Methods ]
-
-        private List<FacetsGroup> GroupByNormalStrict()
-        {
-            var bag = new Dictionary<Normal, HashSet<Facet>>();
-            foreach (var facet in GetOutwardsFacets())
-            {
-                var normal = facet.Normal;
-                if (!bag.ContainsKey(normal))
-                    bag[normal] = new HashSet<Facet> {facet};
-                else
-                    bag[normal].Add(facet);
-            }
-            return (from g in bag
-                select new FacetsGroup
-                {
-                    Normal = g.Key,
-                    Facets = g.Value,
-                }).ToList();
-        }
-
-        private List<FacetsGroup> GroupByNormalWithError(float error)
+        public List<FacetsGroup> GroupByNormal(float error)
         {
             var tol = 1 - error;
             var bag = new HashSet<Tuple<Vertex, HashSet<Facet>>>();
@@ -80,15 +42,27 @@ namespace BioGenie.Stl.Algorithm
                 }
                 if (!found)
                 {
-                    bag.Add(new Tuple<Vertex, HashSet<Facet>>(facet.Normal, new HashSet<Facet> {facet}));
+                    bag.Add(new Tuple<Vertex, HashSet<Facet>>(facet.Normal, new HashSet<Facet> { facet }));
                 }
             }
             return (from g in bag
-                select new FacetsGroup
-                {
-                    Normal = NormalOffError(g.Item1),
-                    Facets = g.Item2,
-                }).ToList();
+                    select new FacetsGroup
+                    {
+                        Normal = NormalOffError(g.Item1),
+                        Facets = g.Item2,
+                    }).ToList();
+        }
+
+        public IEnumerable<Facet> GetOutwardsFacets()
+        {
+            var facets = StlDocument.Facets;
+            var center = facets.Select(_ => _.Center).Mean().ToVector3();
+            var outwardsFacets =
+                (from facet in facets
+                    let ray = facet.Center.ToVector3() - center
+                    where Vector3.Dot(ray, facet.Normal.ToVector3()) >= 0
+                    select facet).ToList();
+            return outwardsFacets;
         }
 
         private Normal NormalOffError(Vertex v)
@@ -107,8 +81,6 @@ namespace BioGenie.Stl.Algorithm
             }
             return new Normal(x, y, z);
         }
-
-        #endregion
 
         public FacetsGroup FindCentralTube(FacetsGroup abutmentBase)
         {

@@ -40,10 +40,6 @@ namespace BioGenie.Stl.Algorithm
                         point.R = maxR;
                 }
             }
-            if (result.Count < 4)
-            {
-                int a = 1;
-            }
             return result;
         }
 

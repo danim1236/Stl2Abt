@@ -14,33 +14,6 @@ namespace BioGenie.Stl.Tests
     public class StlAlgorithmsTests
     {
         [Test]
-        public void GroupFacetsByNormalError0Simple()
-        {
-            var document = new StlDocument
-            {
-                Facets = new List<Facet>
-                {
-                    new Facet
-                    {
-                        Normal = new Normal(1, 0, 0),
-                        Vertices = new List<Vertex> {new Vertex(2, 0, 0), new Vertex(0, 3, 0), new Vertex(0, 0, 5)}
-                    },
-                    new Facet
-                    {
-                        Normal = new Normal(0, 1, 0),
-                        Vertices = new List<Vertex> {new Vertex(1, 2, 3), new Vertex(5, 7, 11), new Vertex(13, 17, 19)}
-                    }
-                }
-            };
-            var groups = new FacetGrouper(document).GroupByNormal().OrderByDescending(_ => _.Area).ToList();
-            groups.Count.Should().Be(2);
-            Math.Round(groups[0].Area, 3).Should().Be(25.612);
-            groups[0].Normal.Equals(new Normal(0, 1, 0)).Should().Be.True();
-            groups[1].Area.Should().Be(9.5);
-            groups[1].Normal.Equals(new Normal(1, 0, 0)).Should().Be.True();
-        }
-
-        [Test]
         public void GroupFacetsByNormalError1Simple()
         {
             var document = new StlDocument
