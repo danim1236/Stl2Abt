@@ -182,7 +182,7 @@ namespace BioGenie.Stl.Algorithm
                               g => g.Select(_ => _.Item2).OrderBy(_ => _.MinZ).ToList());
         }
 
-        private IEnumerable<Tuple<float, Facet>> GetFacetsWithTheta(IEnumerable<Tuple<float, float, Facet>> facetsByAngularLimit)
+        private IEnumerable<Tuple<float, Facet>> GetFacetsWithTheta(List<Tuple<float, float, Facet>> facetsByAngularLimit)
         {
             return (from step in Enumerable.Range(0, NRotSteps)
                     select step*DeltaTheta
@@ -192,7 +192,7 @@ namespace BioGenie.Stl.Algorithm
                     select new Tuple<float, Facet>(theta, trio.Item3)).ToList();
         }
 
-        private IEnumerable<Tuple<float, float, Facet>> GetFacetsByAngularLimit()
+        private List<Tuple<float, float, Facet>> GetFacetsByAngularLimit()
         {
             return (from facet in Facets
                     let angularLimits = GetFacetAngularLimits(facet)
