@@ -9,6 +9,16 @@ namespace BioGenie.Stl.Algorithm
 {
     public class Abt
     {
+        public static List<Tuple<float, float>> AbutmentSize = new List<Tuple<float, float>>
+        {
+            new Tuple<float, float>(6, 11),
+            new Tuple<float, float>(8, 13),
+            new Tuple<float, float>(9, 11),
+            new Tuple<float, float>(9.5F, 10),
+            new Tuple<float, float>(9.5F, 11),
+            new Tuple<float, float>(15, 11),
+        };
+
         public Dictionary<float, List<Vertex>> Boundaries { get; set; }
 
         public Dictionary<float, List<Vertex>> GetPoints(int resVertical, bool p3Maior)
@@ -30,27 +40,6 @@ namespace BioGenie.Stl.Algorithm
             return points;
         }
 
-        private int GetMaxRIndex(List<Vertex> vertices)
-        {
-            int index = 0;
-            var maxR = float.MinValue;
-            vertices = vertices.OrderBy(_ => _.Z).ToList();
-            var maxZ = vertices.Last().Z/2;
-            for (int i = 0; i < vertices.Count; i++)
-            {
-                var vertex = vertices[i];
-                if (vertex.Z > maxZ)
-                    break;
-                var r = vertex.R;
-                if (r > maxR)
-                {
-                    maxR = r;
-                    index = i;
-                }
-            }
-            return index;
-        }
-
         public Abt(Dictionary<float, List<Vertex>> boundaries)
         {
             Boundaries = boundaries;
@@ -58,6 +47,26 @@ namespace BioGenie.Stl.Algorithm
 
         public static void WriteAbt(string fileName, Dictionary<float, List<Vertex>> abtBoundary)
         {
+            var maxZ = abtBoundary.Max(_ => _.Value.Max(__ => __.Z));
+            var maxR = abtBoundary.Max(_ => _.Value.Max(__ => __.R));
+
+            float? z=null, r=null;
+
+            foreach (var tuple in AbutmentSize)
+            {
+                if (tuple.Item2 >= maxZ && tuple.Item1/2 >= maxR)
+                {
+                    z = tuple.Item2;
+                    r = tuple.Item1;
+                    break;
+                }
+            }
+            if (!z.HasValue)
+            {
+                z = maxZ;
+                r = maxR;
+            }
+
 
             var cultureInfo = CultureInfo.InvariantCulture;
             using (var file = File.Create(fileName))
@@ -67,7 +76,7 @@ namespace BioGenie.Stl.Algorithm
                     writer.WriteLine("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>");
                     writer.WriteLine(
                         "<PartProject xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"conf/part_project.xsd\" FileExtension=\"abt\" ProjectType=\"Abutment\">");
-                    writer.WriteLine("\t<Blank BaseDiameter=\"8.0\" TopDiameter=\"8.0\" Height=\"13.0\" />");
+                    writer.WriteLine("\t<Blank BaseDiameter=\"{0}\" TopDiameter=\"{0}\" Height=\"{1}\" />", r.Value.ToString("N1", CultureInfo.InvariantCulture), z.Value.ToString("N1", CultureInfo.InvariantCulture));
                     writer.WriteLine("\t<Faces>");
 
                     foreach (var pair in abtBoundary)
