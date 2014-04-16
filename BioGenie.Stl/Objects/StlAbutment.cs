@@ -175,45 +175,39 @@ namespace BioGenie.Stl.Objects
 
         public void CenterAbutment()
         {
-            try
+            var bag = new Dictionary<List<float>, List<Facet>>();
+            var facets = AbutmentBase.Facets;
+            var minZ = facets.Select(_ => _.MinZ).Min();
+            var maxZ = facets.Select(_ => _.MaxZ).Max();
+            var tolerance = (maxZ - minZ)/10;
+            foreach (var facet in facets)
             {
-                var bag = new Dictionary<List<float>, List<Facet>>();
-                var facets = AbutmentBase.Facets;
-                var minZ = facets.Select(_ => _.MinZ).Min();
-                var maxZ = facets.Select(_ => _.MaxZ).Max();
-                var tolerance = (maxZ - minZ)/10;
-                foreach (var facet in facets)
+                var found = false;
+                var z = facet.Center.Z;
+                foreach (var pair in bag)
                 {
-                    var found = false;
-                    var z = facet.Center.Z;
-                    foreach (var pair in bag)
+                    var zs = pair.Key;
+                    var meanZ = zs.Sum()/zs.Count;
+                    if (Math.Abs(meanZ - z) < tolerance)
                     {
-                        var zs = pair.Key;
-                        var meanZ = zs.Sum()/zs.Count;
-                        if (Math.Abs(meanZ - z) < tolerance)
-                        {
-                            zs.Add(z);
-                            pair.Value.Add(facet);
-                            found = true;
-                            break;
-                        }
+                        zs.Add(z);
+                        pair.Value.Add(facet);
+                        found = true;
+                        break;
                     }
-                    if (!found)
-                        bag.Add(new List<float> {z}, new List<Facet> {facet});
                 }
-                minZ = bag.Keys.Min(_ => _.Sum()/_.Count);
-                var center = new Vertex(AbutmentBase.Center) {Z = minZ};
-                foreach (var facet in Facets)
-                {
-                    facet.Subtract(center);
-                    facet.Reset();
-                }
-                _centralFacets = null;
-                _shellFacets = null;
+                if (!found)
+                    bag.Add(new List<float> {z}, new List<Facet> {facet});
             }
-            catch
+            minZ = bag.Keys.Min(_ => _.Sum()/_.Count);
+            var center = new Vertex(AbutmentBase.Center) {Z = minZ};
+            foreach (var facet in Facets)
             {
+                facet.Subtract(center);
+                facet.Reset();
             }
+            _centralFacets = null;
+            _shellFacets = null;
         }
 
         public HashSet<Facet> ShellFacets
