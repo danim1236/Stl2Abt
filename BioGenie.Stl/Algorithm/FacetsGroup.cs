@@ -8,7 +8,12 @@ namespace BioGenie.Stl.Algorithm
     public class FacetsGroup
     {
         public HashSet<Facet> Facets { get; set; }
-        public Normal Normal { get; set; }
+
+        public Normal Normal
+        {
+            get { return _normal ?? (_normal = new Normal(Facets.Select(_=>_.Normal).Mean())); }
+            set { _normal = value; }
+        }
 
         private float? _area;
         public float Area
@@ -18,6 +23,13 @@ namespace BioGenie.Stl.Algorithm
         }
 
         private Vertex _center;
+        private Normal _normal;
         public Vertex Center { get { return _center ?? (_center = Facets.Mean()); } }
+
+        public void Reset()
+        {
+            _center = null;
+            _normal = null;
+        }
     }
 }

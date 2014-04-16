@@ -81,7 +81,7 @@ namespace BioGenie.Stl.Objects
                         facet.Rotate(quaternionX);
                     }
                 }
-                _abutmentBase = null;
+                AbutmentBase.Reset();
             } while (AbutmentBase.Normal.Z > NormalTolThreshold - 1);
         }
 
