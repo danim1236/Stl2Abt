@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using BioGenie.Stl.Algorithm;
 using BioGenie.Stl.Objects;
@@ -22,8 +20,6 @@ namespace BioGenie.Stl2Abt.Gui
         public StlAbutment StlAbutment { get; set; }
 
         public Dictionary<float, List<Vertex>> Geratrizes { get; set; }
-
-        private bool _firstGenerate = true;
 
         public Stl2AbtMainForm(string stlFileName, string abtFileName)
         {
@@ -141,26 +137,6 @@ namespace BioGenie.Stl2Abt.Gui
             glControl1.Context.SwapBuffers();
         }
 
-        public AxisOrder GetAxisOrder()
-        {
-            AxisOrder result;
-            if (radioButtonX.Checked)
-                result=AxisOrder._X;
-            else if (radioButtonY.Checked)
-                result = AxisOrder._Y;
-            else if (radioButtonZ.Checked)
-                result = AxisOrder._Z;
-            else if (radioButton_X.Checked)
-                result = AxisOrder.X;
-            else if (radioButton_Y.Checked)
-                result = AxisOrder.Y;
-            else if (radioButton_Z.Checked)
-                result = AxisOrder.Z;
-            else
-                throw new InvalidEnumArgumentException();
-            return result;
-        }
-
         private void SetLight()
         {
             float xMin;
@@ -179,16 +155,11 @@ namespace BioGenie.Stl2Abt.Gui
             glControl1.Invalidate();
         }
 
-        private void radioButtonX_CheckedChanged(object sender, EventArgs e)
-        {
-            GenerateModel();
-            Redraw();
-        }
-
         private void GenerateModel()
         {
-            var config = (Config)bindingSourceConfig.DataSource;
+            var config = GetConfig();
             Geratrizes = new AngularBoundaryDetector(StlAbutment, config.ResAngular).GetBoundaries(true);
+            AbtBoundary = new Abt(Geratrizes).GetPoints(config.ResVertical, cbP3Maior.Checked);
         }
 
         private void Redraw()
@@ -277,17 +248,17 @@ namespace BioGenie.Stl2Abt.Gui
                 GL.End();
             }
 
-            if (AbtBoundary.Any())
-            {
-                GL.Begin(PrimitiveType.LineStrip);
-                var values = AbtBoundary.OrderBy(_ => _.Key).Select(_ => _.Value).ToList();
-                for (int i = 0; i <= values.Count; i++)
-                {
-                    var boundaryByRotStep = values[i % values.Count];
-                    GL.Vertex3(boundaryByRotStep[2].ToVector3(AxisOrder.Y));
-                }
-                GL.End();
-            }
+            //if (AbtBoundary.Any())
+            //{
+            //    GL.Begin(PrimitiveType.LineStrip);
+            //    var values = AbtBoundary.OrderBy(_ => _.Key).Select(_ => _.Value).ToList();
+            //    for (int i = 0; i <= values.Count; i++)
+            //    {
+            //        var boundaryByRotStep = values[i % values.Count];
+            //        GL.Vertex3(boundaryByRotStep[2].ToVector3(AxisOrder.Y));
+            //    }
+            //    GL.End();
+            //}
 
             SetLight();
             glControl3.Context.SwapBuffers();
@@ -306,33 +277,9 @@ namespace BioGenie.Stl2Abt.Gui
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private Config GetConfig()
         {
-            var config = (Config) bindingSourceConfig.DataSource;
-            var abt = new Abt(Geratrizes);
-            AbtBoundary = abt.GetPoints(config.ResVertical, cbP3Maior.Checked);
-            if (_firstGenerate)
-            {
-                Redraw();
-                _firstGenerate = false;
-            }
-            else
-            {
-                if (WindowState == FormWindowState.Normal)
-                {
-                    WindowState = FormWindowState.Minimized;
-                    Redraw();
-                    WindowState = FormWindowState.Normal;
-                    Redraw();
-                }
-                else if (WindowState == FormWindowState.Maximized)
-                {
-                    WindowState = FormWindowState.Minimized;
-                    Redraw();
-                    WindowState = FormWindowState.Maximized;
-                    Redraw();
-                }
-            }
+            return (Config) bindingSourceConfig.DataSource;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -345,17 +292,10 @@ namespace BioGenie.Stl2Abt.Gui
         {
             GenerateModel();
             Redraw();
-            if (WindowState == FormWindowState.Normal)
-            {
-                WindowState = FormWindowState.Minimized;
-                WindowState = FormWindowState.Normal;
-            }
-            else if (WindowState == FormWindowState.Maximized)
-            {
-                WindowState = FormWindowState.Minimized;
-                WindowState = FormWindowState.Maximized;
-            }
-       }
+            var currentState = WindowState;
+            WindowState = FormWindowState.Minimized;
+            WindowState = currentState;
+        }
     }
 
     class Config

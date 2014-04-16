@@ -52,12 +52,12 @@ namespace BioGenie.Stl.Algorithm
                 }
                 if (facet.MinZ < lastFacet.MaxZ)
                 {
-                    if (Math.Abs(facet.Center.R /lastFacet.Center.R) > 1.2)
+                    if (Math.Abs(facet.Center.R /lastFacet.Center.R) > 1.1)
                     {
                         result.Remove(lastFacet);
                         lastFacet = facet;
                     }
-                    else if (Math.Abs(facet.Center.R / lastFacet.Center.R) < 0.8)
+                    else if (Math.Abs(lastFacet.Center.R / facet.Center.R) > 1.1)
                     {
                         result.Remove(facet);
                     }
