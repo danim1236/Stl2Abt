@@ -21,35 +21,30 @@ namespace BioGenie.Stl.Algorithm
         public List<FacetsGroup> GroupByNormal(float error)
         {
             var tol = 1 - error;
-            var bag = new HashSet<Tuple<Vertex, HashSet<Facet>>>();
+            var groups = new List<MeanNormalCalculator>();
             foreach (var facet in GetOutwardsFacets())
             {
                 var normal = facet.Normal;
                 bool found = false;
-                foreach (var tuple in bag)
+                foreach (var group in groups)
                 {
-                    if (Vector3.Dot(normal.ToVector3(), tuple.Item1.ToVector3()) >= tol)
+                    if (Vector3.Dot(normal.ToVector3(), group.Normal.ToVector3()) >= tol)
                     {
-                        var tFacets = tuple.Item2;
-                        tFacets.Add(facet);
-                        bag.Remove(tuple);
-                        bag.Add(new Tuple<Vertex, HashSet<Facet>>(
-                            tFacets.Select(_ => _.Normal).Mean(),
-                            tFacets));
+                        group.AddFacet(facet);
                         found = true;
                         break;
                     }
                 }
                 if (!found)
                 {
-                    bag.Add(new Tuple<Vertex, HashSet<Facet>>(facet.Normal, new HashSet<Facet> { facet }));
+                    groups.Add(new MeanNormalCalculator(facet));
                 }
             }
-            return (from g in bag
+            return (from g in groups
                     select new FacetsGroup
                     {
-                        Normal = NormalOffError(g.Item1),
-                        Facets = g.Item2,
+                        Normal = NormalOffError(g.Normal),
+                        Facets = g.Facets,
                     }).ToList();
         }
 
@@ -85,14 +80,11 @@ namespace BioGenie.Stl.Algorithm
         public FacetsGroup FindCentralTube(FacetsGroup abutmentBase)
         {
             var facets = StlDocument.Facets.Except(abutmentBase.Facets);
-            var tubeFacets = new List<Facet>();
-            foreach (Facet facet in facets)
-            {
-                var ray = new Vector3(facet.Center.X, facet.Center.Y, 0);
-                var normal = facet.Normal.ToVector3();
-                if (Vector3.Dot(ray, normal) < 0)
-                    tubeFacets.Add(facet);
-            }
+            var tubeFacets = (from facet in facets
+                              let ray = new Vector3(facet.Center.X, facet.Center.Y, 0)
+                              let normal = facet.Normal.ToVector3()
+                              where Vector3.Dot(ray, normal) < 0
+                              select facet).ToList();
             return new FacetsGroup {Facets = new HashSet<Facet>(tubeFacets)};
         }
     }
