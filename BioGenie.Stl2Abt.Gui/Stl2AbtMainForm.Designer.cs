@@ -37,7 +37,6 @@
             this.labelStlFileName = new System.Windows.Forms.Label();
             this.panelGeratrizes = new System.Windows.Forms.Panel();
             this.button3 = new System.Windows.Forms.Button();
-            this.cbP3Maior = new System.Windows.Forms.CheckBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.label4 = new System.Windows.Forms.Label();
             this.textBoxResVertical = new System.Windows.Forms.TextBox();
@@ -136,7 +135,6 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.panelGeratrizes.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panelGeratrizes.Controls.Add(this.button3);
-            this.panelGeratrizes.Controls.Add(this.cbP3Maior);
             this.panelGeratrizes.Controls.Add(this.progressBar1);
             this.panelGeratrizes.Controls.Add(this.label4);
             this.panelGeratrizes.Controls.Add(this.textBoxResVertical);
@@ -159,19 +157,6 @@
             this.button3.Text = "Redraw";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // cbP3Maior
-            // 
-            this.cbP3Maior.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbP3Maior.AutoSize = true;
-            this.cbP3Maior.Checked = true;
-            this.cbP3Maior.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbP3Maior.Location = new System.Drawing.Point(213, 439);
-            this.cbP3Maior.Name = "cbP3Maior";
-            this.cbP3Maior.Size = new System.Drawing.Size(68, 17);
-            this.cbP3Maior.TabIndex = 8;
-            this.cbP3Maior.Text = "P3 Maior";
-            this.cbP3Maior.UseVisualStyleBackColor = true;
             // 
             // progressBar1
             // 
@@ -345,7 +330,6 @@
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.BindingSource bindingSourceConfig;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.CheckBox cbP3Maior;
         private System.Windows.Forms.Button button3;
     }
 }

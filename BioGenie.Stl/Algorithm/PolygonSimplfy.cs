@@ -15,7 +15,7 @@ namespace BioGenie.Stl.Algorithm
             get { return _points; }
         }
 
-        public static List<Vertex> Simplify(List<Vertex> vertices, int numVertices, bool p3Maior)
+        public static List<Vertex> Simplify(List<Vertex> vertices, int numVertices)
         {
             _points = new List<int>
             {
@@ -33,15 +33,13 @@ namespace BioGenie.Stl.Algorithm
             _points.AddRange(points.Select(_ => _.Item2));
             _points.Sort();
             var result = _points.Select(_ => new Vertex(vertices[_])).ToList();
-            if (p3Maior)
+
+            var maxR = result[2].R;
+            for (int i = 3; i < _points.Count; i++)
             {
-                var maxR = result[2].R;
-                for (int i = 3; i < _points.Count; i++)
-                {
-                    var point = result[i];
-                    if (point.R > maxR)
-                        point.R = maxR;
-                }
+                var point = result[i];
+                if (point.R > maxR)
+                    point.R = maxR;
             }
             return result;
         }
