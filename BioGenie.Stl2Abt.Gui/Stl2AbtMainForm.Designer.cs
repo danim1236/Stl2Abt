@@ -72,7 +72,7 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox1.Controls.Add(this.radioButtonLine);
             this.groupBox1.Controls.Add(this.radioButtonPoint);
-            this.groupBox1.Location = new System.Drawing.Point(3, 411);
+            this.groupBox1.Location = new System.Drawing.Point(3, 448);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(121, 32);
             this.groupBox1.TabIndex = 2;
@@ -110,7 +110,7 @@
             this.glControl1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.glControl1.Location = new System.Drawing.Point(3, 25);
             this.glControl1.Name = "glControl1";
-            this.glControl1.Size = new System.Drawing.Size(323, 380);
+            this.glControl1.Size = new System.Drawing.Size(323, 406);
             this.glControl1.TabIndex = 0;
             this.glControl1.VSync = false;
             this.glControl1.Load += new System.EventHandler(this.glControl1_Load);
@@ -146,7 +146,7 @@
             // button3
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button3.Location = new System.Drawing.Point(213, 408);
+            this.button3.Location = new System.Drawing.Point(214, 434);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(113, 23);
             this.button3.TabIndex = 10;
@@ -171,7 +171,7 @@
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(4, 414);
+            this.label3.Location = new System.Drawing.Point(5, 440);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(97, 13);
             this.label3.TabIndex = 3;
@@ -181,7 +181,7 @@
             // 
             this.textBoxResAngular.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.textBoxResAngular.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bindingSourceConfig, "ResAngular", true));
-            this.textBoxResAngular.Location = new System.Drawing.Point(107, 411);
+            this.textBoxResAngular.Location = new System.Drawing.Point(108, 437);
             this.textBoxResAngular.Name = "textBoxResAngular";
             this.textBoxResAngular.Size = new System.Drawing.Size(100, 20);
             this.textBoxResAngular.TabIndex = 2;
@@ -195,7 +195,7 @@
             this.glControl2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.glControl2.Location = new System.Drawing.Point(3, 25);
             this.glControl2.Name = "glControl2";
-            this.glControl2.Size = new System.Drawing.Size(323, 380);
+            this.glControl2.Size = new System.Drawing.Size(323, 406);
             this.glControl2.TabIndex = 0;
             this.glControl2.VSync = false;
             this.glControl2.Load += new System.EventHandler(this.glControl2_Load);
@@ -245,7 +245,7 @@
             this.glControl3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.glControl3.Location = new System.Drawing.Point(3, 25);
             this.glControl3.Name = "glControl3";
-            this.glControl3.Size = new System.Drawing.Size(323, 380);
+            this.glControl3.Size = new System.Drawing.Size(323, 406);
             this.glControl3.TabIndex = 0;
             this.glControl3.VSync = false;
             this.glControl3.Load += new System.EventHandler(this.glControl3_Load);
