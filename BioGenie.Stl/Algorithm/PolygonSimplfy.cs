@@ -8,77 +8,104 @@ namespace BioGenie.Stl.Algorithm
 {
     public class PolygonSimplfy
     {
-        private static List<int> _points;
-
-        public static List<int> Points
-        {
-            get { return _points; }
-        }
-
         public static List<Vertex> Simplify(List<Vertex> vertices)
         {
-            _points = new List<int>
+            var p1 = vertices.First();
+            var p6 = vertices.Last();
+            int p3I = GetP3(vertices);
+            var p3 = vertices[p3I];
+            var p2I = GetParaDentro(vertices, 0, p3I);
+            var p2 = vertices[p2I];
+            var p5I = GetParaFora(vertices, p3I, vertices.Count - 1);
+            var p5 = vertices[p5I];
+            var p4I = GetParaDentro(vertices, p3I, p5I);
+            var p4 = vertices[p4I];
+
+            return new List<Vertex>
             {
-                0, // P1
-                vertices.Count - 1 // PLast
+                p1,
+                p2,
+                p3,
+                p4,
+                p5,
+                p6
             };
-            const int numVertices = 6;
-            const int maxPoints = numVertices - 2;
-
-            var points = SimplifySection(vertices, 0, vertices.Count - 1, maxPoints);
-            points.Sort();
-            while (points.Count > maxPoints)
-            {
-                points.RemoveAt(0);
-            }
-            _points.AddRange(points.Select(_ => _.Item2));
-            _points.Sort();
-            var result = _points.Select(_ => new Vertex(vertices[_])).ToList();
-
-            var maxR = result[2].R;
-            for (int i = 3; i < _points.Count; i++)
-            {
-                var point = result[i];
-                if (point.R > maxR)
-                    point.R = maxR;
-            }
-            return result;
         }
-
-        private static List<Tuple<double, int>> SimplifySection(List<Vertex> pts, int i, int j, int vertexToFind)
+        
+        private static int GetP3(IReadOnlyList<Vertex> vertices)
         {
-            var points = new List<Tuple<double, int>>();
-            if ((i + 1) == j)
-                return new List<Tuple<double, int>>();
-
-            var maxDistanceIndex = GetMaxDistanceIndex(pts, i, j);
-            points.Add(maxDistanceIndex);
-            vertexToFind--;
-            if (vertexToFind > 0)
+            var maxR = double.MinValue;
+            int offset = -1;
+            for (int i = 0; i < vertices.Count; i++)
             {
-                points.AddRange(SimplifySection(pts, i, maxDistanceIndex.Item2, vertexToFind));
-                points.AddRange(SimplifySection(pts, maxDistanceIndex.Item2, j, vertexToFind));
-            }
-            return points;
-        }
-
-        private static Tuple<double, int> GetMaxDistanceIndex(List<Vertex> pts, int i, int j)
-        {
-            var a = pts[i].ToVector2();
-            var b = pts[j].ToVector2();
-            double maxDistance = -1.0;
-            int maxIndex = i;
-            for (int k = i + 1; k < j; k++)
-            {
-                double distance = DistancePointLine(pts[k].ToVector2(), a, b);
-
-                if (distance > maxDistance)
+                var vertex = vertices[i];
+                if (vertex.R > maxR)
                 {
-                    maxDistance = distance;
-                    maxIndex = k;
+                    maxR = vertex.R;
+                    offset = i;
                 }
             }
-            return new Tuple<double, int>(maxDistance, maxIndex);
+            return offset;
+        }
+        
+        private static int GetParaDentro(IReadOnlyList<Vertex> vertices, int i, int j)
+        {
+            var a = vertices[i].ToVector2();
+            var b = vertices[j].ToVector2();
+
+            var ab = (b-a);
+
+            var r = ab.Y/ab.X;
+
+            var maxDistance = double.MinValue;
+            var maxIndex = i;
+
+            for (int index = i + 1; index < j; index++)
+            {
+                var vertex = vertices[index];
+                var v = vertex.ToVector2();
+                if ((v.X - a.X)*r > (v.Y - a.Y))
+                {
+                    var distance = DistancePointLine(v, a, b);
+                    if (distance > maxDistance)
+                    {
+                        maxDistance = distance;
+                        maxIndex = index;
+                    }
+                }
+            }
+
+            return maxIndex;
+        }
+
+        private static int GetParaFora(IReadOnlyList<Vertex> vertices, int i, int j)
+        {
+            var a = vertices[i].ToVector2();
+            var b = vertices[j].ToVector2();
+
+            var ab = (b - a);
+
+            var r = ab.Y / ab.X;
+
+            var maxDistance = double.MinValue;
+            var maxIndex = i;
+
+            for (int index = i + 1; index < j; index++)
+            {
+                var vertex = vertices[index];
+                var v = vertex.ToVector2();
+                if ((v.X - a.X) * r < (v.Y - a.Y))
+                {
+                    var distance = DistancePointLine(v, a, b);
+                    if (distance > maxDistance)
+                    {
+                        maxDistance = distance;
+                        maxIndex = index;
+                    }
+                }
+            }
+
+            return maxIndex;
         }
 
         private static double DistancePointPoint(Vector2 p, Vector2 p2)

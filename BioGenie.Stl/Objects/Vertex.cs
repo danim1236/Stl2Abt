@@ -207,6 +207,11 @@ namespace BioGenie.Stl.Objects
             return new Vertex(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
         }
 
+        public static Vertex operator -(Vertex a, Vertex b)
+        {
+            return new Vertex(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+        }
+
         private Vector2? _vector2;
         public Vector2 ToVector2()
         {
