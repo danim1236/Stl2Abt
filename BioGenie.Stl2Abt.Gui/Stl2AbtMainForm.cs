@@ -159,7 +159,7 @@ namespace BioGenie.Stl2Abt.Gui
         {
             var config = GetConfig();
             Geratrizes = new AngularBoundaryPacker(StlAbutment, config.ResAngular).GetBoundaries(true);
-            AbtBoundary = new Abt(Geratrizes).GetPoints(config.ResVertical);
+            AbtBoundary = new Abt(Geratrizes).GetPoints();
         }
 
         private void Redraw()
@@ -301,12 +301,10 @@ namespace BioGenie.Stl2Abt.Gui
     class Config
     {
         public int ResAngular { get; set; }
-        public int ResVertical { get; set; }
 
         public Config()
         {
             ResAngular = 9;
-            ResVertical = 6;
         }
     }
 }

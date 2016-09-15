@@ -21,22 +21,22 @@ namespace BioGenie.Stl.Algorithm
 
         public Dictionary<float, List<Vertex>> Boundaries { get; set; }
 
-        public Dictionary<float, List<Vertex>> GetPoints(int resVertical)
+        public Dictionary<float, List<Vertex>> GetPoints()
         {
             var result = new Dictionary<float, List<Vertex>>();
             var pairs = Boundaries.OrderBy(_=>_.Key).ToList();
             foreach (var pair in pairs)
             {
-                var pontosNotaveis = GetPontosNotaveis(pair.Value, resVertical);
+                var pontosNotaveis = GetPontosNotaveis(pair.Value);
                 if (pontosNotaveis != null)
                     result[pair.Key] = pontosNotaveis;
             }
             return result;
         }
 
-        private List<Vertex> GetPontosNotaveis(List<Vertex> vertices, int resVertical)
+        private List<Vertex> GetPontosNotaveis(List<Vertex> vertices)
         {
-            var points = PolygonSimplfy.Simplify(vertices, resVertical);
+            var points = PolygonSimplfy.Simplify(vertices);
             return points;
         }
 

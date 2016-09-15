@@ -38,8 +38,6 @@
             this.panelGeratrizes = new System.Windows.Forms.Panel();
             this.button3 = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.label4 = new System.Windows.Forms.Label();
-            this.textBoxResVertical = new System.Windows.Forms.TextBox();
             this.bindingSourceConfig = new System.Windows.Forms.BindingSource(this.components);
             this.label3 = new System.Windows.Forms.Label();
             this.textBoxResAngular = new System.Windows.Forms.TextBox();
@@ -136,8 +134,6 @@
             this.panelGeratrizes.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panelGeratrizes.Controls.Add(this.button3);
             this.panelGeratrizes.Controls.Add(this.progressBar1);
-            this.panelGeratrizes.Controls.Add(this.label4);
-            this.panelGeratrizes.Controls.Add(this.textBoxResVertical);
             this.panelGeratrizes.Controls.Add(this.label3);
             this.panelGeratrizes.Controls.Add(this.textBoxResAngular);
             this.panelGeratrizes.Controls.Add(this.glControl2);
@@ -166,25 +162,6 @@
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(319, 17);
             this.progressBar1.TabIndex = 7;
-            // 
-            // label4
-            // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(4, 440);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(96, 13);
-            this.label4.TabIndex = 5;
-            this.label4.Text = "Resolução Vertical";
-            // 
-            // textBoxResVertical
-            // 
-            this.textBoxResVertical.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.textBoxResVertical.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bindingSourceConfig, "ResVertical", true));
-            this.textBoxResVertical.Location = new System.Drawing.Point(107, 437);
-            this.textBoxResVertical.Name = "textBoxResVertical";
-            this.textBoxResVertical.Size = new System.Drawing.Size(100, 20);
-            this.textBoxResVertical.TabIndex = 4;
             // 
             // bindingSourceConfig
             // 
@@ -323,8 +300,6 @@
         private System.Windows.Forms.Panel panelAbt;
         private OpenTK.GLControl glControl3;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBoxResVertical;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox textBoxResAngular;
         private System.Windows.Forms.ProgressBar progressBar1;

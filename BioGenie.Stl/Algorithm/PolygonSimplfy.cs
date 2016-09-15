@@ -15,14 +15,15 @@ namespace BioGenie.Stl.Algorithm
             get { return _points; }
         }
 
-        public static List<Vertex> Simplify(List<Vertex> vertices, int numVertices)
+        public static List<Vertex> Simplify(List<Vertex> vertices)
         {
             _points = new List<int>
             {
                 0, // P1
                 vertices.Count - 1 // PLast
             };
-            int maxPoints = numVertices - 2;
+            const int numVertices = 6;
+            const int maxPoints = numVertices - 2;
 
             var points = SimplifySection(vertices, 0, vertices.Count - 1, maxPoints);
             points.Sort();
