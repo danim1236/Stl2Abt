@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PartProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="conf/part_project.xsd" FileExtension="abt" ProjectType="Abutment">
+	<Blank BaseDiameter="15.0" TopDiameter="15.0" Height="11.0" />
+	<Faces>
+		<Face Name="" AbsolutAngle="0" EmergentPoint="-1">
+			<Profile>
+				<Point X="0" Z="2.559441" />
+				<Point X="0.4946768" Z="2.933388" />
+				<Point X="3.01406" Z="4.01578" />
+				<Point X="6.584112" Z="3.056861" />
+				<Point X="6.989927" Z="2.540209" />
+				<Point X="7.035786" Z="2.29647" />
+			</Profile>
+		</Face>
+		<Face Name="" AbsolutAngle="39.9999988363717" EmergentPoint="-1">
+			<Profile>
+				<Point X="0" Z="2.565256" />
+				<Point X="0.9346544" Z="3.406298" />
+				<Point X="2.748675" Z="4.448122" />
+				<Point X="6.929249" Z="3.378458" />
+				<Point X="7.277822" Z="2.918767" />
+				<Point X="7.327346" Z="2.736525" />
+			</Profile>
+		</Face>
+		<Face Name="" AbsolutAngle="79.9999976727434" EmergentPoint="-1">
+			<Profile>
+				<Point X="0" Z="2.564201" />
+				<Point X="0.3202295" Z="2.906756" />
+				<Point X="1.802063" Z="4.535699" />
+				<Point X="4.49338" Z="3.169144" />
+				<Point X="7.401292" Z="2.567176" />
+				<Point X="7.564909" Z="2.096733" />
+			</Profile>
+		</Face>
+		<Face Name="" AbsolutAngle="120.000003339304" EmergentPoint="-1">
+			<Profile>
+				<Point X="0" Z="2.561656" />
+				<Point X="0.6786661" Z="3.129089" />
+				<Point X="2.262353" Z="3.789718" />
+				<Point X="6.88011" Z="2.17911" />
+				<Point X="7.254895" Z="1.711694" />
+				<Point X="7.35986" Z="1.41903" />
+			</Profile>
+		</Face>
+		<Face Name="" AbsolutAngle="159.999995345487" EmergentPoint="-1">
+			<Profile>
+				<Point X="0" Z="2.558815" />
+				<Point X="0.5083956" Z="2.928242" />
+				<Point X="2.281461" Z="3.522115" />
+				<Point X="6.958756" Z="2.052982" />
+				<Point X="7.347274" Z="1.58614" />
+				<Point X="7.453112" Z="1.297324" />
+			</Profile>
+		</Face>
+		<Face Name="" AbsolutAngle="199.999987351669" EmergentPoint="-1">
+			<Profile>
+				<Point X="0" Z="2.55636" />
+				<Point X="0.5957032" Z="3.028612" />
+				<Point X="2.035385" Z="3.645391" />
+				<Point X="7.38236" Z="1.873181" />
+				<Point X="7.575608" Z="1.539396" />
+				<Point X="7.637986" Z="1.295772" />
+			</Profile>
+		</Face>
+		<Face Name="" AbsolutAngle="240.000006678608" EmergentPoint="-1">
+			<Profile>
+				<Point X="0" Z="2.552113" />
+				<Point X="0.3067829" Z="3.087217" />
+				<Point X="0.9887408" Z="4.709553" />
+				<Point X="7.779383" Z="2.153216" />
+				<Point X="8.060514" Z="1.50754" />
+				<Point X="8.066912" Z="1.509598" />
+			</Profile>
+		</Face>
+		<Face Name="" AbsolutAngle="279.999998684791" EmergentPoint="-1">
+			<Profile>
+				<Point X="0" Z="2.552268" />
+				<Point X="0.3233925" Z="2.959575" />
+				<Point X="1.871397" Z="4.796722" />
+				<Point X="7.495278" Z="3.406846" />
+				<Point X="7.982326" Z="2.78319" />
+				<Point X="8.050048" Z="2.546029" />
+			</Profile>
+		</Face>
+		<Face Name="" AbsolutAngle="319.999990690973" EmergentPoint="-1">
+			<Profile>
+				<Point X="0" Z="2.553962" />
+				<Point X="0.455719" Z="2.897522" />
+				<Point X="2.894821" Z="3.790562" />
+				<Point X="6.843169" Z="2.873188" />
+				<Point X="7.21603" Z="2.477331" />
+				<Point X="7.314959" Z="2.208714" />
+			</Profile>
+		</Face>
+	</Faces>
+	<AngularDisplacements X="0.0" Y="0.0" Z="0.0" />
+</PartProject>
