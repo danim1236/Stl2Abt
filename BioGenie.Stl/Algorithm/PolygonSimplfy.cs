@@ -18,6 +18,12 @@ namespace BioGenie.Stl.Algorithm
             var p2 = vertices[p2I];
             var p5I = GetParaFora(vertices, p3I, vertices.Count - 1);
             var p5 = vertices[p5I];
+
+            if ((p6 - p5).Length > (p5 - p3).Length)
+            {
+                p5I = vertices.Count - 1;
+                p5 = p6;
+            }
             var p4I = GetParaDentro(vertices, p3I, p5I);
             var p4 = vertices[p4I];
 
