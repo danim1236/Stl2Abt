@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using BioGenie.Stl;
 using BioGenie.Stl.Algorithm;
 using BioGenie.Stl.Objects;
 using OpenTK;
@@ -12,20 +12,11 @@ namespace BioGenie.Stl2Abt.Gui
 {
     public partial class Stl2AbtMainForm : Form
     {
-        public string StlFileName { get; set; }
-        public string AbtFileName { get; set; }
-
-        public StlDocument StlDocument { get; set; }
-
-        public StlAbutment StlAbutment { get; set; }
-
-        public Dictionary<float, List<Vertex>> Geratrizes { get; set; }
-
+        private readonly Stl2AbtManager _stl2AbtManager;
+        private readonly Config _config;
+        
         public Stl2AbtMainForm(string stlFileName, string abtFileName)
         {
-            StlFileName = stlFileName;
-            AbtFileName = abtFileName;
-
             InitializeComponent();
 
             bindingSourceConfig.DataSource = new Config();
@@ -33,9 +24,10 @@ namespace BioGenie.Stl2Abt.Gui
             Stl2AbtMainForm_Resize(null, null);
             labelStlFileName.Text = Path.GetFileName(stlFileName);
 
-            AbtBoundary = new Dictionary<float, List<Vertex>>();
-            Geratrizes = new Dictionary<float, List<Vertex>>();
-            ReadStlFile();
+            _config = GetConfig();
+            _stl2AbtManager = new Stl2AbtManager(stlFileName, abtFileName);
+            _stl2AbtManager.GenerateModel(_config.ResAngular);
+
             DrawStlFile();
         }
 
@@ -47,28 +39,7 @@ namespace BioGenie.Stl2Abt.Gui
             glControl2.Context.MakeCurrent(wi2);
         }
 
-        private void ReadStlFile()
-        {
-            try
-            {
-                using (var reader = new StreamReader(StlFileName))
-                {
-                    StlDocument = StlDocument.Read(reader);
-                }
-            }
-            catch (FormatException)
-            {
-                using (var reader = new BinaryReader(File.Open(StlFileName, FileMode.Open)))
-                {
-                    StlDocument = StlDocument.Read(reader);
-                }
-            }
-            StlAbutment = new StlAbutment(StlDocument);
-            StlAbutment.AlignAndCenterAbutment();
-            GenerateModel();
-        }
 
-        public Dictionary<float, List<Vertex>> AbtBoundary { get; set; }
         
         private void Stl2AbtMainForm_Resize(object sender, EventArgs e)
         {
@@ -108,7 +79,7 @@ namespace BioGenie.Stl2Abt.Gui
             float xMax;
             float yMax;
             float zMax;
-            StlAbutment.GetLimits(out xMin, out yMin, out zMin, out xMax, out yMax, out zMax);
+            _stl2AbtManager.StlAbutment.GetLimits(out xMin, out yMin, out zMin, out xMax, out yMax, out zMax);
             GL.Ortho(yMax + 1, yMin - 1, zMin - 1, zMax + 1, xMin - 1, xMax + 1);
         }
 
@@ -118,7 +89,7 @@ namespace BioGenie.Stl2Abt.Gui
 
             GL.PolygonMode(MaterialFace.FrontAndBack, radioButtonPoint.Checked ? PolygonMode.Point : PolygonMode.Line);
             GL.Begin(PrimitiveType.Triangles);
-            foreach (var facet in StlAbutment.ShellFacets)
+            foreach (var facet in _stl2AbtManager.StlAbutment.ShellFacets)
             {
                 if (facet.Vertices.Count != 3)
                 {
@@ -145,7 +116,7 @@ namespace BioGenie.Stl2Abt.Gui
             float xMax;
             float yMax;
             float zMax;
-            StlDocument.GetLimits(out xMin, out yMin, out zMin, out xMax, out yMax, out zMax);
+            _stl2AbtManager.StlDocument.GetLimits(out xMin, out yMin, out zMin, out xMax, out yMax, out zMax);
             GL.Light(LightName.Light0, LightParameter.SpotDirection,
                 new Vector4(new Vector3((xMin + xMax)/2, (yMin + yMax)/2, zMax*2)));
         }
@@ -153,13 +124,6 @@ namespace BioGenie.Stl2Abt.Gui
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
             glControl1.Invalidate();
-        }
-
-        private void GenerateModel()
-        {
-            var config = GetConfig();
-            Geratrizes = new AngularBoundaryPacker(StlAbutment, config.ResAngular).GetBoundaries(true);
-            AbtBoundary = new Abt(Geratrizes).GetPoints();
         }
 
         private void Redraw()
@@ -197,7 +161,7 @@ namespace BioGenie.Stl2Abt.Gui
 
             GL.PolygonMode(MaterialFace.FrontAndBack, radioButtonPoint.Checked ? PolygonMode.Point : PolygonMode.Line);
             GL.Color3(Color.LightBlue);
-            foreach (var boundaryByRotStep in Geratrizes.Values)
+            foreach (var boundaryByRotStep in _stl2AbtManager.Geratrizes.Values)
             {
                 GL.Begin(PrimitiveType.LineStrip);
                 foreach (var vertex in boundaryByRotStep)
@@ -238,7 +202,7 @@ namespace BioGenie.Stl2Abt.Gui
 
             GL.PolygonMode(MaterialFace.FrontAndBack, radioButtonPoint.Checked ? PolygonMode.Point : PolygonMode.Line);
             GL.Color3(Color.LightBlue);
-            foreach (var boundaryByRotStep in AbtBoundary.Values)
+            foreach (var boundaryByRotStep in _stl2AbtManager.AbtBoundary.Values)
             {
                 GL.Begin(PrimitiveType.LineStrip);
                 foreach (var vertex in boundaryByRotStep)
@@ -284,13 +248,13 @@ namespace BioGenie.Stl2Abt.Gui
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Abt.WriteAbt(AbtFileName, AbtBoundary);
+            Abt.WriteAbt(_stl2AbtManager.AbtFileName, _stl2AbtManager.AbtBoundary);
             Close();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            GenerateModel();
+            _stl2AbtManager.GenerateModel(_config.ResAngular);
             Redraw();
             var currentState = WindowState;
             WindowState = FormWindowState.Minimized;
