@@ -14,10 +14,6 @@ namespace BioGenie.Stl.Tools
             float z = 0;
             var verticeList = vertices.ToList();
             int count = verticeList.Count;
-            if (count == 0)
-            {
-                throw new Exception( "Cannot calculate a mean for an empty vertex list" );
-            }
             foreach (var vertex in verticeList)
             {
                 x += vertex.X;
