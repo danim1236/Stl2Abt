@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using BioGenie.Stl.Tools;
 using OpenTK;
@@ -13,6 +14,11 @@ namespace BioGenie.Stl.Objects
         public Normal(float x, float y, float z)
             : this()
         {
+            // if (x != x) :: Teste classico para NaN
+            if ( ( x != x ) || ( y != y ) || ( z != z ) )
+            {
+                throw new Exception("Cannot create a normal with NaN values");
+            }
             X = x;
             Y = y;
             Z = z;
@@ -49,6 +55,10 @@ namespace BioGenie.Stl.Objects
         private void NormalizeLength()
         {
             var l = ToVector3().Length;
+            if (l == 0)
+            {
+                throw new Exception("Cannot normalize a normal with length 0");
+            }
             X /= l;
             Y /= l;
             Z /= l;
